@@ -246,3 +246,31 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-09-16 13:33:46.611 -06:00 [INF] Writing value of type 'List`1' as Json.
 2026-09-16 13:33:46.613 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
 2026-09-16 13:33:46.616 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 29.1605ms
+2026-09-16 15:24:01.644 -06:00 [INF] Application is shutting down...
+2026-09-16 16:02:15.701 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-16 16:02:16.073 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-16 16:02:16.077 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-16 16:02:16.081 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-16 16:02:16.083 -06:00 [INF] Hosting environment: Development
+2026-09-16 16:02:16.086 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-16 16:02:16.522 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-16 16:02:16.624 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-16 16:02:16.629 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-16 16:02:16.632 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 114.7635ms
+2026-09-16 16:02:30.420 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 16:02:30.433 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 16:02:30.443 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 16:02:30.461 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 16:02:30.470 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 16:02:30.481 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 16:02:30.503 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 16:02:30.510 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 90.777ms
+2026-09-16 16:05:38.693 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 16:05:38.725 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 16:05:38.730 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 16:05:38.735 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 16:05:38.738 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 16:05:38.740 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 16:05:38.742 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 16:05:38.746 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 53.1983ms
