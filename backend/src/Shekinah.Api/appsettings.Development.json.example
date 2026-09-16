@@ -1,0 +1,15 @@
+{
+  "_comment": "Copia este archivo a appsettings.Development.json (git-ignored, R8) y completa los secretos. NUNCA subas el archivo real al repositorio.",
+  "Mongo": {
+    "ConnectionString": "mongodb://localhost:27017/"
+  },
+  "Jwt": {
+    "SigningKey": "CAMBIA-ESTA-CLAVE-POR-UNA-DE-AL-MENOS-32-CARACTERES-ALEATORIOS"
+  },
+  "EmailSettings": {
+    "SenderAppPassword": "CAMBIA-POR-TU-APP-PASSWORD-DE-GMAIL"
+  },
+  "Seed": {
+    "AdminPassword": "CAMBIA-ESTA-CONTRASENA-TEMPORAL-DEL-ADMIN-SEMILLA"
+  }
+}

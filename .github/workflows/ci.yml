@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        working-directory: backend
+        run: dotnet restore Shekinah.sln
+
+      - name: Build
+        working-directory: backend
+        run: dotnet build Shekinah.sln --no-restore -c Release
+
+      # Domain.UnitTests y Architecture.Tests no requieren infraestructura externa.
+      - name: Unit + architecture tests
+        working-directory: backend
+        run: |
+          dotnet test tests/Shekinah.Domain.UnitTests/Shekinah.Domain.UnitTests.csproj --no-build -c Release
+          dotnet test tests/Shekinah.Architecture.Tests/Shekinah.Architecture.Tests.csproj --no-build -c Release
+          dotnet test tests/Shekinah.Application.UnitTests/Shekinah.Application.UnitTests.csproj --no-build -c Release
+
+      # Requieren Docker (Testcontainers / WebApplicationFactory contra Mongo real) — se ejecutan
+      # aparte porque los runners hospedados de GitHub sí traen Docker, pero conviene poder ver el
+      # resultado de la suite "rápida" de arriba aunque esta tanda falle por temas de entorno.
+      - name: Integration + functional tests
+        working-directory: backend
+        run: |
+          dotnet test tests/Shekinah.Infrastructure.IntegrationTests/Shekinah.Infrastructure.IntegrationTests.csproj -c Release
+          dotnet test tests/Shekinah.Api.FunctionalTests/Shekinah.Api.FunctionalTests.csproj -c Release
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install --legacy-peer-deps
+
+      - name: Unit tests
+        working-directory: frontend
+        run: npx ng test --no-watch
+
+      - name: Production build
+        working-directory: frontend
+        run: npx ng build --configuration production
+
+# Nota: este proyecto no se despliega con Docker (ver PROMPT-MAESTRO.md §3-bis) — no hay job de build
+# de imágenes aquí. Las pruebas de integración de arriba sí usan Testcontainers, que internamente
+# arranca un contenedor Mongo efímero en el runner: eso es una herramienta de testing, no el
+# mecanismo de despliegue del proyecto. El despliegue real vive en .github/workflows/deploy-api.yml
+# (Azure App Service / MonsterASP.NET) y en la integración automática de Vercel con este repositorio.

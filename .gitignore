@@ -1,0 +1,22 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+.vs/
+
+# Secretos locales (R8: nunca subir secretos reales)
+backend/src/Shekinah.Api/appsettings.Development.json
+.env
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/*.log
+
+# Sistema operativo / editor
+.DS_Store
+*.swp
+
+# Vercel (metadata local del CLI, no el vercel.json versionado)
+frontend/.vercel/

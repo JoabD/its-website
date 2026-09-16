@@ -1,0 +1,213 @@
+2026-09-16 09:42:56.898 -06:00 [INF] Aplicando migración 1: Crea índices únicos, compuestos, de texto y TTL en todas las colecciones.
+2026-09-16 09:52:18.743 -06:00 [INF] Aplicando migración 1: Crea índices únicos, compuestos, de texto y TTL en todas las colecciones.
+2026-09-16 09:52:19.061 -06:00 [INF] Seed: 4 regiones creadas.
+2026-09-16 09:52:19.082 -06:00 [INF] Seed: 28 materias creadas (24 cuatrimestrales + 4 de diplomado).
+2026-09-16 09:52:19.099 -06:00 [INF] Seed: periodo activo inicial creado (20260901).
+2026-09-16 09:52:19.487 -06:00 [INF] Seed: administrador semilla creado con matrícula 1.
+2026-09-16 09:52:19.544 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-16 09:52:19.970 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-16 09:52:19.973 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-16 09:52:19.974 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-16 09:52:19.975 -06:00 [INF] Hosting environment: Development
+2026-09-16 09:52:19.976 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-16 09:52:28.323 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/ - null null
+2026-09-16 09:52:28.425 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-16 09:52:28.432 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-16 09:52:28.437 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/ - 401 0 null 120.0408ms
+2026-09-16 09:52:34.301 -06:00 [INF] Application is shutting down...
+2026-09-16 09:53:59.061 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-16 09:53:59.406 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-16 09:53:59.409 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-16 09:53:59.411 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-16 09:53:59.413 -06:00 [INF] Hosting environment: Development
+2026-09-16 09:53:59.414 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-16 09:53:59.581 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-16 09:53:59.676 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-16 09:53:59.681 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-16 09:53:59.683 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 106.5935ms
+2026-09-16 09:54:44.771 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-16 09:54:44.781 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-16 09:54:44.783 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-16 09:54:44.785 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 14.2856ms
+2026-09-16 10:01:50.212 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 10:01:50.221 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:01:50.229 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 10:01:50.245 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 10:01:50.257 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 10:01:50.268 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 10:01:50.287 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:01:50.296 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 84.6813ms
+2026-09-16 10:01:57.564 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-16 10:01:57.572 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 10:01:57.578 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-16 10:01:57.585 -06:00 [INF] GetRegionsQuery completado
+2026-09-16 10:01:57.587 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 10:01:57.593 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 10:01:57.602 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 10:01:57.605 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 40.5461ms
+2026-09-16 10:02:55.737 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 10:02:55.742 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:02:55.747 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 10:02:55.751 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 10:02:55.752 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 10:02:55.754 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 10:02:55.756 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:02:55.759 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 21.6963ms
+2026-09-16 10:02:58.320 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 10:02:58.325 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:02:58.333 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 10:02:58.335 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 10:02:58.337 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 10:02:58.339 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 10:02:58.342 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 10:02:58.344 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 23.7841ms
+2026-09-16 12:00:48.969 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-16 12:00:48.973 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 12:00:48.977 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-16 12:00:48.980 -06:00 [INF] GetRegionsQuery completado
+2026-09-16 12:00:48.981 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 12:00:48.983 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 12:00:48.986 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 12:00:48.988 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 19.1067ms
+2026-09-16 12:00:51.052 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 12:00:51.056 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:00:51.058 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 12:00:51.062 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 12:00:51.063 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 12:00:51.065 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 12:00:51.068 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:00:51.070 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 18.532ms
+2026-09-16 12:51:16.190 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 12:51:16.195 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:51:16.197 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 12:51:16.200 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 12:51:16.202 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 12:51:16.204 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 12:51:16.206 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:51:16.208 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 18.4016ms
+2026-09-16 12:51:19.471 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 12:51:19.474 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:51:19.476 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 12:51:19.481 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 12:51:19.483 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 12:51:19.485 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 12:51:19.487 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 12:51:19.489 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 18.8114ms
+2026-09-16 13:04:38.703 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 13:04:38.713 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:04:38.715 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 13:04:38.718 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 13:04:38.720 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:04:38.723 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:04:38.726 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:04:38.729 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 25.6107ms
+2026-09-16 13:04:39.731 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 13:04:39.735 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:04:39.737 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 13:04:39.739 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 13:04:39.741 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:04:39.743 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:04:39.745 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:04:39.747 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 16.2895ms
+2026-09-16 13:05:42.330 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 13:05:42.335 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:05:42.337 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 13:05:42.339 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 13:05:42.341 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:05:42.343 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:05:42.345 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:05:42.347 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 16.9498ms
+2026-09-16 13:06:04.196 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-16 13:06:04.201 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:06:04.208 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-16 13:06:04.212 -06:00 [INF] GetRegionsQuery completado
+2026-09-16 13:06:04.213 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:06:04.215 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:06:04.217 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:06:04.219 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 23.0694ms
+2026-09-16 13:06:13.766 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 13:06:13.770 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:06:13.771 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 13:06:13.774 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 13:06:13.775 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:06:13.777 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:06:13.780 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:06:13.782 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 16.2085ms
+2026-09-16 13:08:43.870 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 51
+2026-09-16 13:08:43.876 -06:00 [INF] CORS policy execution successful.
+2026-09-16 13:08:43.878 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-16 13:08:43.915 -06:00 [INF] Ejecutando LoginCommand
+2026-09-16 13:08:44.538 -06:00 [INF] LoginCommand completado
+2026-09-16 13:08:44.539 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:08:44.542 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-16 13:08:44.551 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-16 13:08:44.553 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 682.9737ms
+2026-09-16 13:09:12.740 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 57
+2026-09-16 13:09:12.746 -06:00 [INF] CORS policy execution successful.
+2026-09-16 13:09:12.801 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-16 13:09:12.822 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-16 13:09:12.838 -06:00 [WRN] ChangePasswordCommand falló: Validation.Failed - NewPassword: La nueva contraseña debe tener al menos 12 caracteres.
+2026-09-16 13:09:12.842 -06:00 [INF] Setting HTTP status code 400.
+2026-09-16 13:09:12.858 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-16 13:09:12.860 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 400 null application/problem+json 119.6647ms
+2026-09-16 13:09:23.801 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 51
+2026-09-16 13:09:23.804 -06:00 [INF] CORS policy execution successful.
+2026-09-16 13:09:23.806 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-16 13:09:23.809 -06:00 [INF] Ejecutando LoginCommand
+2026-09-16 13:09:24.036 -06:00 [INF] LoginCommand completado
+2026-09-16 13:09:24.038 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:09:24.039 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-16 13:09:24.042 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-16 13:09:24.044 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 243.6551ms
+2026-09-16 13:09:37.709 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 70
+2026-09-16 13:09:37.713 -06:00 [INF] CORS policy execution successful.
+2026-09-16 13:09:37.714 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-16 13:09:37.718 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-16 13:09:37.722 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-16 13:09:37.726 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 75
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-16 13:09:37.759 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 49.072ms
+2026-09-16 13:10:42.438 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-16 13:10:42.443 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:10:42.445 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-16 13:10:42.447 -06:00 [INF] GetRegionsQuery completado
+2026-09-16 13:10:42.449 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:10:42.451 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:10:42.453 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:10:42.455 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 16.7732ms
+2026-09-16 13:10:43.795 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-16 13:10:43.799 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:10:43.801 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-16 13:10:43.803 -06:00 [INF] GetCurriculumQuery completado
+2026-09-16 13:10:43.806 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:10:43.807 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:10:43.809 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-16 13:10:43.812 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 16.4114ms
+2026-09-16 13:12:14.334 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-16 13:12:14.338 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:12:14.340 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-16 13:12:14.342 -06:00 [INF] GetRegionsQuery completado
+2026-09-16 13:12:14.344 -06:00 [INF] Setting HTTP status code 200.
+2026-09-16 13:12:14.347 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-16 13:12:14.349 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-16 13:12:14.351 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 17.245ms
+2026-09-16 13:18:31.517 -06:00 [INF] Application is shutting down...

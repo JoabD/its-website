@@ -1,0 +1,187 @@
+/**
+ * Tipos generados desde el OpenAPI del backend (ESPECIFICACION-TECNICA.md §6.2).
+ *
+ * En un entorno con la API corriendo, este archivo se regenera con:
+ *   npm run api:types   →  openapi-typescript http://localhost:5080/openapi/v1.json -o src/app/api/schema.ts
+ *
+ * Este archivo NO se edita a mano en un proyecto en marcha. Como este entregable se construyó sin
+ * un backend en ejecución contra el cual generar el contrato, se transcribió a mano el contrato
+ * documentado en PROMPT-MAESTRO.md §7 — la primera tarea real al integrar backend+frontend es
+ * regenerarlo de verdad y dejar que cualquier divergencia rompa la compilación (ese es el objetivo).
+ */
+
+export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator';
+export type ModalityDto = 'Onsite' | 'Online' | 'Diploma';
+export type ApplicationStatusDto = 'Pending' | 'Approved' | 'Rejected';
+export type SchoolingLevelDto = 'Primary' | 'Secondary' | 'HighSchool' | 'Other';
+
+export interface PagedResultDto<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  months?: string[];
+}
+
+export interface ProblemDetailsDto {
+  type?: string;
+  title: string;
+  status: number;
+  detail: string;
+  traceId?: string;
+  errors?: Record<string, string[]>;
+}
+
+export interface LoginResponseDto {
+  accessToken: string;
+  accessTokenExpiresAtUtc: string;
+  refreshToken: string;
+  userId: string;
+  role: UserRole;
+  mustChangePassword: boolean;
+}
+
+export interface CurrentUserDto {
+  id: string;
+  enrollmentNumber: number;
+  role: UserRole;
+  fullName: string;
+  email: string;
+  regionName: string | null;
+  modality: ModalityDto | null;
+  currentTerm: number | null;
+  mustChangePassword: boolean;
+}
+
+export interface RegionListItemDto {
+  id: string;
+  code: number;
+  name: string;
+  modalityScope: ModalityDto[];
+}
+
+export interface CurriculumSubjectDto {
+  id: string;
+  code: string;
+  name: string;
+  programType: 'Quarterly' | 'Diploma';
+  termNumber: number | null;
+  displayOrder: number;
+  hasSyllabus: boolean;
+  syllabusPdfUrl: string | null;
+}
+
+export interface SubmitApplicationRequestDto {
+  fullName: string;
+  birthDate: string;
+  maritalStatus: string;
+  email: string;
+  phone: string;
+  street: string;
+  neighborhood: string;
+  locality: string;
+  municipality: string;
+  state: string;
+  churchName: string;
+  churchStreet: string;
+  churchNeighborhood: string;
+  churchLocality: string;
+  churchMunicipality: string;
+  pastorName: string;
+  timeAttending: string;
+  hasMinistryRole: boolean;
+  ministryRoleName: string | null;
+  educationLevel: SchoolingLevelDto;
+  otherEducationDescription: string | null;
+  theologicalBackground: string;
+  studyPurpose: string;
+  modality: ModalityDto;
+  requestedRegionId: string | null;
+  onlineReason: string | null;
+}
+
+export interface SubmitApplicationResponseDto {
+  applicationId: string;
+  folio: string;
+}
+
+export interface ApplicationListItemDto {
+  id: string;
+  folio: string;
+  applicantName: string;
+  modality: ModalityDto;
+  regionName: string;
+  status: ApplicationStatusDto;
+  submittedAtUtc: string;
+}
+
+export interface ApplicationDetailDto {
+  id: string;
+  folio: string;
+  applicantName: string;
+  email: string;
+  phone: string;
+  modality: ModalityDto;
+  regionName: string;
+  onlineReason: string | null;
+  status: ApplicationStatusDto;
+  submittedAtUtc: string;
+  decisionReason: string | null;
+  decidedAtUtc: string | null;
+}
+
+export interface UserListItemDto {
+  id: string;
+  enrollmentNumber: number;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  status: string;
+  regionName: string | null;
+  modality: ModalityDto | null;
+  currentTerm: number | null;
+}
+
+export interface PeriodListItemDto {
+  id: string;
+  code: string;
+  name: string;
+  startsOnUtc: string;
+  endsOnUtc: string;
+  status: 'Active' | 'Closed';
+}
+
+export interface OfferingListItemDto {
+  id: string;
+  subjectName: string;
+  regionName: string;
+  teacherName: string;
+  enrollmentCount: number;
+}
+
+export interface EnrollmentRowDto {
+  studentId: string;
+  enrollmentNumber: number;
+  studentName: string;
+  grade: number | null;
+  status: 'Active' | 'Dropped';
+}
+
+export interface StudentCourseRowDto {
+  offeringId: string;
+  subjectName: string;
+  teacherName: string;
+  regionName: string;
+  periodCode: string;
+  grade: number | null;
+}
+
+export interface StudentPaymentRowDto {
+  studentId: string;
+  enrollmentNumber: number;
+  studentName: string;
+  regionName: string;
+  paidByMonth: Record<string, boolean>;
+  monthsDue: string[];
+}

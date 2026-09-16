@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Shekinah.Domain</RootNamespace>
+    <AssemblyName>Shekinah.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <!--
+    REGLA DE ORO R3 / Criterio de aceptación Fase 1:
+    Este proyecto NO debe tener ni un solo <PackageReference>.
+    El dominio no conoce Mongo, ASP.NET, ni ninguna librería externa.
+    Verificado también por Shekinah.Architecture.Tests.
+  -->
+
+</Project>

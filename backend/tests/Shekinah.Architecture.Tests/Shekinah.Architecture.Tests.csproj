@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit.v3" Version="1.0.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.1" />
+    <PackageReference Include="Shouldly" Version="4.2.1" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Shekinah.Domain\Shekinah.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Shekinah.Application\Shekinah.Application.csproj" />
+    <ProjectReference Include="..\..\src\Shekinah.Infrastructure\Shekinah.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Shekinah.Api\Shekinah.Api.csproj" />
+  </ItemGroup>
+
+</Project>

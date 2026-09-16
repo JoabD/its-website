@@ -1,0 +1,47 @@
+name: Deploy API
+
+# Despliega Shekinah.Api a Azure App Service (tier F1 gratuito) en cada push a main.
+# Requiere el secreto AZURE_WEBAPP_PUBLISH_PROFILE en Settings → Secrets → Actions del repositorio
+# (se descarga desde "Get publish profile" en el App Service de Azure). Si en vez de Azure se elige
+# MonsterASP.NET (ver PROMPT-MAESTRO.md §3-bis), este workflow se reemplaza por el paso de
+# publicación (FTP/Web Deploy) que exponga su panel — ese detalle no es público y se confirma dentro
+# de la cuenta de MonsterASP al darla de alta.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: shekinah-its-api # cambia esto por el nombre real de tu App Service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish
+        working-directory: backend
+        run: dotnet publish src/Shekinah.Api/Shekinah.Api.csproj -c Release -o ${{ github.workspace }}/publish
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ github.workspace }}/publish
+
+# Variables de entorno que este App Service necesita configuradas en su panel (Configuration →
+# Application settings), NUNCA en este archivo ni en el repositorio (R8):
+#   Mongo__ConnectionString        = mongodb+srv://... (cadena SRV real de tu clúster Atlas M0)
+#   Jwt__SigningKey                = clave real ≥32 caracteres
+#   EmailSettings__SenderAppPassword = tu app password real de Gmail
+#   Seed__AdminPassword            = contraseña temporal real del admin semilla

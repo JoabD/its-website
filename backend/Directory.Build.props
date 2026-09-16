@@ -1,0 +1,28 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>CS1591</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Deterministic>true</Deterministic>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <Authors>Instituto Teologico Shekinah</Authors>
+    <Company>ITS</Company>
+    <Product>Shekinah ITS</Product>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!--
+    Las excepciones de TreatWarningsAsErrors para proyectos de test (donde ciertos analizadores
+    son ruidosos con mocks/builders) se declaran localmente en cada .csproj de test si hiciera falta,
+    nunca aquí de forma global.
+  -->
+
+</Project>

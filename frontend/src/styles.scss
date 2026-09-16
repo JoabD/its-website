@@ -1,0 +1,382 @@
+@import "tailwindcss";
+
+/*
+  Sistema de diseño del ITS — portado 1:1 desde resources/views + public/css/site.css del proyecto
+  Laravel original (C:\laragon\www\shekinah). Los tokens y las reglas de abajo son una traducción
+  fiel de ese site.css: mismos colores, tipografías, espaciados y sombras. shared/ui y los formularios
+  siguen usando estos tokens; el header/nav/footer/hero/botones/secciones de abajo son las clases
+  reales del sitio (.contenedor, .eyebrow, #header, .btn, .seccion, #cta-final, #foot, etc.) para que
+  cada página pueda reusarlas tal cual las usaba Blade.
+*/
+:root {
+  --shk-color-primary: #1a2744;
+  --shk-color-primary-dark: #101c36;
+  --shk-color-accent: #c8a250;
+  --shk-color-accent-dark: #ab873d;
+  --shk-color-accent-light: #e8d5a3;
+  --shk-color-success: #1f9d55;
+  --shk-color-warning: #b45309;
+  --shk-color-danger: #b91c1c;
+  --shk-color-bg: #f5f6f9;
+  --shk-color-surface: #ffffff;
+  --shk-color-text: #1a1a1a;
+  --shk-color-text-muted: #4a5568;
+  --shk-font-heading: "Poppins", "Segoe UI", Arial, sans-serif;
+  --shk-font-body: "Inter", "Segoe UI", Arial, sans-serif;
+  --shk-radius: 0.5rem;
+  --shk-radius-lg: 1rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+  Los elementos personalizados de Angular (app-root, shk-*) no tienen "display" definido por el
+  navegador y por defecto se comportan como "inline". Eso rompe el cálculo de `position: sticky`
+  de sus descendientes (#header, #salto-rapido) una vez que el usuario hace scroll: el navbar deja
+  de quedarse fijo y "se desplaza". Forzamos block en todos los elementos raíz de componentes.
+*/
+app-root,
+shk-public-shell,
+shk-admin-shell,
+shk-home,
+shk-plans,
+shk-catalog,
+shk-contact,
+shk-admission-form,
+shk-login,
+shk-change-password,
+shk-dashboard,
+shk-admissions,
+shk-users,
+shk-academic,
+shk-grades,
+shk-my-courses,
+shk-my-profile,
+shk-payments {
+  display: block;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--shk-color-bg);
+  font-family: var(--shk-font-body);
+  color: var(--shk-color-text-muted);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--shk-font-heading);
+  color: var(--shk-color-primary);
+  margin: 0;
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; }
+ul { padding-left: 0; list-style: none; }
+
+/* ===== CONTENEDOR / EYEBROW (usados por todas las páginas) ===== */
+.contenedor {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--shk-font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--shk-color-accent);
+  margin-bottom: 12px;
+}
+
+/* ===== NAVBAR ===== */
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(16, 28, 54, 0.06);
+  transition: all 0.3s ease;
+}
+
+#header.con-sombra {
+  box-shadow: 0 6px 20px rgba(16, 28, 54, 0.08);
+}
+
+#menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+}
+
+#menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#logo-img { height: 46px; width: auto; }
+
+#menu-logo .marca {
+  font-family: var(--shk-font-heading);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--shk-color-primary);
+  line-height: 1.1;
+}
+
+#menu-logo .marca span {
+  display: block;
+  font-family: var(--shk-font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--shk-color-accent);
+}
+
+#menu-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin: 0;
+}
+
+#menu-links a {
+  font-family: var(--shk-font-heading);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--shk-color-primary);
+  position: relative;
+  padding: 6px 0;
+  transition: all 0.3s ease;
+}
+
+#menu-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--shk-color-accent);
+  transition: all 0.3s ease;
+}
+
+#menu-links a:hover { color: var(--shk-color-accent); }
+#menu-links a:hover::after { width: 100%; }
+#menu-links a.activo { color: var(--shk-color-accent); }
+#menu-links a.activo::after { width: 100%; }
+
+#menu-acceder { display: flex; align-items: center; gap: 14px; }
+
+#btn-acceder {
+  font-family: var(--shk-font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--shk-color-primary), var(--shk-color-primary-dark));
+  padding: 11px 26px;
+  border-radius: 30px;
+  box-shadow: 0 6px 16px rgba(26, 39, 68, 0.25);
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+#btn-acceder:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(26, 39, 68, 0.32); }
+
+#menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.icono-hamburguesa {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--shk-color-primary);
+  transition: all 0.3s ease;
+}
+
+.icono-hamburguesa::before,
+.icono-hamburguesa::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--shk-color-primary);
+  transition: all 0.3s ease;
+}
+
+.icono-hamburguesa::before { top: -8px; }
+.icono-hamburguesa::after { top: 8px; }
+
+#menu-toggle[aria-expanded="true"] .icono-hamburguesa { background: transparent; }
+#menu-toggle[aria-expanded="true"] .icono-hamburguesa::before { top: 0; transform: rotate(45deg); }
+#menu-toggle[aria-expanded="true"] .icono-hamburguesa::after { top: 0; transform: rotate(-45deg); }
+
+/* ===== HERO (estructura compartida; cada página define fondo/alto) ===== */
+#hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+#hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
+
+.hero-contenido { position: relative; z-index: 2; }
+.hero-contenido .eyebrow { color: var(--shk-color-accent-light); }
+.hero-contenido h1 { color: #ffffff; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+.hero-contenido p { color: rgba(255, 255, 255, 0.85); line-height: 1.7; margin-bottom: 34px; }
+.hero-botones { display: flex; flex-wrap: wrap; gap: 16px; }
+
+/* ===== BOTONES ===== */
+.btn {
+  font-family: var(--shk-font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 15px 32px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primario {
+  background: var(--shk-color-accent);
+  color: var(--shk-color-primary-dark);
+  box-shadow: 0 10px 24px rgba(200, 162, 80, 0.35);
+}
+
+.btn-primario:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(200, 162, 80, 0.45); }
+
+.btn-secundario {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.btn-secundario:hover { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; }
+
+/* ===== SECCIONES GENERALES ===== */
+.seccion { padding: 90px 0; }
+.seccion-alt { background: #ffffff; }
+.seccion-cabecera { max-width: 680px; margin: 0 auto 50px auto; text-align: center; }
+.seccion-cabecera h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; }
+.seccion-cabecera p { margin-top: 14px; font-size: 16px; line-height: 1.7; }
+
+/* ===== CTA FINAL ===== */
+#cta-final { background: var(--shk-color-bg); padding: 80px 0; }
+
+.cta-caja {
+  background: linear-gradient(120deg, var(--shk-color-primary), var(--shk-color-primary-dark));
+  border-radius: 20px;
+  padding: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+  box-shadow: 0 20px 45px rgba(16, 28, 54, 0.16);
+}
+
+.cta-caja h2 { color: #ffffff; font-size: clamp(22px, 3vw, 30px); max-width: 480px; }
+.cta-caja p { color: rgba(255, 255, 255, 0.8); margin-top: 10px; font-size: 15.5px; }
+
+/* ===== FOOTER ===== */
+#foot { background: var(--shk-color-primary-dark); color: rgba(255, 255, 255, 0.75); padding: 60px 0 26px 0; }
+
+.foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.foot-marca { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+#logoi-img { height: 42px; width: auto; }
+.foot-marca span { font-family: var(--shk-font-heading); font-weight: 700; color: #ffffff; font-size: 16px; }
+#foot h4 { color: #ffffff; font-family: var(--shk-font-heading); font-size: 15px; margin-bottom: 16px; }
+#foot ul li { margin-bottom: 10px; }
+#foot ul a { color: rgba(255, 255, 255, 0.7); font-size: 14.5px; transition: all 0.3s ease; }
+#foot ul a:hover { color: var(--shk-color-accent); }
+
+.foot-legal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 22px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== RESPONSIVE COMPARTIDO ===== */
+@media (max-width: 1024px) {
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 860px) {
+  #menu-toggle { display: block; }
+  #logo-img { height: 36px; }
+  #menu-logo .marca { font-size: 15px; }
+  #menu-logo .marca span { display: none; }
+
+  #menu-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 10px 24px;
+    box-shadow: 0 12px 20px rgba(16, 28, 54, 0.08);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  #menu-links.abierto { max-height: 360px; padding: 16px 24px 24px 24px; }
+  #menu-links li { width: 100%; border-bottom: 1px solid rgba(16, 28, 54, 0.06); }
+  #menu-links a { display: block; padding: 14px 0; }
+  #menu-acceder #btn-acceder { padding: 9px 18px; font-size: 13px; }
+  .cta-caja { padding: 40px 28px; text-align: center; justify-content: center; }
+}
+
+@media (max-width: 640px) {
+  .foot-grid { grid-template-columns: 1fr; }
+  .seccion { padding: 60px 0; }
+  .hero-botones { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+}
