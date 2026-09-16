@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using Serilog;
 using Shekinah.Api.Endpoints;
