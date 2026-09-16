@@ -6,5 +6,5 @@
  */
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://shekinah-its-api.azurewebsites.net/api/v1',
+  apiBaseUrl: 'https://its-apps-etangehpdabqcmgx.westus3-01.azurewebsites.net/api/v1',
 };
