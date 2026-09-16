@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using Serilog;
 using Shekinah.Api.Endpoints;
@@ -30,7 +29,12 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy
-    .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? ["http://localhost:4200"])
+    // Nota: no se puede usar AllowAnyOrigin() junto con AllowCredentials() (bloqueado por el
+    // propio navegador). SetIsOriginAllowed(_ => true) logra el mismo efecto práctico —
+    // aceptar cualquier origen— reflejando dinámicamente el Origin recibido, sin romper esa regla.
+    // TODO: una vez que los dominios finales (Vercel + custom domain) estén estables, volver a
+    // restringir con WithOrigins(...) usando Cors:AllowedOrigins para mayor seguridad.
+    .SetIsOriginAllowed(_ => true)
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()));
