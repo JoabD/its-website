@@ -17,6 +17,10 @@ public enum UserRole
     Teacher,
     Administrator,
     RegionalCoordinator,
+
+    /// <summary>Apoyo operativo del coordinador regional (gestión de alumnos/pagos de su región).
+    /// Requiere región asignada, igual que RegionalCoordinator (spec del plan de control escolar, fase 2).</summary>
+    RegionalSecretary,
 }
 
 public enum UserStatus

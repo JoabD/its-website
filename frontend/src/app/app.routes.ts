@@ -112,7 +112,7 @@ export const routes: Routes = [
           {
             path: 'pagos',
             title: 'Pagos | Panel ITS',
-            canActivate: [roleGuard(['Administrator', 'RegionalCoordinator'])],
+            canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
             loadComponent: () => import('./features/admin/payments/payments.component').then((m) => m.PaymentsComponent),
           },
         ],

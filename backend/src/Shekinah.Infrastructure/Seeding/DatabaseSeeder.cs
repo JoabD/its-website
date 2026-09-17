@@ -110,29 +110,49 @@ public sealed class DatabaseSeeder(
         logger.LogInformation("Seed: periodo activo inicial creado ({Code}).", code.Value);
     }
 
+    /// <summary>
+    /// Cuentas maestras (Administrator) del panel de control escolar: ven y administran todo,
+    /// incluyendo la creación de avisos y calendario (plan de reestructuración admin, fase 2).
+    /// Seed idempotente POR CORREO (no por "ya existe algún admin"), a propósito: así, si esta app
+    /// ya tenía un administrador semilla previo con otro correo (p. ej. el placeholder anterior
+    /// admin@its-shekinah.edu.mx), estas tres cuentas se siguen creando igual en el próximo arranque,
+    /// tanto en local como en la base ya desplegada en Azure.
+    /// </summary>
+    private static readonly (string Name, string Email)[] MasterAccounts =
+    [
+        ("Administración ITS", "admin@institutoteologicoshekinah.com"),
+        ("Academia ITS", "academia@institutoteologicoshekinah.com"),
+        ("Dirección General", "dagu_pres@hotmail.com"),
+    ];
+
     private async Task SeedAdminUserAsync(Dictionary<Modality, Region> regionsByModality, CancellationToken ct)
     {
-        var existingAdmins = await users.GetActiveAdministratorsAsync(ct);
-        if (existingAdmins.Count > 0) return;
-
         var seedPassword = configuration["Seed:AdminPassword"];
         if (string.IsNullOrWhiteSpace(seedPassword))
         {
-            logger.LogWarning("Seed:AdminPassword no está configurada; se omite la creación del administrador semilla.");
+            logger.LogWarning("Seed:AdminPassword no está configurada; se omite la creación de cuentas maestras.");
             return;
         }
 
-        var enrollmentNumber = await enrollmentNumbers.NextAsync(ct);
-        var address = Address.Create("Sede central", "Centro", "N/D", "N/D", "N/D").Value;
-        var church = ChurchInfo.Create("N/A", address, "N/A", "N/A", MinistryRole.None).Value;
-        var education = EducationLevel.Create(SchoolingLevel.Other, "N/A").Value;
-        var profile = PersonalProfile.Create(
-            PersonName.Create("Administrador ITS").Value, Email.Create("admin@its-shekinah.edu.mx").Value,
-            PhoneNumber.Create("5500000000").Value, new DateOnly(1980, 1, 1), null, address, church, education, null, null).Value;
+        foreach (var (name, email) in MasterAccounts)
+        {
+            var existing = await users.GetByEmailAsync(email, ct);
+            if (existing is not null) continue;
 
-        var admin = User.CreateStaff(EntityId.NewId(), enrollmentNumber, UserRole.Administrator, profile, null, passwordHasher.Hash(seedPassword), clock).Value;
-        await users.AddAsync(admin, ct);
+            var enrollmentNumber = await enrollmentNumbers.NextAsync(ct);
+            var address = Address.Create("Sede central", "Centro", "N/D", "N/D", "N/D").Value;
+            var church = ChurchInfo.Create("N/A", address, "N/A", "N/A", MinistryRole.None).Value;
+            var education = EducationLevel.Create(SchoolingLevel.Other, "N/A").Value;
+            var profile = PersonalProfile.Create(
+                PersonName.Create(name).Value, Email.Create(email).Value,
+                PhoneNumber.Create("5500000000").Value, new DateOnly(1980, 1, 1), null, address, church, education, null, null).Value;
 
-        logger.LogInformation("Seed: administrador semilla creado con matrícula {EnrollmentNumber}.", enrollmentNumber.Value);
+            // mustChangePassword queda en true por defecto (Credentials.CreateTemporary) — cada
+            // cuenta maestra debe fijar su propia contraseña real en el primer login (RN-24).
+            var admin = User.CreateStaff(EntityId.NewId(), enrollmentNumber, UserRole.Administrator, profile, null, passwordHasher.Hash(seedPassword), clock).Value;
+            await users.AddAsync(admin, ct);
+
+            logger.LogInformation("Seed: cuenta maestra creada ({Email}, matrícula {EnrollmentNumber}).", email, enrollmentNumber.Value);
+        }
     }
 }

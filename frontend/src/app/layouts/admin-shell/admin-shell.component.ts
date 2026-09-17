@@ -17,7 +17,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Calificaciones', path: '/admin/calificaciones', roles: ['Teacher', 'Administrator'] },
   { label: 'Mis materias', path: '/admin/mis-materias', roles: ['Student'] },
   { label: 'Mi información', path: '/admin/mi-perfil', roles: ['Student'] },
-  { label: 'Pagos', path: '/admin/pagos', roles: ['Administrator', 'RegionalCoordinator'] },
+  { label: 'Pagos', path: '/admin/pagos', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
 ];
 
 @Component({
