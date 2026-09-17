@@ -47,11 +47,9 @@ export const routes: Routes = [
       { path: 'admision', redirectTo: 'inscripcion' },
     ],
   },
-  {
-    path: 'admin/login',
-    title: 'Acceder | Instituto Shekinah',
-    loadComponent: () => import('./features/admin/login/login.component').then((m) => m.LoginComponent),
-  },
+  // Ya no hay página `/admin/login`: el acceso es un modal global (shk-login-modal, montado en
+  // app.html) que se abre desde el botón "Acceder" del header público o desde authGuard.
+  { path: 'admin/login', redirectTo: '' },
   {
     path: 'admin',
     loadComponent: () => import('./layouts/admin-shell/admin-shell.component').then((m) => m.AdminShellComponent),

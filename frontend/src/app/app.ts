@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastContainerComponent } from './shared/ui/toast/toast-container.component';
 import { AuthStore } from './core/auth/auth.store';
+import { LoginModalComponent } from './core/auth/login-modal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastContainerComponent],
+  imports: [RouterOutlet, ToastContainerComponent, LoginModalComponent],
   templateUrl: './app.html',
 })
 export class App {

@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { LoginModalService } from '../../core/auth/login-modal.service';
 
 /**
  * Header + footer portados 1:1 desde resources/views/partials/header.blade.php y
@@ -39,7 +40,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         </ul>
 
         <div id="menu-acceder">
-          <a routerLink="/admin/login" id="btn-acceder">Acceder</a>
+          <a href="javascript:void(0)" id="btn-acceder" (click)="openLogin()">Acceder</a>
         </div>
 
         <button
@@ -77,7 +78,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
               <li><a routerLink="/inscripcion">Inscripción</a></li>
               <li><a routerLink="/planes">Planes de Estudio</a></li>
               <li><a routerLink="/programas">Catálogo de Materias</a></li>
-              <li><a routerLink="/admin/login">Acceder</a></li>
+              <li><a href="javascript:void(0)" (click)="openLogin()">Acceder</a></li>
             </ul>
           </div>
           <div>
@@ -98,6 +99,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   `,
 })
 export class PublicShellComponent implements AfterViewInit, OnDestroy {
+  private readonly loginModal = inject(LoginModalService);
+
   protected readonly currentYear = new Date().getFullYear();
   protected readonly menuOpen = signal(false);
   protected readonly scrolled = signal(false);
@@ -111,6 +114,11 @@ export class PublicShellComponent implements AfterViewInit, OnDestroy {
 
   protected closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  protected openLogin(): void {
+    this.closeMenu();
+    this.loginModal.open();
   }
 
   @HostListener('window:scroll')

@@ -1,8 +1,8 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthStore } from '../auth/auth.store';
+import { LoginModalService } from '../auth/login-modal.service';
 
 /** Interceptor auth bearer: adjunta el access token a toda petición hacia la API. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -21,17 +21,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
  * refrescar el token (spec técnico §6: "interceptores (auth bearer, refresh 401, error → toast,
  * loading)"). Aquí, para mantener el alcance de este entregable, se cierra sesión de forma segura
  * ante un 401 — el flujo de refresh completo (cola de peticiones en vuelo) queda documentado como
- * siguiente paso en docs/DECISIONS.md.
+ * siguiente paso en docs/DECISIONS.md. `authStore.logout()` ya redirige a la raíz; aquí solo se
+ * reabre el modal de acceso para que la persona pueda volver a autenticarse sin buscar el botón.
  */
 export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthStore);
-  const router = inject(Router);
+  const loginModal = inject(LoginModalService);
 
   return next(req).pipe(
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse && error.status === 401 && req.url.startsWith('/api/') && !req.url.includes('/auth/login')) {
         authStore.logout();
-        void router.navigateByUrl('/admin/login');
+        loginModal.open();
       }
 
       return throwError(() => error);

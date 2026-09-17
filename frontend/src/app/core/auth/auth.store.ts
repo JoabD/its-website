@@ -8,6 +8,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { LoginResponseDto } from '../../api/schema';
 import { CurrentUser } from '../../domain/models';
 import { ApiClient } from '../http/api-client';
+import { LoginModalService } from './login-modal.service';
 
 const ACCESS_TOKEN_KEY = 'shk_access_token';
 const REFRESH_TOKEN_KEY = 'shk_refresh_token';
@@ -41,8 +42,8 @@ export const AuthStore = signalStore(
     role: computed(() => user()?.role ?? null),
     mustChangePassword: computed(() => user()?.mustChangePassword ?? false),
   })),
-  withMethods((store, api = inject(ApiClient), router = inject(Router)) => ({
-    login: rxMethod<{ enrollmentNumber: number; password: string }>(
+  withMethods((store, api = inject(ApiClient), router = inject(Router), loginModal = inject(LoginModalService)) => ({
+    login: rxMethod<{ email: string; password: string }>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),
         switchMap((credentials) =>
@@ -52,6 +53,7 @@ export const AuthStore = signalStore(
                 sessionStorage.setItem(ACCESS_TOKEN_KEY, response.accessToken);
                 sessionStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);
                 patchState(store, { accessToken: response.accessToken, refreshToken: response.refreshToken, loading: false });
+                loginModal.close();
                 void router.navigateByUrl(response.mustChangePassword ? '/admin/cambiar-password' : '/admin');
               },
               error: (error: HttpErrorResponse) => {
@@ -81,7 +83,7 @@ export const AuthStore = signalStore(
       sessionStorage.removeItem(ACCESS_TOKEN_KEY);
       sessionStorage.removeItem(REFRESH_TOKEN_KEY);
       patchState(store, { user: null, accessToken: null, refreshToken: null });
-      void router.navigateByUrl('/admin/login');
+      void router.navigateByUrl('/');
     },
 
     setTokens(accessToken: string, refreshToken: string): void {
