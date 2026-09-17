@@ -59,6 +59,10 @@ public sealed class MongoContext
 
     public IMongoCollection<BsonDocument> Migrations => Database.GetCollection<BsonDocument>("_migrations");
 
+    public IMongoCollection<BsonDocument> Announcements => Database.GetCollection<BsonDocument>("announcements");
+
+    public IMongoCollection<BsonDocument> CalendarEvents => Database.GetCollection<BsonDocument>("calendarEvents");
+
     private static void RegisterConventions()
     {
         var pack = new ConventionPack

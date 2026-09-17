@@ -103,6 +103,8 @@ app.MapAcademicEndpoints();
 app.MapStudentEndpoints();
 app.MapUsersEndpoints();
 app.MapPaymentsEndpoints();
+app.MapAnnouncementsEndpoints();
+app.MapCalendarEndpoints();
 app.MapOperationEndpoints();
 
 app.Run();

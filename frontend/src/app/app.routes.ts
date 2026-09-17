@@ -41,6 +41,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/public/admission/admission-form.component').then((m) => m.AdmissionFormComponent),
       },
+      {
+        path: 'calendario',
+        title: 'Calendario Institucional | Instituto Shekinah',
+        loadComponent: () =>
+          import('./features/public/calendar/calendar.component').then((m) => m.PublicCalendarComponent),
+      },
       // Alias de compatibilidad con las rutas previas del sitio Angular.
       { path: 'planes-de-estudio', redirectTo: 'planes' },
       { path: 'materias', redirectTo: 'programas' },
@@ -78,10 +84,21 @@ export const routes: Routes = [
               import('./features/admin/admissions/admissions.component').then((m) => m.AdmissionsComponent),
           },
           {
-            path: 'usuarios',
-            title: 'Usuarios | Panel ITS',
+            path: 'avisos',
+            title: 'Avisos | Panel ITS',
+            loadComponent: () => import('./features/admin/announcements/announcements.component').then((m) => m.AnnouncementsComponent),
+          },
+          {
+            path: 'alumnos',
+            title: 'Alumnos | Panel ITS',
+            canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
+            loadComponent: () => import('./features/admin/students/students.component').then((m) => m.StudentsComponent),
+          },
+          {
+            path: 'docentes',
+            title: 'Docentes | Panel ITS',
             canActivate: [roleGuard(['Administrator'])],
-            loadComponent: () => import('./features/admin/users/users.component').then((m) => m.UsersComponent),
+            loadComponent: () => import('./features/admin/teachers/teachers.component').then((m) => m.TeachersComponent),
           },
           {
             path: 'academico',
@@ -114,6 +131,12 @@ export const routes: Routes = [
             title: 'Pagos | Panel ITS',
             canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
             loadComponent: () => import('./features/admin/payments/payments.component').then((m) => m.PaymentsComponent),
+          },
+          {
+            path: 'calendario',
+            title: 'Calendario | Panel ITS',
+            canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
+            loadComponent: () => import('./features/admin/calendar/calendar-admin.component').then((m) => m.CalendarAdminComponent),
           },
         ],
       },

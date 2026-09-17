@@ -88,15 +88,31 @@ public sealed class SubmitApplicationCommandHandler(
 
         // RN-04: notifica a todos los administradores activos; el fallo del correo NO revierte la solicitud (outbox).
         // Correo administrativo ⇒ se copia (Cc) la dirección de EmailSettings.DefaultCcAddress si está configurada.
+        var ficha = AdmissionFichaHtml.Render(folio, applicant.Value, modalityChoice.Value, clock.UtcNow);
+
         var administrators = await administratorsSource.GetActiveAdministratorsAsync(ct);
         foreach (var admin in administrators)
         {
             await emailSender.SendAsync(
                 admin.Profile.Email.Value,
                 $"Nueva solicitud de admisión: {folio}",
-                $"<p>Se recibió una nueva solicitud de {applicant.Value.FullName} ({folio}).</p>", ct,
+                $"<p>Se recibió una nueva solicitud de {applicant.Value.FullName} ({folio}).</p>{ficha}", ct,
                 cc: notificationRecipients.AdministrativeCc);
         }
+
+        // Confirmación al propio solicitante (plan de control escolar, fase 4): NUNCA lleva Cc
+        // administrativo (IEmailSender: los correos personales no se copian a otra bandeja).
+        await emailSender.SendAsync(
+            applicant.Value.Email.Value,
+            $"Hemos recibido tu solicitud — folio {folio}",
+            $"""
+             <p>Hola {applicant.Value.FullName},</p>
+             <p>Confirmamos la recepción de tu solicitud de admisión al Instituto Teológico Shekinah, con folio <strong>{folio}</strong>.</p>
+             <p><strong>Debes esperar instrucciones por este medio, o acudir a tu sede con esta ficha en mano para continuar tu proceso.</strong></p>
+             {ficha}
+             <p>Si tienes dudas, puedes responder a este correo o acudir directamente a tu sede.</p>
+             """,
+            ct);
 
         return Result.Success(new SubmitApplicationResponse(applicationResult.Value.Id, folio));
     }

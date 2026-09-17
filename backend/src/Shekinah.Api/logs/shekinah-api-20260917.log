@@ -1,0 +1,173 @@
+2026-09-17 17:28:54.755 -06:00 [INF] Seed: cuenta maestra creada (admin@institutoteologicoshekinah.com, matrícula 2).
+2026-09-17 17:28:55.081 -06:00 [INF] Seed: cuenta maestra creada (academia@institutoteologicoshekinah.com, matrícula 3).
+2026-09-17 17:28:55.332 -06:00 [INF] Seed: cuenta maestra creada (dagu_pres@hotmail.com, matrícula 4).
+2026-09-17 17:28:55.404 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 17:28:56.019 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 17:28:56.024 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 17:28:56.026 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 17:28:56.027 -06:00 [INF] Hosting environment: Development
+2026-09-17 17:28:56.029 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 17:34:32.735 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 17:34:32.871 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:34:32.879 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:34:32.883 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 151.1989ms
+2026-09-17 17:36:21.574 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-17 17:36:21.587 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 17:36:21.597 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-17 17:36:21.617 -06:00 [INF] GetCurriculumQuery completado
+2026-09-17 17:36:21.631 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:36:21.640 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:36:21.660 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 17:36:21.668 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 94.5282ms
+2026-09-17 17:36:26.050 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 17:36:26.059 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:36:26.062 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:36:26.064 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 401 0 null 13.3605ms
+2026-09-17 17:36:43.850 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:36:43.857 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:36:43.859 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:36:43.895 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:36:44.202 -06:00 [INF] LoginCommand completado
+2026-09-17 17:36:44.204 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:36:44.206 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:36:44.216 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:36:44.218 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 368.4843ms
+2026-09-17 17:36:53.437 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 63
+2026-09-17 17:36:53.441 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:36:53.506 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:36:53.523 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:36:53.540 -06:00 [WRN] ChangePasswordCommand falló: Validation.Failed - NewPassword: La nueva contraseña debe tener al menos 12 caracteres.
+2026-09-17 17:36:53.544 -06:00 [INF] Setting HTTP status code 400.
+2026-09-17 17:36:53.561 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:36:53.563 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 400 null application/problem+json 126.1594ms
+2026-09-17 17:37:18.868 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:37:18.873 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:18.875 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:18.878 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:37:18.883 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:18.887 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:37:18.904 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 35.6303ms
+2026-09-17 17:37:24.533 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 17:37:24.552 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:37:24.562 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 17:37:24.566 -06:00 [WRN] GetCurrentUserQuery falló: Auth.Required - Se requiere autenticación.
+2026-09-17 17:37:24.572 -06:00 [INF] Setting HTTP status code 401.
+2026-09-17 17:37:24.576 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:37:24.580 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 null application/problem+json 46.5983ms
+2026-09-17 17:37:32.676 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:37:32.681 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:32.682 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:37:32.686 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:37:32.917 -06:00 [INF] LoginCommand completado
+2026-09-17 17:37:32.919 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:37:32.920 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:37:32.923 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:37:32.925 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 248.742ms
+2026-09-17 17:37:44.642 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:37:44.649 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:44.651 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:44.661 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:37:44.663 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:44.665 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:37:44.672 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 29.7819ms
+2026-09-17 17:37:52.613 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 17:37:52.618 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:37:52.627 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 17:37:52.720 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 17:37:52.722 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:37:52.725 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:37:52.727 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:37:52.729 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 116.9664ms
+2026-09-17 17:38:02.627 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:38:02.632 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:38:02.633 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:38:02.640 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:38:02.867 -06:00 [INF] LoginCommand completado
+2026-09-17 17:38:02.869 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:38:02.871 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:38:02.873 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:38:02.875 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 248.142ms
+2026-09-17 17:39:32.414 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 70
+2026-09-17 17:39:32.418 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:39:32.421 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:32.423 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:39:32.424 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:32.426 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:39:32.433 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 18.1753ms
+2026-09-17 17:39:42.778 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:39:42.782 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:39:42.783 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:42.785 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:39:42.787 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:42.790 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:39:42.799 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 21.4339ms

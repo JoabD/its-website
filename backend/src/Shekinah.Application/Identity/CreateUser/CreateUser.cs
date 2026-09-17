@@ -51,9 +51,9 @@ public sealed class CreateUserCommandHandler(
             region = new RegionRef(regionEntity.Id, regionEntity.LegacyCode, regionEntity.Name);
         }
 
-        var address = SharedKernel.Address.Create("N/D", "N/D", "N/D", "N/D").Value;
-        var church = SharedKernel.ChurchInfo.Create("N/D", address, "N/D", "N/D", SharedKernel.MinistryRole.None).Value;
-        var education = SharedKernel.EducationLevel.Create(SharedKernel.SchoolingLevel.Other, "N/D").Value;
+        var address = Address.Create("N/D", "N/D", "N/D", "N/D").Value;
+        var church = ChurchInfo.Create("N/D", address, "N/D", "N/D", MinistryRole.None).Value;
+        var education = EducationLevel.Create(SchoolingLevel.Other, "N/D").Value;
 
         var profileResult = PersonalProfile.Create(
             nameResult.Value, emailResult.Value, phoneResult.Value, command.BirthDate, null, address, church, education, null, null);

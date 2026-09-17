@@ -20,6 +20,21 @@ public static class AuthExtensions
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                // BUG REAL encontrado en producción: por defecto, JwtBearerHandler REMAPEA el claim
+                // "sub" del token a ClaimTypes.NameIdentifier (un URI largo distinto) al validarlo.
+                // JwtTokenService.CreateAccessToken emite el claim como JwtRegisteredClaimNames.Sub
+                // ("sub"), y HttpCurrentUser.UserId lo vuelve a buscar por ese mismo nombre corto
+                // ("sub") — pero como el handler ya lo remapeó, esa búsqueda SIEMPRE devolvía null,
+                // para CUALQUIER usuario autenticado, en todo el sistema. La mayoría de los handlers
+                // no se notaba porque usan "currentUser.UserId ?? "system"" como fallback silencioso
+                // (por ejemplo en avisos, pagos, calendario); pero /auth/change-password hace
+                // "currentUser.UserId!" sin ese fallback, así que ObjectId.Parse(null) explotaba con
+                // una excepción no controlada → 500 "Failure.Unexpected" (justo el que reportó el
+                // usuario al intentar cambiar su contraseña). Desactivar el remapeo automático hace
+                // que el claim llegue tal cual se emitió, consistente con lo que todo el código ya
+                // esperaba.
+                options.MapInboundClaims = false;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,

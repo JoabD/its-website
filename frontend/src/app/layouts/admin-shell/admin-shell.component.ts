@@ -11,13 +11,16 @@ interface NavItem {
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
+  { label: 'Avisos', path: '/admin/avisos' },
   { label: 'Inscripciones', path: '/admin/inscripciones', roles: ['Administrator'] },
-  { label: 'Usuarios', path: '/admin/usuarios', roles: ['Administrator'] },
+  { label: 'Alumnos', path: '/admin/alumnos', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+  { label: 'Docentes', path: '/admin/docentes', roles: ['Administrator'] },
   { label: 'Académico', path: '/admin/academico', roles: ['Administrator'] },
   { label: 'Calificaciones', path: '/admin/calificaciones', roles: ['Teacher', 'Administrator'] },
   { label: 'Mis materias', path: '/admin/mis-materias', roles: ['Student'] },
   { label: 'Mi información', path: '/admin/mi-perfil', roles: ['Student'] },
   { label: 'Pagos', path: '/admin/pagos', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+  { label: 'Calendario', path: '/admin/calendario', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
 ];
 
 @Component({

@@ -37,6 +37,9 @@ import { LoginModalService } from '../../core/auth/login-modal.service';
           <li>
             <a routerLink="/programas" routerLinkActive="activo" (click)="closeMenu()">Catálogo de Materias</a>
           </li>
+          <li>
+            <a routerLink="/calendario" routerLinkActive="activo" (click)="closeMenu()">Calendario</a>
+          </li>
         </ul>
 
         <div id="menu-acceder">
@@ -78,6 +81,7 @@ import { LoginModalService } from '../../core/auth/login-modal.service';
               <li><a routerLink="/inscripcion">Inscripción</a></li>
               <li><a routerLink="/planes">Planes de Estudio</a></li>
               <li><a routerLink="/programas">Catálogo de Materias</a></li>
+              <li><a routerLink="/calendario">Calendario</a></li>
               <li><a href="javascript:void(0)" (click)="openLogin()">Acceder</a></li>
             </ul>
           </div>

@@ -5,7 +5,9 @@ using Shekinah.Application.Billing.ImportPayments;
 using Shekinah.Application.Identity.RefreshToken;
 using Shekinah.Domain.Academics;
 using Shekinah.Domain.Admissions;
+using Shekinah.Domain.Announcements;
 using Shekinah.Domain.Billing;
+using Shekinah.Domain.Calendar;
 using Shekinah.Domain.Catalog;
 using Shekinah.Domain.Common;
 using Shekinah.Domain.Identity;
@@ -58,6 +60,8 @@ public static class DependencyInjection
         services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IPaymentNoticeRepository, PaymentNoticeRepository>();
+        services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+        services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 
         services.AddSingleton<IMongoMigration, M001_CreateIndexesAndValidators>();
         services.AddScoped<MigrationRunner>();
