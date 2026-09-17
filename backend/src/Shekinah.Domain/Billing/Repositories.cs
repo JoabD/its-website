@@ -10,6 +10,10 @@ public interface IPaymentRepository
 
     Task AddAsync(Payment payment, CancellationToken ct);
 
+    /// <summary>Revierte un pago (solo se invoca para <see cref="PaymentSource.Manual"/> — la
+    /// integridad de pagos importados/legado/en línea se protege en el handler, nunca aquí).</summary>
+    Task DeleteAsync(string paymentId, CancellationToken ct);
+
     Task<PaymentImportBatch> RegisterImportBatchAsync(string fileName, string uploadedByUserId, int totalRows, CancellationToken ct);
 
     Task CompleteImportBatchAsync(string batchId, int importedRows, IReadOnlyList<PaymentImportRowError> errors, CancellationToken ct);

@@ -23,6 +23,9 @@ public sealed class PaymentRepository(MongoContext context) : IPaymentRepository
 
     public async Task AddAsync(Payment payment, CancellationToken ct) => await context.Payments.InsertOneAsync(ToBson(payment), cancellationToken: ct);
 
+    public async Task DeleteAsync(string paymentId, CancellationToken ct) =>
+        await context.Payments.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(paymentId)), ct);
+
     public async Task<PaymentImportBatch> RegisterImportBatchAsync(string fileName, string uploadedByUserId, int totalRows, CancellationToken ct)
     {
         var id = ObjectId.GenerateNewId();

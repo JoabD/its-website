@@ -32,8 +32,8 @@ export class ApiClient {
     return this.http.put<T>(`${API_BASE_URL}${path}`, body);
   }
 
-  delete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(`${API_BASE_URL}${path}`);
+  delete<T>(path: string, params?: QueryParams): Observable<T> {
+    return this.http.delete<T>(`${API_BASE_URL}${path}`, { params: this.toHttpParams(params) });
   }
 
   postForm<T>(path: string, formData: FormData): Observable<T> {
