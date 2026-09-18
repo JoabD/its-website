@@ -951,3 +951,60 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-09-17 20:08:20.599 -06:00 [INF] Writing value of type 'List`1' as Json.
 2026-09-17 20:08:20.602 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
 2026-09-17 20:08:20.604 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 18.0092ms
+2026-09-17 21:01:57.144 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 21:01:57.743 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 21:01:57.746 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 21:01:57.751 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 21:01:57.755 -06:00 [INF] Hosting environment: Development
+2026-09-17 21:01:57.759 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 21:01:58.055 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 21:01:58.235 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 21:01:58.245 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 21:01:58.250 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 202.7551ms
+2026-09-17 21:02:39.271 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 80
+2026-09-17 21:02:39.281 -06:00 [INF] CORS policy execution successful.
+2026-09-17 21:02:39.290 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 21:02:39.332 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 21:02:39.955 -06:00 [INF] LoginCommand completado
+2026-09-17 21:02:39.964 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 21:02:39.971 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 21:02:39.987 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 21:02:39.995 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 724.537ms
+2026-09-17 21:02:40.023 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 21:02:40.115 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 21:02:40.119 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 21:02:40.129 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 21:02:40.131 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 21:02:40.134 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 21:02:40.143 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 21:02:40.146 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 123.5936ms
+2026-09-17 21:02:46.895 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 69
+2026-09-17 21:02:46.900 -06:00 [INF] CORS policy execution successful.
+2026-09-17 21:02:46.902 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 21:02:46.914 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 21:02:47.403 -06:00 [INF] ChangePasswordCommand completado
+2026-09-17 21:02:47.407 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 21:02:47.414 -06:00 [INF] Writing value of type 'Unit' as Json.
+2026-09-17 21:02:47.422 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 21:02:47.425 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 200 null application/json; charset=utf-8 529.7432ms
+2026-09-17 21:02:47.433 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 21:02:47.438 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 21:02:47.442 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 21:02:47.445 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 21:02:47.447 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 21:02:47.450 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 21:02:47.452 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 21:02:47.455 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 21.5945ms
+2026-09-17 21:19:41.918 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 21:19:41.928 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 3:17:39 AM', Current time (UTC): '9/18/2026 3:19:41 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-09-17 21:19:41.946 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 3:17:39 AM', Current time (UTC): '9/18/2026 3:19:41 AM'.
+2026-09-17 21:19:41.950 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 21:19:41.954 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 21:19:41.956 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 38.0822ms
