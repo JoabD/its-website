@@ -23,7 +23,15 @@ public static class AuthEndpoints
 
         group.MapPost("/change-password", async (ChangePasswordRequest request, ICurrentUser currentUser, IDispatcher dispatcher, CancellationToken ct) =>
         {
-            var command = new ChangePasswordCommand(currentUser.UserId!, request.CurrentPassword, request.NewPassword);
+            // Defensivo (mismo patrón que GetCurrentUser/UpdateMyProfile): si por cualquier razón
+            // faltara el claim del usuario, respondemos 401 controlado en vez de dejar que
+            // ObjectId.Parse(null) reviente más abajo con un 500 genérico.
+            if (currentUser.UserId is null)
+            {
+                return Results.Problem(statusCode: StatusCodes.Status401Unauthorized, title: "Auth.Required", detail: "Se requiere autenticación.");
+            }
+
+            var command = new ChangePasswordCommand(currentUser.UserId, request.CurrentPassword, request.NewPassword);
             return (await dispatcher.SendAsync(command, ct)).ToApiResult();
         }).RequireAuthorization();
 

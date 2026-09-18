@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { LoginModalService } from '../../core/auth/login-modal.service';
+import { AuthStore } from '../../core/auth/auth.store';
 
 /**
  * Header + footer portados 1:1 desde resources/views/partials/header.blade.php y
@@ -36,10 +38,19 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <li>
             <a routerLink="/programas" routerLinkActive="activo" (click)="closeMenu()">Catálogo de Materias</a>
           </li>
+          <li>
+            <a routerLink="/calendario" routerLinkActive="activo" (click)="closeMenu()">Calendario</a>
+          </li>
         </ul>
 
         <div id="menu-acceder">
-          <a routerLink="/admin/login" id="btn-acceder">Acceder</a>
+          @if (auth.isAuthenticated()) {
+            <a routerLink="/admin" id="btn-acceder" class="btn-acceder-panel">
+              <span class="avatar-mini">{{ initials() }}</span> Ir al panel
+            </a>
+          } @else {
+            <a href="javascript:void(0)" id="btn-acceder" (click)="openLogin()">Acceder</a>
+          }
         </div>
 
         <button
@@ -77,7 +88,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
               <li><a routerLink="/inscripcion">Inscripción</a></li>
               <li><a routerLink="/planes">Planes de Estudio</a></li>
               <li><a routerLink="/programas">Catálogo de Materias</a></li>
-              <li><a routerLink="/admin/login">Acceder</a></li>
+              <li><a routerLink="/calendario">Calendario</a></li>
+              @if (auth.isAuthenticated()) {
+                <li><a routerLink="/admin">Ir al panel</a></li>
+              } @else {
+                <li><a href="javascript:void(0)" (click)="openLogin()">Acceder</a></li>
+              }
             </ul>
           </div>
           <div>
@@ -98,6 +114,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   `,
 })
 export class PublicShellComponent implements AfterViewInit, OnDestroy {
+  private readonly loginModal = inject(LoginModalService);
+  protected readonly auth = inject(AuthStore);
+
   protected readonly currentYear = new Date().getFullYear();
   protected readonly menuOpen = signal(false);
   protected readonly scrolled = signal(false);
@@ -111,6 +130,18 @@ export class PublicShellComponent implements AfterViewInit, OnDestroy {
 
   protected closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  protected openLogin(): void {
+    this.closeMenu();
+    this.loginModal.open();
+  }
+
+  protected initials(): string {
+    const name = this.auth.user()?.fullName?.trim();
+    if (!name) return '?';
+    const parts = name.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || name[0]!.toUpperCase();
   }
 
   @HostListener('window:scroll')

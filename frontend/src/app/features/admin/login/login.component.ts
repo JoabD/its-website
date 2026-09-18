@@ -4,7 +4,7 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
- * RN-07: login por matrícula (número) + password; bloqueo tras intentos fallidos lo decide
+ * RN-07: login por correo electrónico + password; bloqueo tras intentos fallidos lo decide
  * siempre el backend — este formulario solo refleja el mensaje de error que venga del dominio.
  */
 @Component({
@@ -28,8 +28,8 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
         <form [formGroup]="form" class="mt-8 space-y-4" (ngSubmit)="submit()">
           <label class="flex flex-col gap-1.5 text-sm">
-            <span class="font-medium text-slate-700">Matrícula</span>
-            <input formControlName="enrollmentNumber" type="number" class="shk-field" placeholder="Ej. 1024" />
+            <span class="font-medium text-slate-700">Correo electrónico</span>
+            <input formControlName="email" type="email" class="shk-field" placeholder="correo@ejemplo.com" />
           </label>
           <label class="flex flex-col gap-1.5 text-sm">
             <span class="font-medium text-slate-700">Contraseña</span>
@@ -72,13 +72,13 @@ export class LoginComponent {
   protected readonly auth = inject(AuthStore);
 
   protected readonly form = this.fb.group({
-    enrollmentNumber: this.fb.control(0, [Validators.required, Validators.min(1)]),
+    email: this.fb.control('', [Validators.required, Validators.email]),
     password: this.fb.control('', Validators.required),
   });
 
   protected submit(): void {
     if (this.form.invalid) return;
-    const { enrollmentNumber, password } = this.form.getRawValue();
-    this.auth.login({ enrollmentNumber, password });
+    const { email, password } = this.form.getRawValue();
+    this.auth.login({ email, password });
   }
 }

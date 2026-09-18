@@ -10,7 +10,7 @@
  * regenerarlo de verdad y dejar que cualquier divergencia rompa la compilación (ese es el objetivo).
  */
 
-export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator';
+export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator' | 'RegionalSecretary';
 export type ModalityDto = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatusDto = 'Pending' | 'Approved' | 'Rejected';
 export type SchoolingLevelDto = 'Primary' | 'Secondary' | 'HighSchool' | 'Other';
@@ -99,6 +99,7 @@ export interface SubmitApplicationRequestDto {
   modality: ModalityDto;
   requestedRegionId: string | null;
   onlineReason: string | null;
+  recaptchaToken: string;
 }
 
 export interface SubmitApplicationResponseDto {
@@ -184,4 +185,46 @@ export interface StudentPaymentRowDto {
   regionName: string;
   paidByMonth: Record<string, boolean>;
   monthsDue: string[];
+}
+
+/** Fase 6 del plan de control escolar: avisos institucionales. */
+export interface AnnouncementListItemDto {
+  id: string;
+  title: string;
+  body: string;
+  publishedAtUtc: string;
+}
+
+/** Fase 7 del plan de control escolar: eventos del calendario institucional, público. */
+export interface CalendarEventDto {
+  id: string;
+  title: string;
+  description: string | null;
+  startAtUtc: string;
+  endAtUtc: string | null;
+  regionId: string | null;
+  regionName: string | null;
+}
+
+/** Fase 8 del plan de control escolar: Kardex académico del alumno. */
+export interface KardexSubjectRowDto {
+  subjectName: string;
+  termNumber: number | null;
+  grade: number | null;
+  status: string;
+  periodCode: string;
+}
+
+export interface KardexResponseDto {
+  studentId: string;
+  enrollmentNumber: number;
+  fullName: string;
+  email: string;
+  regionName: string | null;
+  modality: ModalityDto | null;
+  currentTerm: number | null;
+  enrolledAtUtc: string;
+  isGraduated: boolean;
+  averageGrade: number | null;
+  subjects: KardexSubjectRowDto[];
 }

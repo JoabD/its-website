@@ -4,10 +4,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApiClient } from '../../../core/http/api-client';
+import { RecaptchaService } from '../../../core/security/recaptcha.service';
 import { RegionListItemDto, SubmitApplicationRequestDto, SubmitApplicationResponseDto } from '../../../api/schema';
 import { Modality, MODALITY_LABELS } from '../../../domain/models';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { AdmissionFormModel } from './admission-form.model';
+
+/** Debe coincidir EXACTAMENTE con RecaptchaActions.SubmitApplication en el backend (SubmitApplication.cs):
+ * el backend rechaza cualquier token cuyo "action" no sea este. */
+const RECAPTCHA_ACTION = 'submit_application';
 
 type WizardStage = 'form' | 'summary' | 'confirmation';
 
@@ -73,7 +78,7 @@ interface FormStepDef {
           Paso {{ formStepIndex() + 1 }} de {{ formSteps.length }} &middot; {{ currentStep().label }}
         </p>
 
-        <form (ngSubmit)="goNext()">
+        <form (submit)="onSubmit($event)">
           @switch (currentStep().key) {
             @case ('personal') {
               <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm md:p-8" [formGroup]="form.personal">
@@ -321,6 +326,9 @@ interface FormStepDef {
           <p class="mt-1 text-sm text-slate-600">{{ form.personal.controls.email.value }}</p>
           <p class="mt-1 text-sm text-slate-600">{{ form.personal.controls.phone.value }}</p>
           <p class="mt-1 text-sm text-slate-600">{{ form.church.controls.churchName.value }}</p>
+          @if (submitError()) {
+            <p class="mt-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">{{ submitError() }}</p>
+          }
           <div class="mt-6 flex gap-3">
             <shk-button variant="secondary" (click)="editFromSummary()">Editar</shk-button>
             <shk-button [loading]="submitting()" (click)="submit()">Confirmar y enviar</shk-button>
@@ -376,9 +384,11 @@ interface FormStepDef {
 export class AdmissionFormComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly api = inject(ApiClient);
+  private readonly recaptcha = inject(RecaptchaService);
 
   protected readonly stage = signal<WizardStage>('form');
   protected readonly submitting = signal(false);
+  protected readonly submitError = signal('');
   protected readonly folio = signal('');
 
   protected readonly formSteps: readonly FormStepDef[] = [
@@ -456,6 +466,16 @@ export class AdmissionFormComponent {
     return this.form[this.currentStep().key];
   }
 
+  /**
+   * El <form> no tiene [formGroup] en el propio tag (cada paso aplica su FormGroup a un <div>
+   * interno distinto), así que Angular no intercepta el submit nativo automáticamente: hay que
+   * frenar la recarga de página a mano antes de avanzar de paso.
+   */
+  protected onSubmit(event: Event): void {
+    event.preventDefault();
+    this.goNext();
+  }
+
   /** Avanza al siguiente paso solo si el grupo del paso actual es válido; si no, marca los campos. */
   protected goNext(): void {
     const group = this.currentGroup();
@@ -491,10 +511,21 @@ export class AdmissionFormComponent {
     this.formStepIndex.set(0);
   }
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     this.submitting.set(true);
+    this.submitError.set('');
+
+    let recaptchaToken: string;
+    try {
+      recaptchaToken = await this.recaptcha.execute(RECAPTCHA_ACTION);
+    } catch {
+      this.submitting.set(false);
+      this.submitError.set('No pudimos verificar que no eres un robot. Revisa tu conexión a internet e intenta de nuevo.');
+      return;
+    }
 
     const request: SubmitApplicationRequestDto = {
+      recaptchaToken,
       fullName: this.form.personal.controls.fullName.value,
       birthDate: this.form.personal.controls.birthDate.value,
       maritalStatus: this.form.personal.controls.maritalStatus.value,
@@ -529,7 +560,11 @@ export class AdmissionFormComponent {
         this.stage.set('confirmation');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: (error: unknown) => {
+        this.submitting.set(false);
+        const detail = (error as { error?: { detail?: string } })?.error?.detail;
+        this.submitError.set(detail ?? 'No se pudo enviar tu solicitud. Intenta de nuevo en unos minutos.');
+      },
     });
   }
 }

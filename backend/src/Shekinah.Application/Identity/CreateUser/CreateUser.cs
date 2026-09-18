@@ -20,7 +20,7 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
     {
         RuleFor(x => x.FullName).NotEmpty();
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.RegionId).NotEmpty().When(x => x.Role is UserRole.RegionalCoordinator);
+        RuleFor(x => x.RegionId).NotEmpty().When(x => x.Role is UserRole.RegionalCoordinator or UserRole.RegionalSecretary);
     }
 }
 

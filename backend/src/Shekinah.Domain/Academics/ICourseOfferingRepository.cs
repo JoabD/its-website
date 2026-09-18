@@ -12,6 +12,9 @@ public interface ICourseOfferingRepository
 
     Task<IReadOnlyList<CourseOffering>> GetByStudentAndPeriodAsync(string studentId, string periodId, CancellationToken ct);
 
+    /// <summary>Historial completo del alumno, todos los periodos — usado por el Kardex (fase 8).</summary>
+    Task<IReadOnlyList<CourseOffering>> GetByStudentAsync(string studentId, CancellationToken ct);
+
     Task AddAsync(CourseOffering offering, CancellationToken ct);
 
     Task UpdateAsync(CourseOffering offering, CancellationToken ct);

@@ -32,12 +32,20 @@ export class ApiClient {
     return this.http.put<T>(`${API_BASE_URL}${path}`, body);
   }
 
-  delete<T>(path: string): Observable<T> {
-    return this.http.delete<T>(`${API_BASE_URL}${path}`);
+  delete<T>(path: string, params?: QueryParams): Observable<T> {
+    return this.http.delete<T>(`${API_BASE_URL}${path}`, { params: this.toHttpParams(params) });
   }
 
   postForm<T>(path: string, formData: FormData): Observable<T> {
     return this.http.post<T>(`${API_BASE_URL}${path}`, formData);
+  }
+
+  /**
+   * Fase 8 (Kardex): descarga binaria (PDF) que sí necesita el header Authorization, así que no
+   * puede ser un <a href> plano — se pide como blob autenticado y se dispara la descarga desde JS.
+   */
+  getBlob(path: string, params?: QueryParams): Observable<Blob> {
+    return this.http.get(`${API_BASE_URL}${path}`, { params: this.toHttpParams(params), responseType: 'blob' });
   }
 
   private toHttpParams(params?: QueryParams): HttpParams {
