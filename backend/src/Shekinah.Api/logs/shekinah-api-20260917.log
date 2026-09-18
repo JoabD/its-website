@@ -943,3 +943,11 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-09-17 20:07:40.094 -06:00 [INF] Writing value of type 'List`1' as Json.
 2026-09-17 20:07:40.097 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
 2026-09-17 20:07:40.099 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 19.3689ms
+2026-09-17 20:08:20.586 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:08:20.590 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:08:20.592 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:08:20.594 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:08:20.596 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:08:20.599 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:08:20.602 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:08:20.604 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 18.0092ms
