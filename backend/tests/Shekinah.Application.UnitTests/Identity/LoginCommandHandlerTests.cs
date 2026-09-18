@@ -14,15 +14,15 @@ namespace Shekinah.Application.UnitTests.Identity;
 /// </summary>
 public class LoginCommandHandlerTests
 {
-    [Fact(DisplayName = "RN_07_Login_con_matricula_inexistente_no_revela_si_existe")]
-    public async Task RN_07_Matricula_inexistente_no_revela_informacion()
+    [Fact(DisplayName = "RN_07_Login_con_correo_inexistente_no_revela_si_existe")]
+    public async Task RN_07_Correo_inexistente_no_revela_informacion()
     {
         var users = Substitute.For<IUserRepository>();
-        users.GetByEnrollmentNumberAsync(Arg.Any<EnrollmentNumber>(), Arg.Any<CancellationToken>()).Returns((User?)null);
+        users.GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns((User?)null);
 
         var handler = new LoginCommandHandler(users, Substitute.For<Abstractions.IPasswordHasher>(), Substitute.For<Abstractions.ITokenService>(), new FixedClock());
 
-        var result = await handler.HandleAsync(new LoginCommand(9999, "cualquiera"), CancellationToken.None);
+        var result = await handler.HandleAsync(new LoginCommand("inexistente@example.com", "cualquiera"), CancellationToken.None);
 
         result.IsFailure.ShouldBeTrue();
         result.Error.Code.ShouldBe("Auth.InvalidCredentials");

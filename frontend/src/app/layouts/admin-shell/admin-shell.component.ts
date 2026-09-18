@@ -1,56 +1,157 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthStore } from '../../core/auth/auth.store';
-import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { ROLE_LABELS } from '../../domain/models';
 
 interface NavItem {
   readonly label: string;
   readonly path: string;
+  readonly icon: string;
   readonly roles?: readonly string[];
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Inscripciones', path: '/admin/inscripciones', roles: ['Administrator'] },
-  { label: 'Usuarios', path: '/admin/usuarios', roles: ['Administrator'] },
-  { label: 'Académico', path: '/admin/academico', roles: ['Administrator'] },
-  { label: 'Calificaciones', path: '/admin/calificaciones', roles: ['Teacher', 'Administrator'] },
-  { label: 'Mis materias', path: '/admin/mis-materias', roles: ['Student'] },
-  { label: 'Mi información', path: '/admin/mi-perfil', roles: ['Student'] },
-  { label: 'Pagos', path: '/admin/pagos', roles: ['Administrator', 'RegionalCoordinator'] },
+  { label: 'Inicio', path: '/admin', icon: 'bi-house-door' },
+  { label: 'Avisos', path: '/admin/avisos', icon: 'bi-megaphone' },
+  { label: 'Inscripciones', path: '/admin/inscripciones', icon: 'bi-journal-check', roles: ['Administrator'] },
+  { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+  { label: 'Docentes', path: '/admin/docentes', icon: 'bi-person-workspace', roles: ['Administrator'] },
+  { label: 'Académico', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator'] },
+  { label: 'Calificaciones', path: '/admin/calificaciones', icon: 'bi-clipboard-check', roles: ['Teacher', 'Administrator'] },
+  { label: 'Mis materias', path: '/admin/mis-materias', icon: 'bi-book', roles: ['Student'] },
+  { label: 'Mi Kardex', path: '/admin/mi-kardex', icon: 'bi-file-earmark-text', roles: ['Student'] },
+  { label: 'Mi información', path: '/admin/mi-perfil', icon: 'bi-person-circle', roles: ['Student'] },
+  { label: 'Pagos', path: '/admin/pagos', icon: 'bi-cash-coin', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+  { label: 'Calendario', path: '/admin/calendario', icon: 'bi-calendar-event', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+  { label: 'Kardex', path: '/admin/kardex', icon: 'bi-file-earmark-text', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
 ];
 
+/**
+ * Rediseño del panel admin (feedback del usuario: "se ve muy simple y fea, debe ser algo más
+ * elegante, digno de un dashboard"). Cambios de fondo, no solo estéticos:
+ * - "Volver al sitio" explícito: antes no había ninguna forma de regresar al sitio público desde
+ *   el panel salvo editando la URL a mano.
+ * - Menú de usuario (avatar + nombre + rol) con "Cambiar contraseña" / "Ver sitio público" /
+ *   "Cerrar sesión" — el patrón estándar de cualquier dashboard, en vez de un botón suelto.
+ * - Sidebar oscura con iconos Bootstrap Icons (ya cargados globalmente en index.html) en vez de
+ *   una lista de texto plano; colapsable en móvil.
+ */
 @Component({
   selector: 'shk-admin-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, ButtonComponent],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   template: `
     <div class="flex min-h-screen bg-slate-50">
-      <aside class="w-64 shrink-0 border-r border-slate-200 bg-white p-4">
-        <div class="mb-6 text-lg font-bold text-[var(--shk-color-primary)]">Panel ITS</div>
-        <nav class="flex flex-col gap-1 text-sm">
+      <!-- Overlay móvil al abrir el sidebar -->
+      @if (sidebarOpen()) {
+        <div class="fixed inset-0 z-30 bg-slate-900/40 lg:hidden" (click)="sidebarOpen.set(false)"></div>
+      }
+
+      <aside
+        class="fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col bg-[linear-gradient(180deg,var(--shk-color-primary),var(--shk-color-primary-dark))]
+               text-white transition-transform duration-200 lg:static lg:translate-x-0"
+        [class.-translate-x-full]="!sidebarOpen()"
+      >
+        <div class="flex items-center gap-3 px-5 py-6">
+          <img src="/img/shekina-logo.png" alt="Logo" class="h-9 w-9 rounded-full bg-white/10 object-contain p-1" />
+          <div class="leading-tight">
+            <div class="font-[var(--shk-font-heading)] text-sm font-bold">Instituto Shekinah</div>
+            <div class="text-[11px] uppercase tracking-wide text-[var(--shk-color-accent-light)]">Panel de control escolar</div>
+          </div>
+        </div>
+
+        <nav class="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
           @for (item of visibleItems(); track item.path) {
             <a
               [routerLink]="item.path"
-              routerLinkActive="bg-slate-100 font-semibold text-[var(--shk-color-primary)]"
-              class="rounded-[var(--shk-radius)] px-3 py-2 text-slate-700 hover:bg-slate-100"
+              [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+              routerLinkActive="bg-white/10 text-white shadow-inner"
+              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/5 hover:text-white"
+              (click)="sidebarOpen.set(false)"
             >
+              <i class="bi {{ item.icon }} text-base text-[var(--shk-color-accent-light)] group-hover:text-[var(--shk-color-accent)]"></i>
               {{ item.label }}
             </a>
           }
         </nav>
+
+        <div class="border-t border-white/10 px-3 py-4">
+          <a
+            routerLink="/"
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/5 hover:text-white"
+          >
+            <i class="bi bi-box-arrow-left text-base text-[var(--shk-color-accent-light)]"></i>
+            Volver al sitio público
+          </a>
+        </div>
       </aside>
 
-      <div class="flex flex-1 flex-col">
-        <header class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
-          <div class="text-sm text-slate-500">
-            @if (auth.role(); as role) {
-              {{ roleLabel(role) }}
-            }
+      <div class="flex min-h-screen flex-1 flex-col lg:pl-0">
+        <header class="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur sm:px-6">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+              (click)="sidebarOpen.set(true)"
+              aria-label="Abrir menú"
+            >
+              <i class="bi bi-list text-xl"></i>
+            </button>
+            <div>
+              <div class="font-[var(--shk-font-heading)] text-base font-bold text-slate-900">{{ pageTitle() }}</div>
+              <div class="text-xs text-slate-400">Instituto Teológico Shekinah</div>
+            </div>
           </div>
-          <shk-button variant="ghost" (click)="auth.logout()">Cerrar sesión</shk-button>
+
+          <div class="flex items-center gap-2">
+            <a
+              routerLink="/"
+              class="hidden items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-[var(--shk-color-accent)] hover:text-[var(--shk-color-primary)] sm:flex"
+            >
+              <i class="bi bi-globe2"></i> Ver sitio público
+            </a>
+
+            <div class="relative" #userMenuEl>
+              <button
+                type="button"
+                class="flex items-center gap-2 rounded-full border border-slate-200 py-1.5 pl-1.5 pr-3 text-sm transition hover:border-[var(--shk-color-accent)]"
+                (click)="userMenuOpen.set(!userMenuOpen())"
+              >
+                <span class="grid h-8 w-8 place-items-center rounded-full bg-[var(--shk-color-primary)] text-xs font-bold text-white">
+                  {{ initials() }}
+                </span>
+                <span class="hidden text-left leading-tight sm:block">
+                  <span class="block text-sm font-medium text-slate-800">{{ auth.user()?.fullName ?? 'Mi cuenta' }}</span>
+                  <span class="block text-[11px] text-slate-400">{{ auth.role() ? roleLabel(auth.role()!) : '' }}</span>
+                </span>
+                <i class="bi bi-chevron-down text-xs text-slate-400"></i>
+              </button>
+
+              @if (userMenuOpen()) {
+                <div class="absolute right-0 z-30 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg">
+                  <div class="border-b border-slate-100 px-4 py-3 sm:hidden">
+                    <div class="text-sm font-medium text-slate-800">{{ auth.user()?.fullName ?? 'Mi cuenta' }}</div>
+                    <div class="text-xs text-slate-400">{{ auth.role() ? roleLabel(auth.role()!) : '' }}</div>
+                  </div>
+                  <a routerLink="/admin/cambiar-password" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" (click)="userMenuOpen.set(false)">
+                    <i class="bi bi-key text-slate-400"></i> Cambiar contraseña
+                  </a>
+                  <a routerLink="/" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 sm:hidden" (click)="userMenuOpen.set(false)">
+                    <i class="bi bi-globe2 text-slate-400"></i> Ver sitio público
+                  </a>
+                  <button
+                    type="button"
+                    class="flex w-full items-center gap-2.5 border-t border-slate-100 px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50"
+                    (click)="logout()"
+                  >
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
         </header>
 
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
           <router-outlet />
         </main>
       </div>
@@ -59,13 +160,45 @@ const NAV_ITEMS: readonly NavItem[] = [
 })
 export class AdminShellComponent {
   protected readonly auth = inject(AuthStore);
+  private readonly userMenuEl = viewChild<ElementRef<HTMLElement>>('userMenuEl');
+
+  protected readonly sidebarOpen = signal(false);
+  protected readonly userMenuOpen = signal(false);
 
   protected visibleItems(): readonly NavItem[] {
     const role = this.auth.role();
     return NAV_ITEMS.filter((item) => !item.roles || (role !== null && item.roles.includes(role)));
   }
 
+  protected pageTitle(): string {
+    const role = this.auth.role();
+    if (role === 'Student') return 'Mi espacio';
+    return 'Panel administrativo';
+  }
+
   protected roleLabel(role: string): string {
     return ROLE_LABELS[role as keyof typeof ROLE_LABELS] ?? role;
+  }
+
+  protected initials(): string {
+    const name = this.auth.user()?.fullName?.trim();
+    if (!name) return '?';
+    const parts = name.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || name[0]!.toUpperCase();
+  }
+
+  protected logout(): void {
+    this.userMenuOpen.set(false);
+    this.auth.logout();
+  }
+
+  /** Cierra el menú de usuario al hacer clic fuera de él (patrón estándar de dropdown). */
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (!this.userMenuOpen()) return;
+    const container = this.userMenuEl()?.nativeElement;
+    if (container && !container.contains(event.target as Node)) {
+      this.userMenuOpen.set(false);
+    }
   }
 }

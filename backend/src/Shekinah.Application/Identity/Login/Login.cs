@@ -6,9 +6,9 @@ using Shekinah.Domain.SharedKernel;
 
 namespace Shekinah.Application.Identity.Login;
 
-/// <summary>RN-07: login por matrícula + contraseña. [anónimo] en el contrato §7.</summary>
+/// <summary>RN-07: login por correo electrónico + contraseña. [anónimo] en el contrato §7.</summary>
 [AllowAnonymousUseCase]
-public sealed record LoginCommand(int EnrollmentNumber, string Password) : ICommand<LoginResponse>;
+public sealed record LoginCommand(string Email, string Password) : ICommand<LoginResponse>;
 
 public sealed record LoginResponse(string AccessToken, DateTime AccessTokenExpiresAtUtc, string RefreshToken, string UserId, UserRole Role, bool MustChangePassword);
 
@@ -16,7 +16,7 @@ public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
     public LoginCommandValidator()
     {
-        RuleFor(x => x.EnrollmentNumber).GreaterThan(0);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.Password).NotEmpty();
     }
 }
@@ -24,23 +24,17 @@ public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
 /// <summary>
 /// RN-07: se rechaza si no existe, la contraseña no coincide, está inactivo o bloqueado por
 /// morosidad. El mensaje de credenciales inválidas NUNCA revela cuál de las dos cosas falló
-/// (no revela si la matrícula existe).
+/// (no revela si el correo existe).
 /// </summary>
 public sealed class LoginCommandHandler(
     IUserRepository users, IPasswordHasher passwordHasher, ITokenService tokenService, IClock clock)
     : ICommandHandler<LoginCommand, LoginResponse>
 {
-    private static readonly Error InvalidCredentials = Error.Unauthorized("Auth.InvalidCredentials", "Matrícula o contraseña incorrecta.");
+    private static readonly Error InvalidCredentials = Error.Unauthorized("Auth.InvalidCredentials", "Correo o contraseña incorrectos.");
 
     public async Task<Result<LoginResponse>> HandleAsync(LoginCommand command, CancellationToken ct)
     {
-        var enrollmentNumberResult = EnrollmentNumber.Create(command.EnrollmentNumber);
-        if (enrollmentNumberResult.IsFailure)
-        {
-            return Result.Failure<LoginResponse>(InvalidCredentials);
-        }
-
-        var user = await users.GetByEnrollmentNumberAsync(enrollmentNumberResult.Value, ct);
+        var user = await users.GetByEmailAsync(command.Email.Trim().ToLowerInvariant(), ct);
         if (user is null)
         {
             return Result.Failure<LoginResponse>(InvalidCredentials);

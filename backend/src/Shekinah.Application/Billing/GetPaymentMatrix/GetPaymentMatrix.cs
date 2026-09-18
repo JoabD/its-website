@@ -9,7 +9,7 @@ namespace Shekinah.Application.Billing.GetPaymentMatrix;
 /// filtro por su región AQUÍ, en el handler — es inviolable desde el cliente (spec técnico §3.5:
 /// read model detrás de un pipeline de agregación de Mongo, la lógica de negocio no vive ahí).
 /// </summary>
-[RequireRole(UserRole.Administrator, UserRole.RegionalCoordinator)]
+[RequireRole(UserRole.Administrator, UserRole.RegionalCoordinator, UserRole.RegionalSecretary)]
 public sealed record GetPaymentMatrixQuery(string PeriodId, string? RegionId, int Page, int PageSize) : IQuery<PagedResult<StudentPaymentRow>>;
 
 public sealed class GetPaymentMatrixQueryHandler(IPaymentMatrixReader reader, IRegionScopeResolver regionScope)

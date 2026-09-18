@@ -18,7 +18,7 @@ export function asOfferingId(value: string): OfferingId {
   return value as OfferingId;
 }
 
-export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator';
+export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator' | 'RegionalSecretary';
 export type Modality = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected';
 
@@ -33,6 +33,7 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   Teacher: 'Profesor',
   Administrator: 'Administrador',
   RegionalCoordinator: 'Coordinador regional',
+  RegionalSecretary: 'Secretario regional',
 };
 
 export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {

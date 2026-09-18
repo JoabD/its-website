@@ -1,0 +1,953 @@
+2026-09-17 17:28:54.755 -06:00 [INF] Seed: cuenta maestra creada (admin@institutoteologicoshekinah.com, matrícula 2).
+2026-09-17 17:28:55.081 -06:00 [INF] Seed: cuenta maestra creada (academia@institutoteologicoshekinah.com, matrícula 3).
+2026-09-17 17:28:55.332 -06:00 [INF] Seed: cuenta maestra creada (dagu_pres@hotmail.com, matrícula 4).
+2026-09-17 17:28:55.404 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 17:28:56.019 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 17:28:56.024 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 17:28:56.026 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 17:28:56.027 -06:00 [INF] Hosting environment: Development
+2026-09-17 17:28:56.029 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 17:34:32.735 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 17:34:32.871 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:34:32.879 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:34:32.883 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 151.1989ms
+2026-09-17 17:36:21.574 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-17 17:36:21.587 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 17:36:21.597 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-17 17:36:21.617 -06:00 [INF] GetCurriculumQuery completado
+2026-09-17 17:36:21.631 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:36:21.640 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:36:21.660 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 17:36:21.668 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 94.5282ms
+2026-09-17 17:36:26.050 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 17:36:26.059 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:36:26.062 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:36:26.064 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 401 0 null 13.3605ms
+2026-09-17 17:36:43.850 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:36:43.857 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:36:43.859 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:36:43.895 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:36:44.202 -06:00 [INF] LoginCommand completado
+2026-09-17 17:36:44.204 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:36:44.206 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:36:44.216 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:36:44.218 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 368.4843ms
+2026-09-17 17:36:53.437 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 63
+2026-09-17 17:36:53.441 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:36:53.506 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:36:53.523 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:36:53.540 -06:00 [WRN] ChangePasswordCommand falló: Validation.Failed - NewPassword: La nueva contraseña debe tener al menos 12 caracteres.
+2026-09-17 17:36:53.544 -06:00 [INF] Setting HTTP status code 400.
+2026-09-17 17:36:53.561 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:36:53.563 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 400 null application/problem+json 126.1594ms
+2026-09-17 17:37:18.868 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:37:18.873 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:18.875 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:18.878 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:37:18.883 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:18.887 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:37:18.904 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 35.6303ms
+2026-09-17 17:37:24.533 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 17:37:24.552 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:37:24.562 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 17:37:24.566 -06:00 [WRN] GetCurrentUserQuery falló: Auth.Required - Se requiere autenticación.
+2026-09-17 17:37:24.572 -06:00 [INF] Setting HTTP status code 401.
+2026-09-17 17:37:24.576 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:37:24.580 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 null application/problem+json 46.5983ms
+2026-09-17 17:37:32.676 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:37:32.681 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:32.682 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:37:32.686 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:37:32.917 -06:00 [INF] LoginCommand completado
+2026-09-17 17:37:32.919 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:37:32.920 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:37:32.923 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:37:32.925 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 248.742ms
+2026-09-17 17:37:44.642 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:37:44.649 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:37:44.651 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:44.661 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:37:44.663 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:37:44.665 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:37:44.672 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 29.7819ms
+2026-09-17 17:37:52.613 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 17:37:52.618 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:37:52.627 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 17:37:52.720 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 17:37:52.722 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:37:52.725 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:37:52.727 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:37:52.729 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 116.9664ms
+2026-09-17 17:38:02.627 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:38:02.632 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:38:02.633 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:38:02.640 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:38:02.867 -06:00 [INF] LoginCommand completado
+2026-09-17 17:38:02.869 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:38:02.871 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:38:02.873 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:38:02.875 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 248.142ms
+2026-09-17 17:39:32.414 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 70
+2026-09-17 17:39:32.418 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:39:32.421 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:32.423 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:39:32.424 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:32.426 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:39:32.433 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 18.1753ms
+2026-09-17 17:39:42.778 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 71
+2026-09-17 17:39:42.782 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:39:42.783 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:42.785 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:39:42.787 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:39:42.790 -06:00 [ERR] Excepción no controlada procesando /api/v1/auth/change-password
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at MongoDB.Bson.ObjectId.Parse(String s)
+   at Shekinah.Infrastructure.Persistence.Repositories.UserRepository.GetByIdAsync(String id, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Infrastructure\Persistence\Repositories\UserRepository.cs:line 13
+   at Shekinah.Application.Identity.ChangePassword.ChangePasswordCommandHandler.HandleAsync(ChangePasswordCommand command, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Identity\ChangePassword\ChangePassword.cs:line 25
+   at Shekinah.Application.Behaviors.ValidationBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\ValidationBehavior.cs:line 28
+   at Shekinah.Application.Behaviors.LoggingBehavior`2.HandleAsync(TRequest request, RequestHandlerDelegate`1 next, CancellationToken ct) in C:\NG\Angular\shekina-site\backend\src\Shekinah.Application\Behaviors\LoggingBehavior.cs:line 15
+   at Shekinah.Api.Endpoints.AuthEndpoints.<>c.<<MapAuthEndpoints>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Endpoints\AuthEndpoints.cs:line 27
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_3>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 80
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 17:39:42.799 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 500 null application/json; charset=utf-8 21.4339ms
+2026-09-17 17:51:14.826 -06:00 [INF] Application is shutting down...
+2026-09-17 17:51:28.114 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 17:51:28.485 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 17:51:28.488 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 17:51:28.491 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 17:51:28.492 -06:00 [INF] Hosting environment: Development
+2026-09-17 17:51:28.495 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 17:51:28.657 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 17:51:28.768 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:51:28.773 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:51:28.776 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 123.659ms
+2026-09-17 17:51:35.441 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 17:51:35.700 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:51:35.712 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 17:51:35.731 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 17:51:35.741 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:51:35.749 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 17:51:35.768 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:51:35.775 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 334.8733ms
+2026-09-17 17:51:49.466 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:51:49.475 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:51:49.480 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:51:49.510 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:51:50.068 -06:00 [INF] LoginCommand completado
+2026-09-17 17:51:50.070 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:51:50.073 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:51:50.079 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:51:50.082 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 615.9233ms
+2026-09-17 17:52:01.218 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - application/json 69
+2026-09-17 17:52:01.223 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:52:01.225 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:52:01.237 -06:00 [INF] Ejecutando ChangePasswordCommand
+2026-09-17 17:52:01.702 -06:00 [INF] ChangePasswordCommand completado
+2026-09-17 17:52:01.706 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:52:01.713 -06:00 [INF] Writing value of type 'Unit' as Json.
+2026-09-17 17:52:01.721 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/change-password'
+2026-09-17 17:52:01.723 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/change-password - 200 null application/json; charset=utf-8 505.3633ms
+2026-09-17 17:52:01.735 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 17:52:01.740 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:52:01.743 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 17:52:01.748 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 17:52:01.750 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:52:01.753 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 17:52:01.756 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 17:52:01.758 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 23.4379ms
+2026-09-17 17:52:07.555 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 17:52:07.560 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:52:07.569 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 17:52:07.642 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 17:52:07.644 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:52:07.651 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:52:07.655 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:52:07.658 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 102.4523ms
+2026-09-17 17:52:21.160 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 17:52:21.165 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 17:52:21.167 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 17:52:21.171 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 401 0 null 10.6375ms
+2026-09-17 17:52:24.484 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:52:24.488 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:52:24.490 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:52:24.495 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:52:24.736 -06:00 [WRN] LoginCommand falló: Auth.InvalidCredentials - Correo o contraseña incorrectos.
+2026-09-17 17:52:24.742 -06:00 [INF] Setting HTTP status code 401.
+2026-09-17 17:52:24.764 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:52:24.766 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 401 null application/problem+json 282.6132ms
+2026-09-17 17:52:43.118 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 17:52:43.122 -06:00 [INF] CORS policy execution successful.
+2026-09-17 17:52:43.124 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:52:43.134 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 17:52:43.363 -06:00 [INF] LoginCommand completado
+2026-09-17 17:52:43.365 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:52:43.367 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 17:52:43.369 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 17:52:43.372 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 253.8564ms
+2026-09-17 17:52:48.259 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 17:52:48.265 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:52:48.268 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 17:52:48.272 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 17:52:48.274 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 17:52:48.275 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 17:52:48.278 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 17:52:48.280 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 20.7113ms
+2026-09-17 18:08:20.169 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:08:20.182 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 12:07:43 AM', Current time (UTC): '9/18/2026 12:08:20 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-09-17 18:08:20.207 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 12:07:43 AM', Current time (UTC): '9/18/2026 12:08:20 AM'.
+2026-09-17 18:08:20.209 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 18:08:20.213 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 18:08:20.216 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 46.5406ms
+2026-09-17 18:10:41.236 -06:00 [INF] Application is shutting down...
+2026-09-17 18:15:51.544 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 18:15:51.967 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 18:15:51.970 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 18:15:51.974 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 18:15:51.975 -06:00 [INF] Hosting environment: Development
+2026-09-17 18:15:51.976 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 18:15:52.319 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 18:15:52.451 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 18:15:52.457 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 18:15:52.460 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 145.7452ms
+2026-09-17 18:16:16.005 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 18:16:16.012 -06:00 [INF] CORS policy execution successful.
+2026-09-17 18:16:16.021 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:16:16.058 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 18:16:16.732 -06:00 [INF] LoginCommand completado
+2026-09-17 18:16:16.740 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:16:16.746 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 18:16:16.759 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:16:16.765 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 760.6518ms
+2026-09-17 18:16:19.050 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 18:16:19.118 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:16:19.125 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 18:16:19.182 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 18:16:19.184 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:16:19.190 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:16:19.193 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:16:19.195 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 145.5092ms
+2026-09-17 18:16:51.634 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:16:51.643 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:16:51.658 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:16:51.669 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:16:51.672 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:16:51.676 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:16:51.686 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:16:51.689 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 54.7889ms
+2026-09-17 18:16:51.814 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 18:16:51.823 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:16:51.835 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 18:16:51.844 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 18:16:51.847 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:16:51.851 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:16:51.854 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:16:51.857 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 43.3928ms
+2026-09-17 18:16:55.672 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - null null
+2026-09-17 18:16:55.677 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:16:55.679 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:16:55.684 -06:00 [ERR] Excepción no controlada procesando /api/v1/admissions/applications
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method54(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:16:55.699 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - 500 null application/json; charset=utf-8 26.9905ms
+2026-09-17 18:17:03.626 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:17:03.641 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:03.646 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:17:03.658 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:17:03.660 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:03.663 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:17:03.669 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:03.673 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 47.4311ms
+2026-09-17 18:17:08.634 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:17:08.640 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:17:08.645 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:17:08.646 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 18:17:08.655 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:17:08.655 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:17:08.658 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:08.663 -06:00 [INF] Ejecutando GetPublicCalendarEventsQuery
+2026-09-17 18:17:08.674 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:17:08.678 -06:00 [INF] GetPublicCalendarEventsQuery completado
+2026-09-17 18:17:08.681 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:08.687 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:17:08.688 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:17:08.690 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:17:08.692 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 57.0964ms
+2026-09-17 18:17:08.694 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 200 null application/json; charset=utf-8 49.0108ms
+2026-09-17 18:17:14.273 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-17 18:17:14.278 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:17:14.280 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:17:14.282 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method76(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:17:14.286 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 500 null application/json; charset=utf-8 13.3608ms
+2026-09-17 18:17:17.169 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:17:17.179 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:17.206 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:17:17.211 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:17:17.213 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:17.229 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:17:17.241 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:17.248 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 79.069ms
+2026-09-17 18:17:20.215 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 18:17:20.220 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:17:20.226 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 18:17:20.229 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 18:17:20.231 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:20.233 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:17:20.236 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:17:20.238 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 22.8836ms
+2026-09-17 18:17:25.911 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:17:25.917 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:17:25.919 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 18:17:25.921 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:17:25.925 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:17:25.928 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:17:25.929 -06:00 [INF] Ejecutando GetPublicCalendarEventsQuery
+2026-09-17 18:17:25.930 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:25.935 -06:00 [INF] GetPublicCalendarEventsQuery completado
+2026-09-17 18:17:25.937 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:17:25.939 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:25.941 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:17:25.943 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:17:25.944 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 33.2963ms
+2026-09-17 18:17:25.947 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:17:25.954 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 200 null application/json; charset=utf-8 34.9339ms
+2026-09-17 18:17:31.798 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:17:31.803 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:31.809 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:17:31.812 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:17:31.814 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:31.819 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:17:31.822 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:31.830 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 32.1314ms
+2026-09-17 18:17:38.968 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 18:17:38.972 -06:00 [INF] CORS policy execution successful.
+2026-09-17 18:17:38.974 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:17:38.978 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 18:17:39.209 -06:00 [INF] LoginCommand completado
+2026-09-17 18:17:39.211 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:39.213 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 18:17:39.215 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:17:39.218 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 249.5038ms
+2026-09-17 18:17:47.959 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:17:47.988 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:47.992 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:17:47.995 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:17:47.998 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:17:48.001 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:17:48.003 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:17:48.006 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 46.8496ms
+2026-09-17 18:25:26.568 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-17 18:25:26.572 -06:00 [INF] CORS policy execution successful.
+2026-09-17 18:25:26.573 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:25:26.581 -06:00 [INF] Ejecutando LoginCommand
+2026-09-17 18:25:26.813 -06:00 [INF] LoginCommand completado
+2026-09-17 18:25:26.815 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:26.817 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-17 18:25:26.819 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-17 18:25:26.821 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 252.6551ms
+2026-09-17 18:25:28.820 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods - null null
+2026-09-17 18:25:28.820 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - null null
+2026-09-17 18:25:28.825 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/periods'
+2026-09-17 18:25:28.829 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:28.830 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/periods'
+2026-09-17 18:25:28.831 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:28.833 -06:00 [ERR] Excepción no controlada procesando /api/v1/academic/periods
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method64(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:28.835 -06:00 [ERR] Excepción no controlada procesando /api/v1/academic/offerings
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method67(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:28.839 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods - 500 null application/json; charset=utf-8 18.378ms
+2026-09-17 18:25:28.843 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - 500 null application/json; charset=utf-8 22.097ms
+2026-09-17 18:25:35.718 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - null null
+2026-09-17 18:25:35.722 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:35.725 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:35.727 -06:00 [ERR] Excepción no controlada procesando /api/v1/payments/matrix
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method80(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:35.731 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - 500 null application/json; charset=utf-8 12.9379ms
+2026-09-17 18:25:39.820 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/payments/notices - application/json 2
+2026-09-17 18:25:39.824 -06:00 [INF] CORS policy execution successful.
+2026-09-17 18:25:39.826 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/payments/notices'
+2026-09-17 18:25:39.832 -06:00 [INF] Ejecutando IssueNoticesCommand
+2026-09-17 18:25:39.846 -06:00 [INF] IssueNoticesCommand completado
+2026-09-17 18:25:39.848 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:39.851 -06:00 [INF] Writing value of type 'IssueNoticesResponse' as Json.
+2026-09-17 18:25:39.854 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/payments/notices'
+2026-09-17 18:25:39.856 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/payments/notices - 200 null application/json; charset=utf-8 36.1713ms
+2026-09-17 18:25:39.865 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - null null
+2026-09-17 18:25:39.869 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:39.870 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:39.872 -06:00 [ERR] Excepción no controlada procesando /api/v1/payments/matrix
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method80(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:39.876 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - 500 null application/json; charset=utf-8 11.1877ms
+2026-09-17 18:25:44.362 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 18:25:44.367 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:25:44.368 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 18:25:44.371 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 18:25:44.373 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:44.376 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:25:44.378 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:25:44.380 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 18.097ms
+2026-09-17 18:25:45.656 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - null null
+2026-09-17 18:25:45.660 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:25:45.662 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:25:45.664 -06:00 [ERR] Excepción no controlada procesando /api/v1/admissions/applications
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method54(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:45.672 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - 500 null application/json; charset=utf-8 15.5306ms
+2026-09-17 18:25:48.567 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-17 18:25:48.572 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:25:48.574 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:25:48.576 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method76(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:48.580 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 500 null application/json; charset=utf-8 12.7472ms
+2026-09-17 18:25:53.457 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Teacher&pageSize=500 - null null
+2026-09-17 18:25:53.462 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:25:53.464 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:25:53.466 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method76(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:53.471 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Teacher&pageSize=500 - 500 null application/json; charset=utf-8 13.4995ms
+2026-09-17 18:25:54.221 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - null null
+2026-09-17 18:25:54.221 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods - null null
+2026-09-17 18:25:54.226 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:54.230 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/periods'
+2026-09-17 18:25:54.231 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:54.234 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/periods'
+2026-09-17 18:25:54.236 -06:00 [ERR] Excepción no controlada procesando /api/v1/academic/offerings
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method67(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:54.237 -06:00 [ERR] Excepción no controlada procesando /api/v1/academic/periods
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method64(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:54.242 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - 500 null application/json; charset=utf-8 20.8425ms
+2026-09-17 18:25:54.246 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods - 500 null application/json; charset=utf-8 24.9436ms
+2026-09-17 18:25:55.332 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - null null
+2026-09-17 18:25:55.337 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:55.339 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-09-17 18:25:55.340 -06:00 [ERR] Excepción no controlada procesando /api/v1/academic/offerings
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method67(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:55.345 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings - 500 null application/json; charset=utf-8 12.7229ms
+2026-09-17 18:25:56.128 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - null null
+2026-09-17 18:25:56.132 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:56.134 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/payments/matrix'
+2026-09-17 18:25:56.136 -06:00 [ERR] Excepción no controlada procesando /api/v1/payments/matrix
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string periodId" was not provided from query string.
+   at lambda_method80(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:25:56.140 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/payments/matrix - 500 null application/json; charset=utf-8 12.3146ms
+2026-09-17 18:25:56.877 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:25:56.885 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 18:25:56.888 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:25:56.893 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:25:56.900 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:25:56.902 -06:00 [INF] Ejecutando GetPublicCalendarEventsQuery
+2026-09-17 18:25:56.903 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:25:56.905 -06:00 [INF] GetPublicCalendarEventsQuery completado
+2026-09-17 18:25:56.906 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:56.907 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:56.909 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:25:56.912 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:25:56.914 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:25:56.916 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:25:56.918 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 40.6701ms
+2026-09-17 18:25:56.920 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 200 null application/json; charset=utf-8 34.9766ms
+2026-09-17 18:25:59.957 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:25:59.962 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:25:59.964 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:25:59.966 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:25:59.969 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:25:59.972 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:25:59.975 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:25:59.978 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 20.3756ms
+2026-09-17 18:26:01.187 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:26:01.191 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:26:01.193 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:26:01.195 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:26:01.197 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:26:01.198 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 18:26:01.199 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:26:01.203 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:26:01.205 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:26:01.207 -06:00 [INF] Ejecutando GetPublicCalendarEventsQuery
+2026-09-17 18:26:01.209 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 21.4097ms
+2026-09-17 18:26:01.212 -06:00 [INF] GetPublicCalendarEventsQuery completado
+2026-09-17 18:26:01.220 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:26:01.222 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:26:01.224 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/calendar/'
+2026-09-17 18:26:01.225 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 200 null application/json; charset=utf-8 27.5527ms
+2026-09-17 18:26:08.604 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-17 18:26:08.608 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:26:08.610 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:26:08.612 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method76(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:26:08.616 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 500 null application/json; charset=utf-8 11.6801ms
+2026-09-17 18:32:59.058 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:32:59.064 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:32:59.067 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:32:59.070 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:32:59.072 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:32:59.074 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:32:59.077 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:32:59.080 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 22.065ms
+2026-09-17 18:33:00.035 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:33:00.040 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:33:00.042 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:33:00.044 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:33:00.047 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:33:00.054 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:33:00.056 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:33:00.059 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 23.9817ms
+2026-09-17 18:36:28.684 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - null null
+2026-09-17 18:36:28.688 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:36:28.690 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-17 18:36:28.692 -06:00 [ERR] Excepción no controlada procesando /api/v1/admissions/applications
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method54(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:36:28.697 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications - 500 null application/json; charset=utf-8 12.6241ms
+2026-09-17 18:36:29.921 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - null null
+2026-09-17 18:36:29.926 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:36:29.927 -06:00 [INF] Ejecutando GetAnnouncementsQuery
+2026-09-17 18:36:29.930 -06:00 [INF] GetAnnouncementsQuery completado
+2026-09-17 18:36:29.931 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:36:29.933 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:36:29.935 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/announcements/'
+2026-09-17 18:36:29.937 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/announcements?limit=30 - 200 null application/json; charset=utf-8 15.9025ms
+2026-09-17 18:36:32.098 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-17 18:36:32.103 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:36:32.105 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-17 18:36:32.106 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method76(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-17 18:36:32.111 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 500 null application/json; charset=utf-8 13.1487ms
+2026-09-17 18:37:08.300 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:37:08.304 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:37:08.307 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:37:08.309 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:37:08.311 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:37:08.313 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:37:08.315 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:37:08.317 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 17.3426ms
+2026-09-17 18:39:16.342 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:39:16.347 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:39:16.350 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-17 18:39:16.354 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-17 18:39:16.357 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:39:16.362 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-17 18:39:16.365 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-17 18:39:16.367 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 25.5837ms
+2026-09-17 18:39:16.472 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:39:16.494 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:39:16.506 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:39:16.511 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:39:16.517 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:39:16.522 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:39:16.528 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:39:16.531 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 58.6328ms
+2026-09-17 18:47:42.960 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:47:42.964 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:47:42.966 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:47:42.968 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:47:42.969 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:47:42.971 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:47:42.973 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:47:42.975 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 14.8327ms
+2026-09-17 18:47:47.300 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:47:47.305 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:47:47.306 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:47:47.308 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:47:47.310 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:47:47.312 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:47:47.315 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:47:47.317 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 17.0842ms
+2026-09-17 18:48:55.410 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:48:55.413 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:48:55.415 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:48:55.418 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:48:55.420 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:48:55.421 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:48:55.423 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:48:55.425 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 15.7254ms
+2026-09-17 18:50:20.033 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:50:20.037 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:50:20.038 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:50:20.040 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:50:20.042 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:50:20.044 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:50:20.046 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:50:20.048 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 15.3753ms
+2026-09-17 18:50:47.604 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:50:47.608 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:50:47.609 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:50:47.611 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:50:47.613 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:50:47.615 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:50:47.617 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:50:47.619 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 14.5644ms
+2026-09-17 18:51:07.761 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:51:07.766 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:51:07.767 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:51:07.769 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:51:07.771 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:51:07.772 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:51:07.774 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:51:07.776 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 14.8266ms
+2026-09-17 18:51:53.603 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:51:53.606 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:51:53.608 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:51:53.610 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:51:53.611 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:51:53.613 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:51:53.615 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:51:53.617 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 14.8215ms
+2026-09-17 18:54:16.116 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:54:16.120 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:54:16.122 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:54:16.124 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:54:16.126 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:54:16.128 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:54:16.129 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:54:16.132 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 15.4673ms
+2026-09-17 18:54:17.125 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-17 18:54:17.133 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 12:40:26 AM', Current time (UTC): '9/18/2026 12:54:17 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-09-17 18:54:17.144 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/18/2026 12:40:26 AM', Current time (UTC): '9/18/2026 12:54:17 AM'.
+2026-09-17 18:54:17.148 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 18:54:17.153 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 18:54:17.155 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 30.6189ms
+2026-09-17 18:54:22.730 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 18:54:22.733 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:54:22.735 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 18:54:22.736 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 18:54:22.738 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 18:54:22.740 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 18:54:22.742 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 18:54:22.744 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 14.4416ms
+2026-09-17 19:13:44.808 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 19:13:44.816 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:13:44.824 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 19:13:44.835 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 19:13:44.854 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 19:13:44.860 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 19:13:44.863 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:13:44.875 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 66.2067ms
+2026-09-17 19:14:06.616 -06:00 [INF] Application is shutting down...
+2026-09-17 19:17:16.982 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 19:17:17.436 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 19:17:17.438 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 19:17:17.442 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 19:17:17.443 -06:00 [INF] Hosting environment: Development
+2026-09-17 19:17:17.445 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 19:17:18.059 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 19:17:18.202 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 19:17:18.207 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 19:17:18.210 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 154.9772ms
+2026-09-17 19:17:24.759 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 19:17:24.776 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:17:24.786 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 19:17:24.798 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 19:17:24.806 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 19:17:24.818 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 19:17:24.833 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:17:24.841 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 81.5924ms
+2026-09-17 19:18:56.281 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - application/json 670
+2026-09-17 19:18:56.288 -06:00 [INF] CORS policy execution successful.
+2026-09-17 19:18:56.291 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-09-17 19:18:56.355 -06:00 [INF] Ejecutando SubmitApplicationCommand
+2026-09-17 19:18:57.189 -06:00 [INF] SubmitApplicationCommand completado
+2026-09-17 19:18:57.191 -06:00 [INF] Setting HTTP status code 201.
+2026-09-17 19:18:57.193 -06:00 [INF] Writing value of type 'SubmitApplicationResponse' as Json.
+2026-09-17 19:18:57.199 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-09-17 19:18:57.201 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - 201 null application/json; charset=utf-8 920.0884ms
+2026-09-17 19:19:52.598 -06:00 [INF] Application is shutting down...
+2026-09-17 19:55:36.927 -06:00 [INF] Aplicando migración 2: Renombra las regiones presenciales a San Miguel/Cuautla y agrega Región Morelia.
+2026-09-17 19:55:37.304 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 19:55:37.737 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 19:55:37.741 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 19:55:37.743 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 19:55:37.745 -06:00 [INF] Hosting environment: Development
+2026-09-17 19:55:37.747 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 19:55:38.338 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 19:55:38.509 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 19:55:38.515 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 19:55:38.519 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 188.1277ms
+2026-09-17 19:59:57.299 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 19:59:57.316 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:59:57.327 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 19:59:57.341 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 19:59:57.354 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 19:59:57.370 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 19:59:57.390 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 19:59:57.401 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 101.7132ms
+2026-09-17 20:00:07.172 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:00:07.181 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:00:07.185 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:00:07.187 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:00:07.189 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:00:07.192 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:00:07.196 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:00:07.199 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 27.4305ms
+2026-09-17 20:05:30.088 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - application/json 3071
+2026-09-17 20:05:30.094 -06:00 [INF] CORS policy execution successful.
+2026-09-17 20:05:30.097 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-09-17 20:05:30.175 -06:00 [INF] Ejecutando SubmitApplicationCommand
+2026-09-17 20:05:30.235 -06:00 [INF] Start processing HTTP request POST https://www.google.com/recaptcha/api/siteverify
+2026-09-17 20:05:30.239 -06:00 [INF] Sending HTTP request POST https://www.google.com/recaptcha/api/siteverify
+2026-09-17 20:05:31.501 -06:00 [INF] Received HTTP response headers after 1254.9816ms - 200
+2026-09-17 20:05:31.504 -06:00 [INF] End processing HTTP request after 1275.5483ms - 200
+2026-09-17 20:05:32.211 -06:00 [INF] SubmitApplicationCommand completado
+2026-09-17 20:05:32.214 -06:00 [INF] Setting HTTP status code 201.
+2026-09-17 20:05:32.217 -06:00 [INF] Writing value of type 'SubmitApplicationResponse' as Json.
+2026-09-17 20:05:32.223 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-09-17 20:05:32.226 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - 201 null application/json; charset=utf-8 2138.2341ms
+2026-09-17 20:06:12.832 -06:00 [INF] Application is shutting down...
+2026-09-17 20:06:16.844 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-17 20:06:17.212 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-17 20:06:17.214 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-17 20:06:17.217 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-17 20:06:17.218 -06:00 [INF] Hosting environment: Development
+2026-09-17 20:06:17.219 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-17 20:06:17.765 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-17 20:06:17.883 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 20:06:17.888 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 20:06:17.892 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 130.844ms
+2026-09-17 20:06:24.640 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:06:24.658 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:06:24.670 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:06:24.691 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:06:24.724 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:06:24.749 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:06:24.770 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:06:24.780 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 140.0052ms
+2026-09-17 20:06:29.730 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:06:29.740 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:06:29.744 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:06:29.748 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:06:29.750 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:06:29.752 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:06:29.755 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:06:29.758 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 27.9099ms
+2026-09-17 20:07:22.900 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:07:22.904 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:07:22.914 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:07:22.917 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:07:22.919 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:07:22.921 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:07:22.924 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:07:22.927 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 26.7735ms
+2026-09-17 20:07:28.722 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-17 20:07:28.726 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 20:07:28.731 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-17 20:07:28.744 -06:00 [INF] GetCurriculumQuery completado
+2026-09-17 20:07:28.746 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:07:28.750 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:07:28.760 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 20:07:28.762 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 40.0604ms
+2026-09-17 20:07:31.156 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/calendar - null null
+2026-09-17 20:07:31.161 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-17 20:07:31.165 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-17 20:07:31.169 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar - 401 0 null 12.1639ms
+2026-09-17 20:07:33.535 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-09-17 20:07:33.539 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 20:07:33.542 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-09-17 20:07:33.546 -06:00 [INF] GetCurriculumQuery completado
+2026-09-17 20:07:33.548 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:07:33.550 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:07:33.552 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-09-17 20:07:33.554 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 19.5871ms
+2026-09-17 20:07:40.080 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:07:40.084 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:07:40.086 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:07:40.089 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:07:40.091 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:07:40.094 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:07:40.097 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:07:40.099 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 19.3689ms
+2026-09-17 20:08:20.586 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-17 20:08:20.590 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:08:20.592 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-17 20:08:20.594 -06:00 [INF] GetRegionsQuery completado
+2026-09-17 20:08:20.596 -06:00 [INF] Setting HTTP status code 200.
+2026-09-17 20:08:20.599 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-17 20:08:20.602 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-17 20:08:20.604 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 18.0092ms

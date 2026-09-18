@@ -104,6 +104,13 @@ public sealed class CourseOfferingRepository(MongoContext context) : ICourseOffe
         return docs.Select(ToDomain).ToList();
     }
 
+    public async Task<IReadOnlyList<CourseOffering>> GetByStudentAsync(string studentId, CancellationToken ct)
+    {
+        var filter = Builders<BsonDocument>.Filter.Eq("enrollments.studentId", ObjectId.Parse(studentId));
+        var docs = await context.CourseOfferings.Find(filter).ToListAsync(ct);
+        return docs.Select(ToDomain).ToList();
+    }
+
     public async Task AddAsync(CourseOffering offering, CancellationToken ct) => await context.CourseOfferings.InsertOneAsync(ToBson(offering), cancellationToken: ct);
 
     public async Task UpdateAsync(CourseOffering offering, CancellationToken ct) =>

@@ -20,8 +20,13 @@ public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : 
     public string? RegionId => Principal?.FindFirstValue("regionId");
 }
 
-/// <summary>RN-09: fuerza el filtro por región para RegionalCoordinator, en el servidor, siempre.</summary>
+/// <summary>
+/// RN-09: fuerza el filtro por región para RegionalCoordinator y RegionalSecretary, en el
+/// servidor, siempre — el secretario regional es apoyo operativo del coordinador y comparte la
+/// misma restricción de alcance (plan de control escolar, fase 2/3).
+/// </summary>
 public sealed class RegionScopeResolver(ICurrentUser currentUser) : IRegionScopeResolver
 {
-    public string? ResolveMandatoryRegionId() => currentUser.Role == UserRole.RegionalCoordinator ? currentUser.RegionId : null;
+    public string? ResolveMandatoryRegionId() =>
+        currentUser.Role is UserRole.RegionalCoordinator or UserRole.RegionalSecretary ? currentUser.RegionId : null;
 }

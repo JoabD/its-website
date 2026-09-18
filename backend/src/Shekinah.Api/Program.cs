@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using Serilog;
@@ -28,6 +29,19 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi();
+
+// BUG REAL encontrado en producción: sin este converter, System.Text.Json serializa todo enum
+// (UserRole, Modality, ApplicationStatusDto, etc.) como su valor numérico subyacente (0, 1, 2…)
+// en vez de su nombre. El frontend entero está escrito asumiendo strings — comparaciones como
+// auth.role() === 'Administrator', los array de roles del menú/rutas (roleGuard(['Administrator'])),
+// el filtro por modalidad, etc. — así que cualquier usuario que iniciaba sesión recibía su rol como
+// un número, todas esas comparaciones fallaban en silencio, y el panel se veía vacío (el menú
+// lateral solo mostraba los ítems SIN restricción de rol, como Avisos, y el dashboard no mostraba
+// ningún atajo). Esto probablemente explica el reporte "ya inicié sesión... y no veo nada de nada".
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy
     // Nota: no se puede usar AllowAnyOrigin() junto con AllowCredentials() (bloqueado por el
@@ -103,6 +117,9 @@ app.MapAcademicEndpoints();
 app.MapStudentEndpoints();
 app.MapUsersEndpoints();
 app.MapPaymentsEndpoints();
+app.MapAnnouncementsEndpoints();
+app.MapCalendarEndpoints();
+app.MapKardexEndpoints();
 app.MapOperationEndpoints();
 
 app.Run();

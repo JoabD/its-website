@@ -11,12 +11,22 @@ namespace Shekinah.Infrastructure.Outbox;
 /// </summary>
 public sealed class OutboxEmailSender(MongoContext context) : IEmailSender
 {
-    public async Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct, string? cc = null)
+    public async Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct, string? cc = null, IReadOnlyList<EmailAttachment>? attachments = null)
     {
         var payload = new BsonDocument { ["to"] = to, ["subject"] = subject, ["htmlBody"] = htmlBody };
         if (!string.IsNullOrWhiteSpace(cc))
         {
             payload["cc"] = cc;
+        }
+
+        if (attachments is { Count: > 0 })
+        {
+            payload["attachments"] = new BsonArray(attachments.Select(a => new BsonDocument
+            {
+                ["fileName"] = a.FileName,
+                ["contentType"] = a.ContentType,
+                ["content"] = new BsonBinaryData(a.Content),
+            }));
         }
 
         var doc = new BsonDocument

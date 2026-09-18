@@ -10,9 +10,15 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 
 /**
- * RN-17/RN-18/RN-19: matriz de pagos por mes-cuatrimestre; "Importar pagos" y "Emitir avisos" son
- * comandos que ejecuta siempre el backend (batch de importación + DelinquencyPolicy) — esta
- * pantalla solo dispara los comandos y muestra la matriz resultante de solo lectura.
+ * RN-17/RN-18/RN-19: matriz de pagos por mes-cuatrimestre. "Importar pagos" y "Emitir avisos"
+ * siguen siendo comandos de backend (batch de importación + DelinquencyPolicy) que esta pantalla
+ * solo dispara.
+ *
+ * Fase 3 del plan de control escolar: mientras no existe pasarela de pagos en línea, cada celda
+ * de la matriz es clickeable — marca/revierte un mes como pagado (POST/DELETE /payments/manual).
+ * Quien llega a esta pantalla ya pasó el roleGuard de la ruta (Administrator/RegionalCoordinator/
+ * RegionalSecretary), así que no se repite el chequeo de rol aquí; el backend además revalida
+ * scope de región en el handler (RN-09), nunca confía en lo que llega del cliente.
  */
 @Component({
   selector: 'shk-payments',
@@ -24,6 +30,10 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
         <shk-button variant="secondary" [loading]="issuing()" (click)="issueNotices()">Emitir avisos</shk-button>
       </div>
     </div>
+
+    <p class="mt-2 text-sm text-slate-500">
+      Haz clic en una celda para marcar o revertir el pago de ese mes (mientras no haya pagos en línea).
+    </p>
 
     <shk-card class="mt-6 overflow-x-auto">
       <table class="w-full text-left text-sm">
@@ -45,11 +55,20 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
               <td class="py-2">{{ row.regionName }}</td>
               @for (month of matrix()?.months ?? []; track month) {
                 <td class="py-2">
-                  @if (row.paidByMonth[month]) {
-                    <shk-badge tone="success">Pagado</shk-badge>
-                  } @else {
-                    <shk-badge tone="danger">Pendiente</shk-badge>
-                  }
+                  <button
+                    type="button"
+                    class="rounded-full transition disabled:cursor-wait disabled:opacity-60"
+                    [disabled]="isUpdating(row.studentId, month)"
+                    [attr.aria-busy]="isUpdating(row.studentId, month)"
+                    [title]="row.paidByMonth[month] ? 'Clic para revertir el pago de ' + month : 'Clic para marcar ' + month + ' como pagado'"
+                    (click)="toggle(row, month)"
+                  >
+                    @if (row.paidByMonth[month]) {
+                      <shk-badge tone="success">Pagado</shk-badge>
+                    } @else {
+                      <shk-badge tone="danger">Pendiente</shk-badge>
+                    }
+                  </button>
                 </td>
               }
             </tr>
@@ -68,6 +87,9 @@ export class PaymentsComponent {
   protected readonly issuing = signal(false);
   private readonly refreshTick = signal(0);
 
+  /** "<studentId>|<monthCode>" de la celda en vuelo, para bloquearla mientras responde el backend. */
+  private readonly updatingCell = signal<string | null>(null);
+
   protected readonly matrix = toSignal(
     toObservable(this.refreshTick).pipe(
       switchMap(() =>
@@ -79,10 +101,39 @@ export class PaymentsComponent {
     { initialValue: null },
   );
 
+  protected isUpdating(studentId: string, month: string): boolean {
+    return this.updatingCell() === `${studentId}|${month}`;
+  }
+
+  protected toggle(row: StudentPaymentRowDto, month: string): void {
+    const cellKey = `${row.studentId}|${month}`;
+    if (this.updatingCell() !== null) return; // evita doble clic mientras hay una celda en vuelo
+
+    const alreadyPaid = row.paidByMonth[month];
+    this.updatingCell.set(cellKey);
+
+    const request$ = alreadyPaid
+      ? this.api.delete('/payments/manual', { studentId: row.studentId, monthCode: month })
+      : this.api.post('/payments/manual', { studentId: row.studentId, monthCode: month });
+
+    request$
+      .pipe(
+        tap({
+          next: () => {
+            this.toast.success(alreadyPaid ? `Se revirtió el pago de ${month}.` : `${month} marcado como pagado.`);
+            this.refreshTick.update((n) => n + 1);
+          },
+          error: () => this.toast.error(alreadyPaid ? 'No se pudo revertir el pago.' : 'No se pudo registrar el pago.'),
+        }),
+        catchError(() => of(null)),
+      )
+      .subscribe(() => this.updatingCell.set(null));
+  }
+
   protected issueNotices(): void {
     this.issuing.set(true);
 
-    this.api.post('/payments/notices/issue', {}).pipe(
+    this.api.post('/payments/notices', {}).pipe(
       tap({
         next: () => {
           this.toast.success('Avisos de adeudo emitidos.');

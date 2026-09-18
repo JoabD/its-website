@@ -92,9 +92,9 @@ public sealed class User : AggregateRoot<string>
             return Result.Failure<User>(Error.Validation("User.UseStudentFactory", "Use CreateStudentFromApplication para alumnos."));
         }
 
-        if (role == UserRole.RegionalCoordinator && region is null)
+        if (role is UserRole.RegionalCoordinator or UserRole.RegionalSecretary && region is null)
         {
-            return Result.Failure<User>(Error.Validation("User.RegionRequired", "Un coordinador regional debe tener una región asignada."));
+            return Result.Failure<User>(Error.Validation("User.RegionRequired", "Un coordinador o secretario regional debe tener una región asignada."));
         }
 
         var credentialsResult = Credentials.CreateTemporary(temporaryPasswordHash, clock);
@@ -218,13 +218,13 @@ public sealed class User : AggregateRoot<string>
 
     public Result UpdateRoleAndScope(UserRole role, RegionRef? region, Modality? modality)
     {
-        if (role == UserRole.RegionalCoordinator && region is null)
+        if (role is UserRole.RegionalCoordinator or UserRole.RegionalSecretary && region is null)
         {
-            return Result.Failure(Error.Validation("User.RegionRequired", "Un coordinador regional debe tener una región asignada."));
+            return Result.Failure(Error.Validation("User.RegionRequired", "Un coordinador o secretario regional debe tener una región asignada."));
         }
 
         Role = role;
-        Region = role is UserRole.Student or UserRole.RegionalCoordinator ? region : null;
+        Region = role is UserRole.Student or UserRole.RegionalCoordinator or UserRole.RegionalSecretary ? region : null;
         Modality = role == UserRole.Student ? modality : null;
         return Result.Success();
     }
