@@ -99,6 +99,7 @@ export interface SubmitApplicationRequestDto {
   modality: ModalityDto;
   requestedRegionId: string | null;
   onlineReason: string | null;
+  recaptchaToken: string;
 }
 
 export interface SubmitApplicationResponseDto {
@@ -203,4 +204,27 @@ export interface CalendarEventDto {
   endAtUtc: string | null;
   regionId: string | null;
   regionName: string | null;
+}
+
+/** Fase 8 del plan de control escolar: Kardex académico del alumno. */
+export interface KardexSubjectRowDto {
+  subjectName: string;
+  termNumber: number | null;
+  grade: number | null;
+  status: string;
+  periodCode: string;
+}
+
+export interface KardexResponseDto {
+  studentId: string;
+  enrollmentNumber: number;
+  fullName: string;
+  email: string;
+  regionName: string | null;
+  modality: ModalityDto | null;
+  currentTerm: number | null;
+  enrolledAtUtc: string;
+  isGraduated: boolean;
+  averageGrade: number | null;
+  subjects: KardexSubjectRowDto[];
 }

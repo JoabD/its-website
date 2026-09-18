@@ -12,11 +12,13 @@ using Shekinah.Domain.Catalog;
 using Shekinah.Domain.Common;
 using Shekinah.Domain.Identity;
 using Shekinah.Infrastructure.Auth;
+using Shekinah.Infrastructure.Documents;
 using Shekinah.Infrastructure.Outbox;
 using Shekinah.Infrastructure.Persistence;
 using Shekinah.Infrastructure.Persistence.Migrations;
 using Shekinah.Infrastructure.Persistence.ReadModels;
 using Shekinah.Infrastructure.Persistence.Repositories;
+using Shekinah.Infrastructure.Security;
 using Shekinah.Infrastructure.Seeding;
 using Shekinah.Infrastructure.Spreadsheets;
 using Shekinah.Infrastructure.Storage;
@@ -32,6 +34,7 @@ public static class DependencyInjection
         services.Configure<MongoOptions>(configuration.GetSection(MongoOptions.SectionName));
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
+        services.Configure<RecaptchaSettings>(configuration.GetSection(RecaptchaSettings.SectionName));
 
         services.AddSingleton<MongoContext>();
         services.AddSingleton(sp => sp.GetRequiredService<MongoContext>().Client);
@@ -51,6 +54,9 @@ public static class DependencyInjection
         services.AddSingleton<ISpreadsheetReader, SpreadsheetReader>();
         services.AddScoped<IPaymentMatrixReader, PaymentMatrixReader>();
         services.AddSingleton<IFileStorage>(_ => new LocalFileStorage(configuration["Storage:RootPath"] ?? "/data/uploads"));
+        services.AddSingleton<IKardexPdfGenerator, KardexPdfGenerator>();
+        services.AddSingleton<IAdmissionFichaPdfGenerator, AdmissionFichaPdfGenerator>();
+        services.AddHttpClient<IRecaptchaVerifier, RecaptchaVerifier>();
 
         services.AddScoped<IRegionRepository, RegionRepository>();
         services.AddScoped<ISubjectRepository, SubjectRepository>();
@@ -64,6 +70,7 @@ public static class DependencyInjection
         services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
 
         services.AddSingleton<IMongoMigration, M001_CreateIndexesAndValidators>();
+        services.AddSingleton<IMongoMigration, M002_RenameOnsiteRegions>();
         services.AddScoped<MigrationRunner>();
         services.AddScoped<DatabaseSeeder>();
 

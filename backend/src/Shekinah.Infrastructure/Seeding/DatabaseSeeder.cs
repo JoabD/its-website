@@ -35,13 +35,15 @@ public sealed class DatabaseSeeder(
             return existing.GroupBy(r => r.ModalityScope.First()).ToDictionary(g => g.Key, g => g.First());
         }
 
-        // Nombres reconstruidos de inscripcion.js/REGION legado (PROMPT-MAESTRO.md §11, ADR "Regiones").
+        // Sedes reales del instituto (reemplazan los nombres reconstruidos de inscripcion.js/REGION
+        // legado — ver M002_RenameOnsiteRegions, que aplica este mismo cambio a bases ya sembradas).
         var seedData = new (int Code, string Name, Modality Modality)[]
         {
-            (1, "Región Centro", Modality.Onsite),
-            (2, "Región Norte", Modality.Onsite),
+            (1, "Región San Miguel", Modality.Onsite),
+            (2, "Región Cuautla", Modality.Onsite),
             (3, "Región Virtual", Modality.Online),
             (4, "Región Diplomado", Modality.Diploma),
+            (5, "Región Morelia", Modality.Onsite),
         };
 
         var created = new Dictionary<Modality, Region>();

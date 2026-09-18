@@ -42,14 +42,20 @@ public interface IRegionScopeResolver
     string? ResolveMandatoryRegionId();
 }
 
+/// <summary>Adjunto de correo (plan de control escolar, fase 8: Kardex en PDF). El contenido viaja
+/// completo en memoria — los documentos que genera este sistema (ficha, Kardex) son de unas pocas
+/// páginas, muy lejos de cualquier límite práctico de outbox/SMTP.</summary>
+public sealed record EmailAttachment(string FileName, string ContentType, byte[] Content);
+
 public interface IEmailSender
 {
     /// <summary>
     /// <paramref name="cc"/> es opcional y solo debe usarse en correos administrativos (RN-04):
     /// nunca en correos personales del alumno (credenciales, avisos de morosidad), para no filtrar
-    /// datos de un alumno hacia otra bandeja.
+    /// datos de un alumno hacia otra bandeja. <paramref name="attachments"/> es opcional (fase 8:
+    /// el Kardex se envía con su PDF adjunto; el resto de correos del sistema no lo usan).
     /// </summary>
-    Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct, string? cc = null);
+    Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct, string? cc = null, IReadOnlyList<EmailAttachment>? attachments = null);
 }
 
 /// <summary>
@@ -101,6 +107,53 @@ public interface IPaymentMatrixReader
 public sealed record PaymentMatrixFilter(string PeriodId, string? RegionId, int Page, int PageSize);
 
 public sealed record StudentPaymentRow(string StudentId, int EnrollmentNumber, string StudentName, string RegionName, IReadOnlyDictionary<string, bool> PaidByMonth, IReadOnlyList<string> MonthsDue);
+
+/// <summary>Fase 8 (Kardex): fila de materia dentro del documento PDF institucional.</summary>
+public sealed record KardexPdfSubjectRow(string SubjectName, int? TermNumber, int? Grade, string Status, string PeriodCode);
+
+/// <summary>Modelo plano que alimenta al generador de PDF (puerto en Application, implementado con
+/// QuestPDF en Infrastructure — el dominio/aplicación no conoce la librería de PDF concreta).</summary>
+public sealed record KardexPdfModel(
+    string FolioOrEnrollment, string StudentFullName, string Email, string? RegionName, string? Modality,
+    int? CurrentTerm, DateTime EnrolledAtUtc, bool IsGraduated, double? AverageGrade,
+    IReadOnlyList<KardexPdfSubjectRow> Subjects, DateTime GeneratedAtUtc);
+
+/// <summary>Puerto hacia el generador de PDF institucional (DIP): Application pide "un PDF de este
+/// Kardex" sin saber si por debajo hay QuestPDF, wkhtmltopdf o cualquier otra librería.</summary>
+public interface IKardexPdfGenerator
+{
+    byte[] Generate(KardexPdfModel model);
+}
+
+/// <summary>Fase 7 (Admisiones): una fila etiqueta/valor de la ficha de inscripción en PDF —
+/// mismo criterio que <see cref="KardexPdfSubjectRow"/>, para no acoplar Application a la forma en
+/// que el dominio de Admisiones modela sus value objects.</summary>
+public sealed record AdmissionFichaPdfRow(string Label, string Value);
+
+/// <summary>Modelo plano que alimenta al generador de PDF de la ficha de inscripción (DIP, mismo
+/// patrón que <see cref="KardexPdfModel"/>/<see cref="IKardexPdfGenerator"/>).</summary>
+public sealed record AdmissionFichaPdfModel(
+    string Folio, string FullName, string Email, DateTime GeneratedAtUtc, IReadOnlyList<AdmissionFichaPdfRow> Rows);
+
+/// <summary>Puerto hacia el generador de PDF de la ficha de inscripción (DIP): Application no sabe
+/// si por debajo hay QuestPDF ni de dónde sale el logo institucional.</summary>
+public interface IAdmissionFichaPdfGenerator
+{
+    byte[] Generate(AdmissionFichaPdfModel model);
+}
+
+/// <summary>
+/// Puerto hacia la verificación de reCAPTCHA v3 (DIP): protege el endpoint anónimo de solicitud de
+/// admisión (RN-01, [AllowAnonymousUseCase]) contra spam/bots. Application no sabe que por debajo
+/// hay una llamada HTTP a Google — solo pide "¿este token de este action es de un humano?".
+/// </summary>
+public interface IRecaptchaVerifier
+{
+    /// <summary><paramref name="expectedAction"/> debe coincidir con el "action" que reCAPTCHA v3
+    /// registró al generar el token en el cliente, además de superar el umbral de score configurado
+    /// (Recaptcha:MinimumScore) — así un token robado/reusado de otra acción del sitio no sirve aquí.</summary>
+    Task<bool> VerifyAsync(string token, string expectedAction, CancellationToken ct);
+}
 
 public sealed record PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSize, long TotalItems)
 {

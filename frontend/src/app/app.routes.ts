@@ -138,6 +138,18 @@ export const routes: Routes = [
             canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
             loadComponent: () => import('./features/admin/calendar/calendar-admin.component').then((m) => m.CalendarAdminComponent),
           },
+          {
+            path: 'kardex',
+            title: 'Kardex | Panel ITS',
+            canActivate: [roleGuard(['Administrator', 'RegionalCoordinator', 'RegionalSecretary'])],
+            loadComponent: () => import('./features/admin/kardex/kardex-admin.component').then((m) => m.KardexAdminComponent),
+          },
+          {
+            path: 'mi-kardex',
+            title: 'Mi Kardex | Panel ITS',
+            canActivate: [roleGuard(['Student'])],
+            loadComponent: () => import('./features/admin/kardex/my-kardex.component').then((m) => m.MyKardexComponent),
+          },
         ],
       },
     ],

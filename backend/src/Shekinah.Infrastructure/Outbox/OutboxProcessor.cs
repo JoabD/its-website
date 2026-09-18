@@ -84,7 +84,27 @@ public sealed class OutboxProcessor(
         }
 
         mime.Subject = payload["subject"].AsString;
-        mime.Body = new TextPart("html") { Text = payload["htmlBody"].AsString };
+
+        // Fase 8 (Kardex): si el mensaje trae adjuntos (PDF), se arma como multipart con BodyBuilder;
+        // el resto de correos del sistema no trae "attachments" y sigue como texto plano HTML.
+        if (payload.TryGetValue("attachments", out var attachmentsValue) && !attachmentsValue.IsBsonNull && attachmentsValue.AsBsonArray.Count > 0)
+        {
+            var builder = new BodyBuilder { HtmlBody = payload["htmlBody"].AsString };
+            foreach (var attachmentValue in attachmentsValue.AsBsonArray)
+            {
+                var attachment = attachmentValue.AsBsonDocument;
+                builder.Attachments.Add(
+                    attachment["fileName"].AsString,
+                    attachment["content"].AsBsonBinaryData.Bytes,
+                    ContentType.Parse(attachment["contentType"].AsString));
+            }
+
+            mime.Body = builder.ToMessageBody();
+        }
+        else
+        {
+            mime.Body = new TextPart("html") { Text = payload["htmlBody"].AsString };
+        }
 
         // Puerto 587 ⇒ STARTTLS (Gmail no acepta SSL implícito de 465 con contraseña de aplicación).
         using var client = new MailKit.Net.Smtp.SmtpClient();

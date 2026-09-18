@@ -7,4 +7,7 @@
 export const environment = {
   production: true,
   apiBaseUrl: 'https://its-apps-etangehpdabqcmgx.westus3-01.azurewebsites.net/api/v1',
+  // Misma SiteKey pública que environment.ts — debe coincidir con el dominio autorizado en la
+  // consola de reCAPTCHA de Google para que la verificación en el backend no falle.
+  recaptchaSiteKey: '6LdzlsEtAAAAAPwB_Ojm3paMQ86FL7tgTPNfabkg',
 };

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LoginModalService } from '../../core/auth/login-modal.service';
+import { AuthStore } from '../../core/auth/auth.store';
 
 /**
  * Header + footer portados 1:1 desde resources/views/partials/header.blade.php y
@@ -43,7 +44,13 @@ import { LoginModalService } from '../../core/auth/login-modal.service';
         </ul>
 
         <div id="menu-acceder">
-          <a href="javascript:void(0)" id="btn-acceder" (click)="openLogin()">Acceder</a>
+          @if (auth.isAuthenticated()) {
+            <a routerLink="/admin" id="btn-acceder" class="btn-acceder-panel">
+              <span class="avatar-mini">{{ initials() }}</span> Ir al panel
+            </a>
+          } @else {
+            <a href="javascript:void(0)" id="btn-acceder" (click)="openLogin()">Acceder</a>
+          }
         </div>
 
         <button
@@ -82,7 +89,11 @@ import { LoginModalService } from '../../core/auth/login-modal.service';
               <li><a routerLink="/planes">Planes de Estudio</a></li>
               <li><a routerLink="/programas">Catálogo de Materias</a></li>
               <li><a routerLink="/calendario">Calendario</a></li>
-              <li><a href="javascript:void(0)" (click)="openLogin()">Acceder</a></li>
+              @if (auth.isAuthenticated()) {
+                <li><a routerLink="/admin">Ir al panel</a></li>
+              } @else {
+                <li><a href="javascript:void(0)" (click)="openLogin()">Acceder</a></li>
+              }
             </ul>
           </div>
           <div>
@@ -104,6 +115,7 @@ import { LoginModalService } from '../../core/auth/login-modal.service';
 })
 export class PublicShellComponent implements AfterViewInit, OnDestroy {
   private readonly loginModal = inject(LoginModalService);
+  protected readonly auth = inject(AuthStore);
 
   protected readonly currentYear = new Date().getFullYear();
   protected readonly menuOpen = signal(false);
@@ -123,6 +135,13 @@ export class PublicShellComponent implements AfterViewInit, OnDestroy {
   protected openLogin(): void {
     this.closeMenu();
     this.loginModal.open();
+  }
+
+  protected initials(): string {
+    const name = this.auth.user()?.fullName?.trim();
+    if (!name) return '?';
+    const parts = name.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || name[0]!.toUpperCase();
   }
 
   @HostListener('window:scroll')

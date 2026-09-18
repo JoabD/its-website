@@ -7,7 +7,16 @@ using Shekinah.Domain.SharedKernel;
 
 namespace Shekinah.Application.Admissions.SubmitApplication;
 
-/// <summary>RN-01: cualquier persona puede enviar una solicitud sin autenticarse.</summary>
+/// <summary>Nombre del "action" de reCAPTCHA v3 que el frontend debe declarar al ejecutar
+/// <c>grecaptcha.execute(siteKey, &#123; action &#125;)</c> — el backend rechaza cualquier token que
+/// declare un action distinto (evita reusar un token obtenido para otra acción del sitio).</summary>
+public static class RecaptchaActions
+{
+    public const string SubmitApplication = "submit_application";
+}
+
+/// <summary>RN-01: cualquier persona puede enviar una solicitud sin autenticarse — por eso lleva
+/// reCAPTCHA v3 (<see cref="RecaptchaToken"/>): es el endpoint anónimo más expuesto a spam/bots.</summary>
 [AllowAnonymousUseCase]
 public sealed record SubmitApplicationCommand(
     string FullName, DateOnly BirthDate, string MaritalStatus, string Email, string Phone,
@@ -15,7 +24,7 @@ public sealed record SubmitApplicationCommand(
     string ChurchName, string ChurchStreet, string ChurchNeighborhood, string ChurchLocality, string ChurchMunicipality,
     string PastorName, string TimeAttending, bool HasMinistryRole, string? MinistryRoleName,
     SchoolingLevel EducationLevel, string? OtherEducationDescription, string TheologicalBackground, string StudyPurpose,
-    Modality Modality, string? RequestedRegionId, string? OnlineReason) : ICommand<SubmitApplicationResponse>;
+    Modality Modality, string? RequestedRegionId, string? OnlineReason, string RecaptchaToken) : ICommand<SubmitApplicationResponse>;
 
 public sealed record SubmitApplicationResponse(string ApplicationId, string Folio);
 
@@ -31,17 +40,30 @@ public sealed class SubmitApplicationCommandValidator : AbstractValidator<Submit
             .WithMessage("El motivo es requerido para la modalidad Virtual (RN-03).");
         RuleFor(x => x.RequestedRegionId).NotEmpty().When(x => x.Modality == Modality.Onsite)
             .WithMessage("Debe elegir una región presencial (RN-03).");
+        RuleFor(x => x.RecaptchaToken).NotEmpty()
+            .WithMessage("Falta el token de reCAPTCHA.");
     }
 }
 
 /// <summary>RN-01, RN-02, RN-03, RN-04.</summary>
 public sealed class SubmitApplicationCommandHandler(
     IAdmissionApplicationRepository applications, Domain.Catalog.IRegionRepository regions,
-    IUserRepository administratorsSource, IEmailSender emailSender, INotificationRecipients notificationRecipients, IClock clock)
+    IUserRepository administratorsSource, IEmailSender emailSender, INotificationRecipients notificationRecipients,
+    IAdmissionFichaPdfGenerator fichaPdfGenerator, IRecaptchaVerifier recaptchaVerifier, IClock clock)
     : ICommandHandler<SubmitApplicationCommand, SubmitApplicationResponse>
 {
     public async Task<Result<SubmitApplicationResponse>> HandleAsync(SubmitApplicationCommand command, CancellationToken ct)
     {
+        // Antiabuso primero (RN-01): ni siquiera se valida/crea nada si reCAPTCHA no aprueba el
+        // token — así un bot no puede usar este endpoint anónimo para spamear correos ni llenar la
+        // base de solicitudes falsas.
+        var isHuman = await recaptchaVerifier.VerifyAsync(command.RecaptchaToken, RecaptchaActions.SubmitApplication, ct);
+        if (!isHuman)
+        {
+            return Result.Failure<SubmitApplicationResponse>(
+                Error.Validation("Recaptcha.Failed", "No pudimos verificar tu solicitud. Recarga la página e intenta de nuevo."));
+        }
+
         var address = Address.Create(command.Street, command.Neighborhood, command.Locality, command.Municipality, command.State);
         if (address.IsFailure) return Result.Failure<SubmitApplicationResponse>(address.Error);
 
@@ -90,6 +112,12 @@ public sealed class SubmitApplicationCommandHandler(
         // Correo administrativo ⇒ se copia (Cc) la dirección de EmailSettings.DefaultCcAddress si está configurada.
         var ficha = AdmissionFichaHtml.Render(folio, applicant.Value, modalityChoice.Value, clock.UtcNow);
 
+        // La ficha también se adjunta como PDF con membrete institucional (logo del Shekinah) —
+        // mismo documento para administración y para el solicitante, un único punto de generación.
+        var fichaPdfBytes = fichaPdfGenerator.Generate(BuildFichaPdfModel(folio, applicant.Value, modalityChoice.Value, clock.UtcNow));
+        var fichaAttachment = new EmailAttachment($"Ficha-{folio}.pdf", "application/pdf", fichaPdfBytes);
+        var fichaAttachments = new[] { fichaAttachment };
+
         var administrators = await administratorsSource.GetActiveAdministratorsAsync(ct);
         foreach (var admin in administrators)
         {
@@ -97,7 +125,8 @@ public sealed class SubmitApplicationCommandHandler(
                 admin.Profile.Email.Value,
                 $"Nueva solicitud de admisión: {folio}",
                 $"<p>Se recibió una nueva solicitud de {applicant.Value.FullName} ({folio}).</p>{ficha}", ct,
-                cc: notificationRecipients.AdministrativeCc);
+                cc: notificationRecipients.AdministrativeCc,
+                attachments: fichaAttachments);
         }
 
         // Confirmación al propio solicitante (plan de control escolar, fase 4): NUNCA lleva Cc
@@ -110,10 +139,49 @@ public sealed class SubmitApplicationCommandHandler(
              <p>Confirmamos la recepción de tu solicitud de admisión al Instituto Teológico Shekinah, con folio <strong>{folio}</strong>.</p>
              <p><strong>Debes esperar instrucciones por este medio, o acudir a tu sede con esta ficha en mano para continuar tu proceso.</strong></p>
              {ficha}
+             <p>Adjuntamos tu ficha de inscripción en PDF.</p>
              <p>Si tienes dudas, puedes responder a este correo o acudir directamente a tu sede.</p>
              """,
-            ct);
+            ct,
+            attachments: fichaAttachments);
 
         return Result.Success(new SubmitApplicationResponse(applicationResult.Value.Id, folio));
+    }
+
+    /// <summary>Mismas filas que <see cref="AdmissionFichaHtml.Render"/> (una sola fuente de verdad
+    /// para el contenido de la ficha), en la forma plana que espera <see cref="IAdmissionFichaPdfGenerator"/>.</summary>
+    private static AdmissionFichaPdfModel BuildFichaPdfModel(string folio, ApplicantProfile applicant, ModalityChoice modality, DateTime generatedAtUtc)
+    {
+        var modalityLabel = modality.Modality switch
+        {
+            Modality.Onsite => "Presencial",
+            Modality.Online => "Virtual",
+            Modality.Diploma => "Diplomado",
+            _ => modality.Modality.ToString(),
+        };
+
+        var ministryRole = applicant.Church.MinistryRole.HasRole
+            ? applicant.Church.MinistryRole.RoleName ?? "Sí"
+            : "No";
+
+        var rows = new List<AdmissionFichaPdfRow>
+        {
+            new("Nombre completo", applicant.FullName.FullName),
+            new("Fecha de nacimiento", applicant.BirthDate.ToString("dd/MM/yyyy")),
+            new("Estado civil", applicant.MaritalStatus),
+            new("Correo", applicant.Email.Value),
+            new("Teléfono", applicant.Phone.Value),
+            new("Dirección", $"{applicant.Address.Street}, {applicant.Address.Neighborhood}, {applicant.Address.Locality}, {applicant.Address.Municipality}"),
+            new("Modalidad", modalityLabel),
+            new("Región / Sede", modality.RegionName),
+            new("Iglesia", applicant.Church.Name),
+            new("Pastor", applicant.Church.PastorName),
+            new("Tiempo asistiendo", applicant.Church.TimeAttending),
+            new("Rol ministerial", ministryRole),
+            new("Nivel de estudios", applicant.Education.Level.ToString()),
+            new("Propósito de estudio", applicant.StudyPurpose),
+        };
+
+        return new AdmissionFichaPdfModel(folio, applicant.FullName.FullName, applicant.Email.Value, generatedAtUtc, rows);
     }
 }

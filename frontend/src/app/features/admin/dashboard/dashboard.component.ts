@@ -30,11 +30,13 @@ import { ROLE_LABELS } from '../../../domain/models';
       }
       @if (auth.role() === 'Student') {
         <shk-card><a routerLink="/admin/mis-materias" class="font-semibold text-[var(--shk-color-primary)]">Mis materias</a></shk-card>
+        <shk-card><a routerLink="/admin/mi-kardex" class="font-semibold text-[var(--shk-color-primary)]">Mi Kardex</a></shk-card>
         <shk-card><a routerLink="/admin/mi-perfil" class="font-semibold text-[var(--shk-color-primary)]">Mi información</a></shk-card>
       }
       @if (auth.role() === 'Administrator' || auth.role() === 'RegionalCoordinator' || auth.role() === 'RegionalSecretary') {
         <shk-card><a routerLink="/admin/pagos" class="font-semibold text-[var(--shk-color-primary)]">Pagos</a></shk-card>
         <shk-card><a routerLink="/admin/calendario" class="font-semibold text-[var(--shk-color-primary)]">Calendario</a></shk-card>
+        <shk-card><a routerLink="/admin/kardex" class="font-semibold text-[var(--shk-color-primary)]">Kardex</a></shk-card>
       }
     </div>
   `,
