@@ -1970,3 +1970,19 @@ Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string pe
 2026-09-19 11:40:39.515 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 26.1442ms
 2026-09-19 11:40:39.519 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/calendar/'
 2026-09-19 11:40:39.529 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/calendar?from=2026-08-25T06:00:00.000Z&to=2026-10-07T06:00:00.000Z - 200 null application/json; charset=utf-8 33.3044ms
+2026-09-19 11:42:51.100 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 11:42:51.108 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 11:42:51.109 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:42:51.114 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:42:51.115 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 11:42:51.117 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 11:42:51.125 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 11:42:51.126 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 11:42:51.128 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 11:42:51.130 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 11:42:51.133 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 11:42:51.136 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 11:42:51.138 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:42:51.141 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:42:51.145 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 44.4758ms
+2026-09-19 11:42:51.148 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 39.5607ms
