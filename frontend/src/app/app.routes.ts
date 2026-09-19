@@ -84,6 +84,20 @@ export const routes: Routes = [
               import('./features/admin/admissions/admissions.component').then((m) => m.AdmissionsComponent),
           },
           {
+            path: 'configuracion/regiones',
+            title: 'Configuración · Regiones | Panel ITS',
+            canActivate: [roleGuard(['Administrator'])],
+            loadComponent: () =>
+              import('./features/admin/settings/regions-settings.component').then((m) => m.RegionsSettingsComponent),
+          },
+          {
+            path: 'configuracion/checklist',
+            title: 'Configuración · Documentos de inscripción | Panel ITS',
+            canActivate: [roleGuard(['Administrator'])],
+            loadComponent: () =>
+              import('./features/admin/settings/checklist-settings.component').then((m) => m.ChecklistSettingsComponent),
+          },
+          {
             path: 'avisos',
             title: 'Avisos | Panel ITS',
             loadComponent: () => import('./features/admin/announcements/announcements.component').then((m) => m.AnnouncementsComponent),

@@ -38,6 +38,9 @@ public sealed class AdmissionApplicationRepository(MongoContext context) : IAdmi
     public async Task UpdateAsync(AdmissionApplication application, CancellationToken ct) =>
         await context.AdmissionApplications.ReplaceOneAsync(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(application.Id)), ToBson(application), cancellationToken: ct);
 
+    public async Task DeleteAsync(string id, CancellationToken ct) =>
+        await context.AdmissionApplications.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id)), ct);
+
     public async Task<int> GetNextLegacySequenceAsync(CancellationToken ct)
     {
         var filter = Builders<BsonDocument>.Filter.Eq("_id", "admissionApplicationFolio");
@@ -88,6 +91,9 @@ public sealed class AdmissionApplicationRepository(MongoContext context) : IAdmi
             ["reason"] = app.Decision.Reason is null ? BsonNull.Value : app.Decision.Reason,
         },
         ["createdUserId"] = app.CreatedUserId is null ? BsonNull.Value : ObjectId.Parse(app.CreatedUserId),
+        ["checkedChecklistItemIds"] = new BsonArray(app.CheckedChecklistItemIds),
+        ["approvedViaQuickAction"] = app.ApprovedViaQuickAction,
+        ["purgeScheduledAt"] = app.PurgeScheduledAtUtc.HasValue ? app.PurgeScheduledAtUtc.Value : BsonNull.Value,
         ["version"] = 1,
         ["createdAt"] = app.SubmittedAtUtc,
         ["updatedAt"] = DateTime.UtcNow,
@@ -122,11 +128,42 @@ public sealed class AdmissionApplicationRepository(MongoContext context) : IAdmi
             decisionDoc["decidedAt"].ToUniversalTime(), decisionDoc["decidedBy"].AsString, decisionDoc["decidedByName"].AsString,
             decisionDoc.TryGetValue("reason", out var r) && !r.IsBsonNull ? r.AsString : null);
 
+        var checkedItemIds = ReadCheckedChecklistItemIds(doc);
+
         return AdmissionApplication.Rehydrate(
             doc["_id"].AsObjectId.ToString(), doc["folio"].AsString,
             doc.TryGetValue("legacyId", out var lid) && !lid.IsBsonNull ? lid.AsInt32 : 0,
             applicant, modalityChoice, Enum.Parse<ApplicationStatus>(doc["status"].AsString),
             doc["submittedAt"].ToUniversalTime(), decision,
-            doc.TryGetValue("createdUserId", out var cu) && !cu.IsBsonNull ? cu.AsObjectId.ToString() : null);
+            doc.TryGetValue("createdUserId", out var cu) && !cu.IsBsonNull ? cu.AsObjectId.ToString() : null,
+            checkedItemIds, doc.GetValue("approvedViaQuickAction", false).AsBoolean,
+            doc.TryGetValue("purgeScheduledAt", out var pa) && !pa.IsBsonNull ? pa.ToUniversalTime() : null);
+    }
+
+    /// <summary>
+    /// Compatibilidad hacia atrás: documentos escritos antes del catálogo editable guardaban el
+    /// checklist como 4 booleanos fijos (<c>officialId</c>, etc.) en vez de una lista de ids. Se
+    /// traducen aquí a los ids "conocidos" que <c>ChecklistItemDefinitionSeed</c> usa para sembrar
+    /// esos mismos 4 documentos por defecto, así el progreso ya marcado no se pierde al migrar.
+    /// </summary>
+    private static List<string> ReadCheckedChecklistItemIds(BsonDocument doc)
+    {
+        if (doc.TryGetValue("checkedChecklistItemIds", out var arr) && arr is BsonArray idsArray)
+        {
+            return idsArray.Select(v => v.AsString).ToList();
+        }
+
+        if (doc.TryGetValue("checklist", out var cl) && !cl.IsBsonNull && cl.IsBsonDocument)
+        {
+            var legacy = cl.AsBsonDocument;
+            var ids = new List<string>();
+            if (legacy.GetValue("officialId", false).AsBoolean) ids.Add(ChecklistItemDefinitionSeed.OfficialIdItemId);
+            if (legacy.GetValue("enrollmentRequest", false).AsBoolean) ids.Add(ChecklistItemDefinitionSeed.EnrollmentRequestItemId);
+            if (legacy.GetValue("pastoralRecommendation", false).AsBoolean) ids.Add(ChecklistItemDefinitionSeed.PastoralRecommendationItemId);
+            if (legacy.GetValue("baptismCertificate", false).AsBoolean) ids.Add(ChecklistItemDefinitionSeed.BaptismCertificateItemId);
+            return ids;
+        }
+
+        return [];
     }
 }

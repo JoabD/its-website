@@ -49,6 +49,20 @@ public enum ProgramType
     Diploma,
 }
 
+/// <summary>
+/// Plan de estudios del ALUMNO (distinto de <see cref="ProgramType"/>, que clasifica materias del
+/// currículo): Cuatrimestral o Semestral. Toda solicitud pública aprobada es siempre Quarterly,
+/// cuatrimestre 1 (RN de producto) — Semester solo se asigna al dar de alta manualmente o por Excel
+/// (plan de control escolar, alta manual de alumnos). Por ahora es solo clasificación/reporte: no
+/// determina qué materias se asignan (eso queda para una fase futura, cuando exista currículo
+/// semestral en el catálogo).
+/// </summary>
+public enum StudyPlan
+{
+    Quarterly,
+    Semester,
+}
+
 public enum EnrollmentStatus
 {
     Active,

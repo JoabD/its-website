@@ -37,6 +37,7 @@ public sealed class RegionRepository(MongoContext context) : IRegionRepository
         ["_id"] = ObjectId.Parse(region.Id),
         ["code"] = region.LegacyCode,
         ["name"] = region.Name,
+        ["abbreviation"] = region.Abbreviation,
         ["modalityScope"] = new BsonArray(region.ModalityScope.Select(m => m.ToString())),
         ["isActive"] = region.IsActive,
         ["version"] = 1,
@@ -47,7 +48,8 @@ public sealed class RegionRepository(MongoContext context) : IRegionRepository
     internal static Region ToDomain(BsonDocument doc)
     {
         var scope = doc["modalityScope"].AsBsonArray.Select(v => Enum.Parse<Modality>(v.AsString));
-        var region = Region.Create(doc["_id"].AsObjectId.ToString(), doc["code"].AsInt32, doc["name"].AsString, scope).Value;
+        var abbreviation = doc.TryGetValue("abbreviation", out var abbr) && !abbr.IsBsonNull ? abbr.AsString : null;
+        var region = Region.Create(doc["_id"].AsObjectId.ToString(), doc["code"].AsInt32, doc["name"].AsString, scope, abbreviation).Value;
         if (!doc.GetValue("isActive", true).AsBoolean) region.Deactivate();
         return region;
     }

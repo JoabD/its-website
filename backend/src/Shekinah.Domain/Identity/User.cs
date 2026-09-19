@@ -18,12 +18,13 @@ public sealed class User : AggregateRoot<string>
     private User() { }
 
     private User(
-        string id, EnrollmentNumber enrollmentNumber, UserRole role, Credentials credentials,
+        string id, EnrollmentNumber enrollmentNumber, string? matricula, UserRole role, Credentials credentials,
         RegionRef? region, Modality? modality, AcademicState? academic, PersonalProfile profile,
         string? admissionApplicationId, IClock clock)
         : base(id)
     {
         EnrollmentNumber = enrollmentNumber;
+        Matricula = matricula;
         Role = role;
         Credentials = credentials;
         Region = region;
@@ -37,6 +38,16 @@ public sealed class User : AggregateRoot<string>
     }
 
     public EnrollmentNumber EnrollmentNumber { get; private set; } = null!;
+
+    /// <summary>
+    /// Matrícula "amigable" con formato ITS/{Abreviatura de región}/{consecutivo}, ej. "ITS/SM/00001"
+    /// — SOLO para alumnos aprobados desde una solicitud (<see cref="CreateStudentFromApplication"/>);
+    /// null para el resto de roles y para cuentas legado. Es aditiva a propósito: <see cref="EnrollmentNumber"/>
+    /// (el entero heredado del sistema legado) sigue siendo la matrícula interna real — login (JWT),
+    /// kardex y facturación siguen usándola tal cual, sin ningún cambio. Esta es solo la que se
+    /// muestra/entrega al alumno.
+    /// </summary>
+    public string? Matricula { get; private set; }
 
     public UserRole Role { get; private set; }
 
@@ -65,7 +76,7 @@ public sealed class User : AggregateRoot<string>
 
     /// <summary>RN-05: creación de alumno a partir de una solicitud aprobada, en la misma transacción.</summary>
     public static Result<User> CreateStudentFromApplication(
-        string id, EnrollmentNumber enrollmentNumber, string admissionApplicationId, PersonalProfile profile,
+        string id, EnrollmentNumber enrollmentNumber, string matricula, string admissionApplicationId, PersonalProfile profile,
         Modality modality, RegionRef region, string temporaryPasswordHash, IClock clock)
     {
         var credentialsResult = Credentials.CreateTemporary(temporaryPasswordHash, clock);
@@ -75,8 +86,40 @@ public sealed class User : AggregateRoot<string>
         }
 
         var user = new User(
-            id, enrollmentNumber, UserRole.Student, credentialsResult.Value,
+            id, enrollmentNumber, matricula, UserRole.Student, credentialsResult.Value,
             region, modality, AcademicState.Start(clock), profile, admissionApplicationId, clock);
+
+        user.Raise(new UserCreated(Guid.NewGuid(), clock.UtcNow, id, enrollmentNumber.Value, nameof(UserRole.Student)));
+        return Result.Success(user);
+    }
+
+    /// <summary>
+    /// Alta MANUAL de un alumno (plan de control escolar): a diferencia de <see cref="CreateStudentFromApplication"/>,
+    /// no viene de una solicitud — el administrador captura los datos directamente (formulario o
+    /// importación por Excel) y decide plan (Cuatrimestral/Semestral) y en qué cuatrimestre/semestre
+    /// entra, típicamente para alumnos que ya venían cursando fuera del sistema. Igual que una
+    /// solicitud aprobada: matrícula "amigable" (<see cref="Matricula"/>) + contraseña temporal con
+    /// cambio obligatorio en el primer login.
+    /// </summary>
+    public static Result<User> CreateStudentManually(
+        string id, EnrollmentNumber enrollmentNumber, string matricula, PersonalProfile profile,
+        Modality modality, RegionRef region, StudyPlan plan, TermNumber currentTerm, string temporaryPasswordHash, IClock clock)
+    {
+        var credentialsResult = Credentials.CreateTemporary(temporaryPasswordHash, clock);
+        if (credentialsResult.IsFailure)
+        {
+            return Result.Failure<User>(credentialsResult.Error);
+        }
+
+        var academicResult = AcademicState.StartManual(plan, currentTerm, clock);
+        if (academicResult.IsFailure)
+        {
+            return Result.Failure<User>(academicResult.Error);
+        }
+
+        var user = new User(
+            id, enrollmentNumber, matricula, UserRole.Student, credentialsResult.Value,
+            region, modality, academicResult.Value, profile, null, clock);
 
         user.Raise(new UserCreated(Guid.NewGuid(), clock.UtcNow, id, enrollmentNumber.Value, nameof(UserRole.Student)));
         return Result.Success(user);
@@ -103,7 +146,7 @@ public sealed class User : AggregateRoot<string>
             return Result.Failure<User>(credentialsResult.Error);
         }
 
-        var user = new User(id, enrollmentNumber, role, credentialsResult.Value, region, null, null, profile, null, clock);
+        var user = new User(id, enrollmentNumber, null, role, credentialsResult.Value, region, null, null, profile, null, clock);
         user.Raise(new UserCreated(Guid.NewGuid(), clock.UtcNow, id, enrollmentNumber.Value, role.ToString()));
         return Result.Success(user);
     }
@@ -112,12 +155,13 @@ public sealed class User : AggregateRoot<string>
     public static User Rehydrate(
         string id, EnrollmentNumber enrollmentNumber, UserRole role, UserStatus status, Credentials credentials,
         RegionRef? region, Modality? modality, AcademicState? academic, BillingState billing, PersonalProfile profile,
-        string? admissionApplicationId, DateTime? lastLoginAtUtc, DateTime createdAtUtc, int version)
+        string? admissionApplicationId, DateTime? lastLoginAtUtc, DateTime createdAtUtc, int version, string? matricula = null)
     {
         var user = new User
         {
             Id = id,
             EnrollmentNumber = enrollmentNumber,
+            Matricula = matricula,
             Role = role,
             Status = status,
             Credentials = credentials,

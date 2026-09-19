@@ -37,19 +37,21 @@ public sealed class DatabaseSeeder(
 
         // Sedes reales del instituto (reemplazan los nombres reconstruidos de inscripcion.js/REGION
         // legado — ver M002_RenameOnsiteRegions, que aplica este mismo cambio a bases ya sembradas).
-        var seedData = new (int Code, string Name, Modality Modality)[]
+        // Abreviatura: usada para armar la matrícula de alumnos aprobados (ver M003_AddRegionAbbreviations,
+        // que aplica lo mismo a bases ya sembradas).
+        var seedData = new (int Code, string Name, string Abbreviation, Modality Modality)[]
         {
-            (1, "Región San Miguel", Modality.Onsite),
-            (2, "Región Cuautla", Modality.Onsite),
-            (3, "Región Virtual", Modality.Online),
-            (4, "Región Diplomado", Modality.Diploma),
-            (5, "Región Morelia", Modality.Onsite),
+            (1, "Región San Miguel", "SM", Modality.Onsite),
+            (2, "Región Cuautla", "CU", Modality.Onsite),
+            (3, "Región Virtual", "VI", Modality.Online),
+            (4, "Región Diplomado", "DI", Modality.Diploma),
+            (5, "Región Morelia", "MO", Modality.Onsite),
         };
 
         var created = new Dictionary<Modality, Region>();
-        foreach (var (code, name, modality) in seedData)
+        foreach (var (code, name, abbreviation, modality) in seedData)
         {
-            var region = Region.Create(EntityId.NewId(), code, name, [modality]).Value;
+            var region = Region.Create(EntityId.NewId(), code, name, [modality], abbreviation).Value;
             await regions.AddAsync(region, ct);
             created.TryAdd(modality, region);
         }

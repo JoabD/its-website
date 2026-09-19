@@ -81,6 +81,12 @@ public interface ICalendarEventRepository
     Task AddAsync(CalendarEvent calendarEvent, CancellationToken ct);
 
     /// <summary>Eventos desde <paramref name="fromUtc"/> en adelante, ordenados por fecha — usado
-    /// tanto por la vista pública como por el panel admin.</summary>
-    Task<IReadOnlyList<CalendarEvent>> GetUpcomingAsync(DateTime fromUtc, CancellationToken ct);
+    /// tanto por la vista pública como por el panel admin. <paramref name="toUtc"/> opcional: cuando
+    /// se da, acota también el límite superior (panel admin de calendario visual, fase de mejora:
+    /// navegar mes por mes necesita poder pedir un rango cerrado, no solo "en adelante").</summary>
+    Task<IReadOnlyList<CalendarEvent>> GetUpcomingAsync(DateTime fromUtc, DateTime? toUtc, CancellationToken ct);
+
+    Task<CalendarEvent?> GetByIdAsync(string id, CancellationToken ct);
+
+    Task DeleteAsync(string id, CancellationToken ct);
 }

@@ -32,6 +32,10 @@ export class ApiClient {
     return this.http.put<T>(`${API_BASE_URL}${path}`, body);
   }
 
+  patch<T>(path: string, body: unknown): Observable<T> {
+    return this.http.patch<T>(`${API_BASE_URL}${path}`, body);
+  }
+
   delete<T>(path: string, params?: QueryParams): Observable<T> {
     return this.http.delete<T>(`${API_BASE_URL}${path}`, { params: this.toHttpParams(params) });
   }

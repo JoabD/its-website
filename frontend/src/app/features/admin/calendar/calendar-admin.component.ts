@@ -1,163 +1,260 @@
-import { Component, inject, signal } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import {
+  CalendarEvent as NgxCalendarEvent,
+  CalendarMonthViewComponent,
+  CalendarPreviousViewDirective,
+  CalendarNextViewDirective,
+  CalendarTodayDirective,
+  CalendarMonthViewDay,
+} from 'angular-calendar';
 import { ApiClient } from '../../../core/http/api-client';
-import { CalendarEventDto, RegionListItemDto } from '../../../api/schema';
+import { CalendarEventDto } from '../../../api/schema';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
-import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { CalendarEventDrawerComponent } from './calendar-event-drawer.component';
 
 /**
- * Plan de control escolar, fase 7: administración del calendario institucional. Administrator
- * puede crear eventos generales (sin región) o de cualquier región; RegionalCoordinator y
- * RegionalSecretary solo ven/eligen su propia región en este formulario — el backend además
- * fuerza esto en el handler vía IRegionScopeResolver (RN-09), así que aunque alguien manipulara
- * el <select> en el navegador, el servidor ignora cualquier región distinta a la suya para esos
- * dos roles.
+ * Plan de control escolar, fase 7 — mejora visual: calendario institucional del panel admin
+ * mostrado como cuadrícula de mes (angular-calendar), al estilo Google Calendar, en vez de la
+ * lista cronológica original. Clic en un día vacío abre el drawer para publicar un evento nuevo
+ * con esa fecha precargada; clic en un evento abre su detalle con opción de eliminar. Reutiliza el
+ * mismo hash determinístico región→color que /calendario (público) para que el mismo color de
+ * sede se vea igual en ambas pantallas.
  */
 @Component({
   selector: 'shk-calendar-admin',
-  imports: [CardComponent, ButtonComponent, ReactiveFormsModule, DatePipe],
+  imports: [CardComponent, ButtonComponent, CalendarMonthViewComponent, CalendarPreviousViewDirective, CalendarNextViewDirective, CalendarTodayDirective, CalendarEventDrawerComponent],
   template: `
-    <h1 class="text-2xl font-bold text-slate-900">Calendario</h1>
-    <p class="mt-1 text-sm text-slate-500">
-      Estos eventos se muestran públicamente en /calendario, sin necesidad de iniciar sesión.
-    </p>
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Calendario</h1>
+        <p class="mt-1 text-sm text-slate-500">
+          Estos eventos se muestran públicamente en /calendario, sin necesidad de iniciar sesión.
+        </p>
+      </div>
+      <shk-button variant="primary" (click)="openCreate(null)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-4 w-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Agregar evento
+      </shk-button>
+    </div>
 
-    <shk-card class="mt-6">
-      <form [formGroup]="form" class="space-y-3" (ngSubmit)="submit()">
-        <label class="flex flex-col gap-1.5 text-sm">
-          <span class="font-medium text-slate-700">Título</span>
-          <input formControlName="title" type="text" class="shk-field" placeholder="Ej. Examen final de cuatrimestre" />
-        </label>
-
-        <label class="flex flex-col gap-1.5 text-sm">
-          <span class="font-medium text-slate-700">Descripción (opcional)</span>
-          <textarea formControlName="description" rows="3" class="shk-field"></textarea>
-        </label>
-
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label class="flex flex-col gap-1.5 text-sm">
-            <span class="font-medium text-slate-700">Inicia</span>
-            <input formControlName="startAt" type="datetime-local" class="shk-field" />
-          </label>
-          <label class="flex flex-col gap-1.5 text-sm">
-            <span class="font-medium text-slate-700">Termina (opcional)</span>
-            <input formControlName="endAt" type="datetime-local" class="shk-field" />
-          </label>
-        </div>
-
-        @if (auth.role() === 'Administrator') {
-          <label class="flex flex-col gap-1.5 text-sm">
-            <span class="font-medium text-slate-700">Región</span>
-            <select formControlName="regionId" class="shk-field">
-              <option [value]="null">General (todas las regiones)</option>
-              @for (region of regions(); track region.id) {
-                <option [value]="region.id">{{ region.name }}</option>
-              }
-            </select>
-          </label>
-        } @else {
-          <p class="text-xs text-slate-500">Se publicará únicamente para tu región.</p>
+    @if (regionesActivas().length) {
+      <div class="mt-4 flex flex-wrap gap-2.5">
+        @for (region of regionesActivas(); track region) {
+          <span class="chip-region" [style.--chip-color]="colorFor(region)">
+            <span class="punto"></span>{{ region }}
+          </span>
         }
+        <span class="chip-region chip-general">
+          <span class="punto"></span>Institucional
+        </span>
+      </div>
+    }
 
-        <shk-button type="submit" [loading]="creating()" [disabled]="form.invalid">Publicar evento</shk-button>
-      </form>
+    <shk-card class="mt-6 calendar-card">
+      <div class="calendar-toolbar">
+        <div class="calendar-toolbar-nav">
+          <button type="button" class="nav-btn" mwlCalendarPreviousView view="month" [viewDate]="viewDate()" (viewDateChange)="viewDate.set($event)" aria-label="Mes anterior">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-4 w-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <button type="button" class="nav-btn nav-btn-today" mwlCalendarToday [viewDate]="viewDate()" (viewDateChange)="viewDate.set($event)">
+            Hoy
+          </button>
+          <button type="button" class="nav-btn" mwlCalendarNextView view="month" [viewDate]="viewDate()" (viewDateChange)="viewDate.set($event)" aria-label="Mes siguiente">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-4 w-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+        <h2 class="calendar-month-label">{{ monthLabel() }}</h2>
+      </div>
+
+      <mwl-calendar-month-view
+        [viewDate]="viewDate()"
+        [events]="ngxEvents()"
+        locale="es-MX"
+        [weekStartsOn]="1"
+        (dayClicked)="onDayClicked($event.day)"
+        (eventClicked)="onEventClicked($event.event)"
+      />
     </shk-card>
 
-    <div class="mt-6 space-y-3">
-      @for (item of events(); track item.id) {
-        <shk-card>
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h2 class="font-semibold text-slate-900">{{ item.title }}</h2>
-              @if (item.description) {
-                <p class="mt-1 text-sm text-slate-600">{{ item.description }}</p>
-              }
-            </div>
-            <div class="shrink-0 text-right text-xs text-slate-400">
-              <div>{{ item.startAtUtc | date: 'dd/MM/yyyy HH:mm' }}</div>
-              <div class="mt-1 font-medium text-slate-500">{{ item.regionName ?? 'General' }}</div>
-            </div>
-          </div>
-        </shk-card>
-      } @empty {
-        <p class="py-6 text-center text-slate-400">Sin eventos próximos.</p>
-      }
-    </div>
+    <shk-calendar-event-drawer
+      [open]="drawerOpen()"
+      [mode]="drawerMode()"
+      [viewEvent]="drawerEvent()"
+      [defaultDate]="drawerDefaultDate()"
+      (close)="drawerOpen.set(false)"
+      (saved)="refreshTick.set(refreshTick() + 1)"
+      (deleted)="refreshTick.set(refreshTick() + 1)"
+    />
   `,
   styles: [
     `
-    .shk-field {
-      border-radius: 0.5rem;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.875rem;
-      width: 100%;
+    .chip-region {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--shk-font-heading); font-size: 12.5px; font-weight: 600;
+      color: var(--shk-color-primary); background: var(--shk-color-bg, #f5f6f9);
+      border: 1px solid rgba(16,28,54,0.08); padding: 5px 13px; border-radius: 20px;
     }
-    .shk-field:focus { outline: none; border-color: var(--shk-color-accent); }
+    .chip-general { color: var(--shk-color-text-muted, #4a5568); }
+    .chip-general .punto { background: rgba(16,28,54,0.2); }
+    .punto { width: 8px; height: 8px; border-radius: 50%; background: var(--chip-color, #c8a250); display: inline-block; }
+
+    .calendar-card { padding: 0; overflow: hidden; }
+
+    .calendar-toolbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 18px 20px; border-bottom: 1px solid #eef0f4;
+      background: linear-gradient(135deg, var(--shk-color-primary), var(--shk-color-primary-dark));
+    }
+    .calendar-toolbar-nav { display: flex; align-items: center; gap: 6px; }
+    .nav-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 34px; min-width: 34px; padding: 0 12px; border-radius: 999px; border: none;
+      background: rgba(255,255,255,0.12); color: #fff; font-size: 13px; font-weight: 600;
+      font-family: var(--shk-font-heading); cursor: pointer; transition: background 0.15s ease;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.22); }
+    .nav-btn-today { padding: 0 16px; }
+    .calendar-month-label {
+      margin: 0; font-family: var(--shk-font-heading); font-weight: 700; font-size: 17px;
+      color: #fff; text-transform: capitalize;
+    }
+
+    :host ::ng-deep .cal-month-view {
+      background: var(--shk-color-surface);
+    }
+    :host ::ng-deep .cal-month-view .cal-cell-top {
+      min-height: 90px;
+    }
+    :host ::ng-deep .cal-month-view .cal-day-cell {
+      transition: background 0.12s ease;
+    }
+    :host ::ng-deep .cal-month-view .cal-day-cell:hover {
+      background: color-mix(in srgb, var(--shk-color-accent) 6%, transparent);
+      cursor: pointer;
+    }
+    :host ::ng-deep .cal-month-view .cal-day-badge {
+      background: var(--shk-color-accent);
+    }
+    :host ::ng-deep .cal-month-view .cal-header .cal-cell {
+      font-family: var(--shk-font-heading); font-weight: 600; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.04em; color: var(--shk-color-text-muted);
+      padding: 10px 0;
+    }
+    :host ::ng-deep .cal-month-view .cal-day-number {
+      font-family: var(--shk-font-heading); font-weight: 600; font-size: 13px;
+      color: var(--shk-color-primary); opacity: 1;
+    }
+    :host ::ng-deep .cal-month-view .cal-today {
+      background: color-mix(in srgb, var(--shk-color-accent) 10%, transparent);
+    }
+    :host ::ng-deep .cal-month-view .cal-today .cal-day-number {
+      color: var(--shk-color-accent-dark);
+    }
+    :host ::ng-deep .cal-month-view .cal-event {
+      border-radius: 999px;
+    }
+    :host ::ng-deep .cal-month-view .cal-events-row {
+      margin-top: 4px;
+    }
     `,
   ],
 })
 export class CalendarAdminComponent {
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly api = inject(ApiClient);
-  private readonly toast = inject(ToastService);
   protected readonly auth = inject(AuthStore);
 
-  protected readonly creating = signal(false);
-  private readonly refreshTick = signal(0);
+  private static readonly PALETTE = ['#c8a250', '#4a7c8c', '#8c4a6a', '#4a8c5f', '#8c6a4a', '#5a4a8c', '#8c4a4a', '#4a648c'];
 
-  protected readonly form = this.fb.group({
-    title: this.fb.control('', [Validators.required, Validators.maxLength(160)]),
-    description: this.fb.control(''),
-    startAt: this.fb.control('', Validators.required),
-    endAt: this.fb.control(''),
-    regionId: this.fb.control<string | null>(null),
+  protected readonly viewDate = signal(new Date());
+  protected readonly refreshTick = signal(0);
+
+  protected readonly drawerOpen = signal(false);
+  protected readonly drawerMode = signal<'create' | 'view'>('create');
+  protected readonly drawerEvent = signal<CalendarEventDto | null>(null);
+  protected readonly drawerDefaultDate = signal<Date | null>(null);
+
+  // Rango consultado: el mes visible con una semana de colchón a cada lado, para cubrir los días
+  // de los meses adyacentes que la cuadrícula también muestra.
+  private readonly range = computed(() => {
+    const d = this.viewDate();
+    const from = new Date(d.getFullYear(), d.getMonth(), 1);
+    from.setDate(from.getDate() - 7);
+    const to = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    to.setDate(to.getDate() + 7);
+    return { from, to };
   });
 
-  protected readonly regions = toSignal(
-    this.api.get<RegionListItemDto[]>('/catalog/regions').pipe(catchError(() => of<RegionListItemDto[]>([]))),
-    { initialValue: [] as RegionListItemDto[] },
-  );
-
-  protected readonly events = toSignal(
-    toObservable(this.refreshTick).pipe(
-      switchMap(() =>
-        this.api.get<CalendarEventDto[]>('/calendar').pipe(catchError(() => of<CalendarEventDto[]>([]))),
+  private readonly events = toSignal(
+    toObservable(computed(() => ({ range: this.range(), tick: this.refreshTick() }))).pipe(
+      switchMap(({ range }) =>
+        this.api
+          .get<CalendarEventDto[]>('/calendar', { from: range.from.toISOString(), to: range.to.toISOString() })
+          .pipe(catchError(() => of<CalendarEventDto[]>([]))),
       ),
     ),
     { initialValue: [] as CalendarEventDto[] },
   );
 
-  protected submit(): void {
-    if (this.form.invalid) return;
-    this.creating.set(true);
+  protected readonly monthLabel = computed(() =>
+    this.viewDate().toLocaleDateString('es-MX', { month: 'long', year: 'numeric' }),
+  );
 
-    const raw = this.form.getRawValue();
-    const payload = {
-      title: raw.title,
-      description: raw.description || null,
-      startAtUtc: new Date(raw.startAt).toISOString(),
-      endAtUtc: raw.endAt ? new Date(raw.endAt).toISOString() : null,
-      regionId: this.auth.role() === 'Administrator' ? raw.regionId : null,
-    };
+  protected readonly regionesActivas = computed(() => {
+    const nombres = new Set<string>();
+    for (const evento of this.events()) {
+      if (evento.regionName) nombres.add(evento.regionName);
+    }
+    return [...nombres].sort();
+  });
 
-    this.api.post('/calendar', payload).pipe(
-      tap({
-        next: () => {
-          this.toast.success('Evento publicado en el calendario.');
-          this.form.reset({ title: '', description: '', startAt: '', endAt: '', regionId: null });
-          this.refreshTick.update((n) => n + 1);
-        },
-        error: () => this.toast.error('No se pudo publicar el evento.'),
-      }),
-      catchError(() => of(null)),
-    ).subscribe(() => this.creating.set(false));
+  protected readonly ngxEvents = computed<NgxCalendarEvent[]>(() =>
+    this.events().map((e) => {
+      const color = e.regionName ? this.colorFor(e.regionName) : '#8994a8';
+      return {
+        id: e.id,
+        title: e.title,
+        start: new Date(e.startAtUtc),
+        end: e.endAtUtc ? new Date(e.endAtUtc) : undefined,
+        color: { primary: color, secondary: `color-mix(in srgb, ${color} 15%, white)` },
+        meta: e,
+      };
+    }),
+  );
+
+  protected onDayClicked(day: CalendarMonthViewDay): void {
+    this.openCreate(day.date);
+  }
+
+  protected onEventClicked(event: NgxCalendarEvent): void {
+    this.drawerMode.set('view');
+    this.drawerEvent.set((event.meta as CalendarEventDto) ?? null);
+    this.drawerDefaultDate.set(null);
+    this.drawerOpen.set(true);
+  }
+
+  protected openCreate(date: Date | null): void {
+    this.drawerMode.set('create');
+    this.drawerEvent.set(null);
+    this.drawerDefaultDate.set(date);
+    this.drawerOpen.set(true);
+  }
+
+  protected colorFor(regionName: string): string {
+    let hash = 0;
+    for (let i = 0; i < regionName.length; i++) {
+      hash = (hash * 31 + regionName.charCodeAt(i)) >>> 0;
+    }
+    return CalendarAdminComponent.PALETTE[hash % CalendarAdminComponent.PALETTE.length] ?? '#c8a250';
   }
 }

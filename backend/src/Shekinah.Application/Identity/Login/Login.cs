@@ -27,7 +27,8 @@ public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
 /// (no revela si el correo existe).
 /// </summary>
 public sealed class LoginCommandHandler(
-    IUserRepository users, IPasswordHasher passwordHasher, ITokenService tokenService, IClock clock)
+    IUserRepository users, IPasswordHasher passwordHasher, ITokenService tokenService,
+    Shekinah.Application.Identity.RefreshToken.IRefreshTokenStore refreshTokenStore, IClock clock)
     : ICommandHandler<LoginCommand, LoginResponse>
 {
     private static readonly Error InvalidCredentials = Error.Unauthorized("Auth.InvalidCredentials", "Correo o contraseña incorrectos.");
@@ -61,7 +62,16 @@ public sealed class LoginCommandHandler(
         await users.UpdateAsync(user, ct);
 
         var (accessToken, expiresAt) = tokenService.CreateAccessToken(user.Id, user.EnrollmentNumber.Value, user.Role, user.Region?.Id);
-        var (refreshToken, _) = tokenService.CreateRefreshToken();
+        var (refreshToken, refreshExpiresAt) = tokenService.CreateRefreshToken();
+
+        // BUG REAL encontrado: este handler generaba el refresh token pero nunca lo persistía vía
+        // IRefreshTokenStore (a diferencia de RefreshTokenCommandHandler, que sí lo hace al rotar).
+        // Resultado: el refresh token que el cliente recibía al iniciar sesión JAMÁS existía en la
+        // colección `refreshTokens`, así que la primera llamada a POST /auth/refresh con ese token
+        // siempre fallaba con "Auth.InvalidRefreshToken" — el flujo de refresh estaba roto desde el
+        // origen, para toda sesión iniciada por login (nunca se notaba porque el frontend tampoco
+        // llamaba a /auth/refresh; ver auth.interceptor.ts).
+        await refreshTokenStore.StoreAsync(user.Id, refreshToken, refreshExpiresAt, ct);
 
         return Result.Success(new LoginResponse(accessToken, expiresAt, refreshToken, user.Id, user.Role, user.Credentials.MustChangePassword));
     }
