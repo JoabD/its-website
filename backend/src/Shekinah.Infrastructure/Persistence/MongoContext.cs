@@ -65,6 +65,10 @@ public sealed class MongoContext
 
     public IMongoCollection<BsonDocument> ChecklistItemDefinitions => Database.GetCollection<BsonDocument>("checklistItemDefinitions");
 
+    /// <summary>Alta manual de alumnos por Excel (plan de control escolar) — mismo patrón que
+    /// <see cref="PaymentImportBatches"/>, colección propia para no mezclar lotes.</summary>
+    public IMongoCollection<BsonDocument> StudentImportBatches => Database.GetCollection<BsonDocument>("studentImportBatches");
+
     private static void RegisterConventions()
     {
         var pack = new ConventionPack

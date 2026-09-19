@@ -93,6 +93,38 @@ public sealed class User : AggregateRoot<string>
         return Result.Success(user);
     }
 
+    /// <summary>
+    /// Alta MANUAL de un alumno (plan de control escolar): a diferencia de <see cref="CreateStudentFromApplication"/>,
+    /// no viene de una solicitud — el administrador captura los datos directamente (formulario o
+    /// importación por Excel) y decide plan (Cuatrimestral/Semestral) y en qué cuatrimestre/semestre
+    /// entra, típicamente para alumnos que ya venían cursando fuera del sistema. Igual que una
+    /// solicitud aprobada: matrícula "amigable" (<see cref="Matricula"/>) + contraseña temporal con
+    /// cambio obligatorio en el primer login.
+    /// </summary>
+    public static Result<User> CreateStudentManually(
+        string id, EnrollmentNumber enrollmentNumber, string matricula, PersonalProfile profile,
+        Modality modality, RegionRef region, StudyPlan plan, TermNumber currentTerm, string temporaryPasswordHash, IClock clock)
+    {
+        var credentialsResult = Credentials.CreateTemporary(temporaryPasswordHash, clock);
+        if (credentialsResult.IsFailure)
+        {
+            return Result.Failure<User>(credentialsResult.Error);
+        }
+
+        var academicResult = AcademicState.StartManual(plan, currentTerm, clock);
+        if (academicResult.IsFailure)
+        {
+            return Result.Failure<User>(academicResult.Error);
+        }
+
+        var user = new User(
+            id, enrollmentNumber, matricula, UserRole.Student, credentialsResult.Value,
+            region, modality, academicResult.Value, profile, null, clock);
+
+        user.Raise(new UserCreated(Guid.NewGuid(), clock.UtcNow, id, enrollmentNumber.Value, nameof(UserRole.Student)));
+        return Result.Success(user);
+    }
+
     /// <summary>Alta administrativa de cualquier rol (RN-12: solo Administrator puede invocar este caso de uso).</summary>
     public static Result<User> CreateStaff(
         string id, EnrollmentNumber enrollmentNumber, UserRole role, PersonalProfile profile,

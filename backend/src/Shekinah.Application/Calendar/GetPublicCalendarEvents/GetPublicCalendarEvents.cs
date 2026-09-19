@@ -10,7 +10,7 @@ namespace Shekinah.Application.Calendar.GetPublicCalendarEvents;
 /// exime este caso de uso del requisito general de sesión que impone AuthorizationBehavior.
 /// </summary>
 [AllowAnonymousUseCase]
-public sealed record GetPublicCalendarEventsQuery(DateTime? FromUtc) : IQuery<IReadOnlyList<CalendarEventListItem>>;
+public sealed record GetPublicCalendarEventsQuery(DateTime? FromUtc, DateTime? ToUtc = null) : IQuery<IReadOnlyList<CalendarEventListItem>>;
 
 public sealed record CalendarEventListItem(
     string Id, string Title, string? Description, DateTime StartAtUtc, DateTime? EndAtUtc,
@@ -33,7 +33,7 @@ public sealed class GetPublicCalendarEventsQueryHandler(ICalendarEventRepository
     {
         var localNow = clock.UtcNow + InstitutionUtcOffset;
         var fromUtc = query.FromUtc ?? (localNow.Date - InstitutionUtcOffset);
-        var items = await calendarEvents.GetUpcomingAsync(fromUtc, ct);
+        var items = await calendarEvents.GetUpcomingAsync(fromUtc, query.ToUtc, ct);
 
         IReadOnlyList<CalendarEventListItem> mapped = items
             .Select(e => new CalendarEventListItem(

@@ -21,11 +21,23 @@ export function asOfferingId(value: string): OfferingId {
 export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordinator' | 'RegionalSecretary';
 export type Modality = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected';
+export type StudyPlan = 'Quarterly' | 'Semester';
 
 export const MODALITY_LABELS: Record<Modality, string> = {
   Onsite: 'Presencial',
   Online: 'Virtual',
   Diploma: 'Diplomado',
+};
+
+/**
+ * Plan de estudios del alumno (distinto de la clasificación de materias del currículo):
+ * Cuatrimestral (RN de producto: toda solicitud pública aprobada entra así, cuatrimestre 1) o
+ * Semestral (solo asignable al dar de alta manualmente o por Excel). Por ahora es solo
+ * clasificación/reporte — no determina qué materias se asignan.
+ */
+export const STUDY_PLAN_LABELS: Record<StudyPlan, string> = {
+  Quarterly: 'Cuatrimestral',
+  Semester: 'Semestral',
 };
 
 export const ROLE_LABELS: Record<UserRole, string> = {

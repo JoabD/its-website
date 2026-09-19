@@ -14,6 +14,7 @@ export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordi
 export type ModalityDto = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatusDto = 'Pending' | 'Approved' | 'Rejected';
 export type SchoolingLevelDto = 'Primary' | 'Secondary' | 'HighSchool' | 'Other';
+export type StudyPlanDto = 'Quarterly' | 'Semester';
 
 export interface PagedResultDto<T> {
   items: T[];
@@ -238,6 +239,50 @@ export interface UserListItemDto {
   regionName: string | null;
   modality: ModalityDto | null;
   currentTerm: number | null;
+  plan: StudyPlanDto | null;
+}
+
+/** Alumnos → "Agregar alumno" → formulario manual. */
+export interface CreateStudentRequestDto {
+  fullName: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  regionId: string;
+  modality: ModalityDto;
+  plan: StudyPlanDto;
+  currentTerm: number;
+}
+
+export interface CreateStudentResponseDto {
+  userId: string;
+  enrollmentNumber: number;
+  matricula: string;
+  temporaryPassword: string;
+}
+
+/** Alumnos → "Agregar alumno" → importar Excel. */
+export interface StudentImportRowErrorDto {
+  rowNumber: number;
+  code: string;
+  message: string;
+  rawValues: string[];
+}
+
+export interface StudentImportBatchDto {
+  id: string;
+  fileName: string;
+  status: 'Processing' | 'Completed' | 'Failed';
+  totalRows: number;
+  importedRows: number;
+  errors: StudentImportRowErrorDto[];
+}
+
+export interface ImportStudentsResponseDto {
+  batchId: string;
+  totalRows: number;
+  importedRows: number;
+  errors: StudentImportRowErrorDto[];
 }
 
 export interface PeriodListItemDto {

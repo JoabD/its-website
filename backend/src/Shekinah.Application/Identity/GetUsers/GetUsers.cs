@@ -13,7 +13,7 @@ namespace Shekinah.Application.Identity.GetUsers;
 [RequireRole(UserRole.Administrator, UserRole.RegionalCoordinator, UserRole.RegionalSecretary)]
 public sealed record GetUsersQuery(UserRole? Role, string? RegionId, string? SearchText, int Page, int PageSize) : IQuery<PagedResult<UserListItem>>;
 
-public sealed record UserListItem(string Id, int EnrollmentNumber, string? Matricula, string FullName, string Email, UserRole Role, string Status, string? RegionName, Modality? Modality, int? CurrentTerm);
+public sealed record UserListItem(string Id, int EnrollmentNumber, string? Matricula, string FullName, string Email, UserRole Role, string Status, string? RegionName, Modality? Modality, int? CurrentTerm, string? Plan);
 
 public sealed class GetUsersQueryHandler(Domain.Identity.IUserRepository users, IRegionScopeResolver regionScope) : IQueryHandler<GetUsersQuery, PagedResult<UserListItem>>
 {
@@ -26,7 +26,7 @@ public sealed class GetUsersQueryHandler(Domain.Identity.IUserRepository users, 
 
         var mapped = items.Select(u => new UserListItem(
             u.Id, u.EnrollmentNumber.Value, u.Matricula, u.Profile.FullName.FullName, u.Profile.Email.Value, u.Role,
-            u.Status.ToString(), u.Region?.Name, u.Modality, u.Academic?.CurrentTerm.Value)).ToList();
+            u.Status.ToString(), u.Region?.Name, u.Modality, u.Academic?.CurrentTerm.Value, u.Academic?.Plan.ToString())).ToList();
 
         return Result.Success(new PagedResult<UserListItem>(mapped, query.Page, query.PageSize, total));
     }

@@ -21,7 +21,11 @@ public static class AdmissionsEndpoints
         group.MapPost("/applications", async (SubmitApplicationCommand command, IDispatcher dispatcher, CancellationToken ct) =>
             (await dispatcher.SendAsync(command, ct)).ToApiResult(StatusCodes.Status201Created)).AllowAnonymous();
 
-        group.MapGet("/applications", async (ApplicationStatus? status, string? search, int page, int pageSize, IDispatcher dispatcher, CancellationToken ct) =>
+        // Mismo BUG REAL que en UsersEndpoints (ver ahí el detalle): "page"/"pageSize" sin valor por
+        // defecto obligan a Minimal API a exigirlos siempre en el query string, o revienta con
+        // BadHttpRequestException antes de ejecutar el handler. Hoy el frontend siempre los manda,
+        // pero se corrige preventivamente para no repetir el mismo susto.
+        group.MapGet("/applications", async (ApplicationStatus? status, string? search, IDispatcher dispatcher, CancellationToken ct, int page = 0, int pageSize = 0) =>
             (await dispatcher.QueryAsync(new GetApplicationsQuery(status, search, page == 0 ? 1 : page, pageSize == 0 ? 20 : pageSize), ct)).ToApiResult())
             .RequireAuthorization();
 
