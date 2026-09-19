@@ -1986,3 +1986,47 @@ Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "string pe
 2026-09-19 11:42:51.141 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
 2026-09-19 11:42:51.145 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 44.4758ms
 2026-09-19 11:42:51.148 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 39.5607ms
+2026-09-19 11:46:09.939 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 11:46:09.944 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/19/2026 5:45:39 PM', Current time (UTC): '9/19/2026 5:46:09 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-09-19 11:46:09.949 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/19/2026 5:45:39 PM', Current time (UTC): '9/19/2026 5:46:09 PM'.
+2026-09-19 11:46:09.951 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-19 11:46:09.953 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-19 11:46:09.955 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 16.1123ms
+2026-09-19 11:46:09.979 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - application/json 105
+2026-09-19 11:46:09.984 -06:00 [INF] CORS policy execution successful.
+2026-09-19 11:46:09.985 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/19/2026 5:45:39 PM', Current time (UTC): '9/19/2026 5:46:09 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-09-19 11:46:09.989 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '9/19/2026 5:45:39 PM', Current time (UTC): '9/19/2026 5:46:09 PM'.
+2026-09-19 11:46:09.991 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-09-19 11:46:09.993 -06:00 [INF] Ejecutando RefreshTokenCommand
+2026-09-19 11:46:10.004 -06:00 [INF] RefreshTokenCommand completado
+2026-09-19 11:46:10.007 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 11:46:10.009 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 11:46:10.009 -06:00 [INF] Writing value of type 'RefreshTokenResponse' as Json.
+2026-09-19 11:46:10.014 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:46:10.017 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-09-19 11:46:10.018 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 11:46:10.021 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - 200 null application/json; charset=utf-8 41.7624ms
+2026-09-19 11:46:10.024 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 11:46:10.037 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 11:46:10.038 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 11:46:10.045 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:46:10.051 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 11:46:10.049 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 11:46:10.054 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 11:46:10.056 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:46:10.059 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 11:46:10.062 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 53.1961ms
+2026-09-19 11:46:10.064 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 11:46:10.077 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 11:46:10.080 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 43.2422ms
