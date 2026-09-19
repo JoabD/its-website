@@ -14,6 +14,8 @@ const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Inicio', path: '/admin', icon: 'bi-house-door' },
   { label: 'Avisos', path: '/admin/avisos', icon: 'bi-megaphone' },
   { label: 'Inscripciones', path: '/admin/inscripciones', icon: 'bi-journal-check', roles: ['Administrator'] },
+  { label: 'Regiones', path: '/admin/configuracion/regiones', icon: 'bi-geo-alt', roles: ['Administrator'] },
+  { label: 'Documentos de inscripción', path: '/admin/configuracion/checklist', icon: 'bi-ui-checks', roles: ['Administrator'] },
   { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
   { label: 'Docentes', path: '/admin/docentes', icon: 'bi-person-workspace', roles: ['Administrator'] },
   { label: 'Académico', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator'] },

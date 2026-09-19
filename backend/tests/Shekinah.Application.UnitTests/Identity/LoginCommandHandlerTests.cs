@@ -1,5 +1,6 @@
 using NSubstitute;
 using Shekinah.Application.Identity.Login;
+using Shekinah.Application.Identity.RefreshToken;
 using Shekinah.Domain.Common;
 using Shekinah.Domain.Identity;
 using Shekinah.Domain.SharedKernel;
@@ -20,7 +21,12 @@ public class LoginCommandHandlerTests
         var users = Substitute.For<IUserRepository>();
         users.GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns((User?)null);
 
-        var handler = new LoginCommandHandler(users, Substitute.For<Abstractions.IPasswordHasher>(), Substitute.For<Abstractions.ITokenService>(), new FixedClock());
+        var handler = new LoginCommandHandler(
+            users,
+            Substitute.For<Abstractions.IPasswordHasher>(),
+            Substitute.For<Abstractions.ITokenService>(),
+            Substitute.For<IRefreshTokenStore>(),
+            new FixedClock());
 
         var result = await handler.HandleAsync(new LoginCommand("inexistente@example.com", "cualquiera"), CancellationToken.None);
 

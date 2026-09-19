@@ -89,6 +89,7 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         {
             ["_id"] = ObjectId.Parse(user.Id),
             ["enrollmentNumber"] = user.EnrollmentNumber.Value,
+            ["matricula"] = user.Matricula is null ? BsonNull.Value : user.Matricula,
             ["role"] = user.Role.ToString(),
             ["status"] = user.Status.ToString(),
             ["credentials"] = new BsonDocument
@@ -109,6 +110,7 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             ["academic"] = user.Academic is null ? BsonNull.Value : new BsonDocument
             {
                 ["currentTerm"] = user.Academic.CurrentTerm.Value,
+                ["plan"] = user.Academic.Plan.ToString(),
                 ["isGraduated"] = user.Academic.IsGraduated,
                 ["enrolledAt"] = user.Academic.EnrolledAtUtc,
                 ["graduatedAt"] = user.Academic.GraduatedAtUtc.HasValue ? user.Academic.GraduatedAtUtc.Value : BsonNull.Value,
@@ -161,8 +163,12 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         {
             var a = academicValue.AsBsonDocument;
             var term = TermNumber.Create(a["currentTerm"].AsInt32).Value;
+            // Compat: documentos creados antes de que existiera "plan" (toda solicitud aprobada
+            // siempre fue y sigue siendo Cuatrimestral) se leen como Quarterly por defecto.
+            var plan = a.TryGetValue("plan", out var planValue) && !planValue.IsBsonNull
+                ? Enum.Parse<StudyPlan>(planValue.AsString) : StudyPlan.Quarterly;
             var graduatedAt = a.TryGetValue("graduatedAt", out var g) && !g.IsBsonNull ? g.ToUniversalTime() : (DateTime?)null;
-            academic = AcademicState.Rehydrate(term, a["enrolledAt"].ToUniversalTime(), graduatedAt);
+            academic = AcademicState.Rehydrate(plan, term, a["enrolledAt"].ToUniversalTime(), graduatedAt);
         }
 
         var billingDoc = doc["billing"].AsBsonDocument;
@@ -193,7 +199,8 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             doc.TryGetValue("admissionApplicationId", out var appId) && !appId.IsBsonNull ? appId.AsObjectId.ToString() : null,
             doc.TryGetValue("lastLoginAt", out var lla) && !lla.IsBsonNull ? lla.ToUniversalTime() : null,
             doc["createdAt"].ToUniversalTime(),
-            doc.GetValue("version", 1).AsInt32);
+            doc.GetValue("version", 1).AsInt32,
+            doc.TryGetValue("matricula", out var mat) && !mat.IsBsonNull ? mat.AsString : null);
     }
 
     private static Credentials RehydrateCredentials(BsonDocument credentialsDoc) => Credentials.Rehydrate(
@@ -202,4 +209,51 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         credentialsDoc["passwordUpdatedAt"].ToUniversalTime(),
         credentialsDoc.GetValue("failedAttempts", 0).AsInt32,
         credentialsDoc.TryGetValue("lockedUntil", out var lu) && !lu.IsBsonNull ? lu.ToUniversalTime() : null);
+
+    // Mismo patrón que PaymentRepository.RegisterImportBatchAsync/CompleteImportBatchAsync/GetImportBatchAsync —
+    // colección propia (studentImportBatches) para no mezclar lotes de alumnos con lotes de pagos.
+    public async Task<StudentImportBatch> RegisterStudentImportBatchAsync(string fileName, string uploadedByUserId, int totalRows, CancellationToken ct)
+    {
+        var id = ObjectId.GenerateNewId();
+        var doc = new BsonDocument
+        {
+            ["_id"] = id,
+            ["fileName"] = fileName,
+            ["uploadedBy"] = uploadedByUserId,
+            ["uploadedAt"] = DateTime.UtcNow,
+            ["totalRows"] = totalRows,
+            ["importedRows"] = 0,
+            ["status"] = nameof(ImportBatchStatus.Processing),
+            ["errors"] = new BsonArray(),
+        };
+        await context.StudentImportBatches.InsertOneAsync(doc, cancellationToken: ct);
+        return new StudentImportBatch(id.ToString(), fileName, uploadedByUserId, doc["uploadedAt"].ToUniversalTime(), totalRows, 0, ImportBatchStatus.Processing, []);
+    }
+
+    public async Task CompleteStudentImportBatchAsync(string batchId, int importedRows, IReadOnlyList<StudentImportRowError> errors, CancellationToken ct)
+    {
+        var update = Builders<BsonDocument>.Update
+            .Set("importedRows", importedRows)
+            .Set("status", nameof(ImportBatchStatus.Completed))
+            .Set("errors", new BsonArray(errors.Select(e => new BsonDocument
+            {
+                ["rowNumber"] = e.RowNumber, ["code"] = e.Code, ["message"] = e.Message, ["rawValues"] = new BsonArray(e.RawValues),
+            })));
+
+        await context.StudentImportBatches.UpdateOneAsync(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(batchId)), update, cancellationToken: ct);
+    }
+
+    public async Task<StudentImportBatch?> GetStudentImportBatchAsync(string batchId, CancellationToken ct)
+    {
+        var doc = await context.StudentImportBatches.Find(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(batchId))).FirstOrDefaultAsync(ct);
+        if (doc is null) return null;
+
+        var errors = doc["errors"].AsBsonArray.Select(e => new StudentImportRowError(
+            e["rowNumber"].AsInt32, e["code"].AsString, e["message"].AsString,
+            e["rawValues"].AsBsonArray.Select(v => v.AsString).ToList())).ToList();
+
+        return new StudentImportBatch(
+            doc["_id"].AsObjectId.ToString(), doc["fileName"].AsString, doc["uploadedBy"].AsString, doc["uploadedAt"].ToUniversalTime(),
+            doc["totalRows"].AsInt32, doc["importedRows"].AsInt32, Enum.Parse<ImportBatchStatus>(doc["status"].AsString), errors);
+    }
 }

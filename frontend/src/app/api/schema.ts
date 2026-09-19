@@ -14,6 +14,7 @@ export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordi
 export type ModalityDto = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatusDto = 'Pending' | 'Approved' | 'Rejected';
 export type SchoolingLevelDto = 'Primary' | 'Secondary' | 'HighSchool' | 'Other';
+export type StudyPlanDto = 'Quarterly' | 'Semester';
 
 export interface PagedResultDto<T> {
   items: T[];
@@ -40,6 +41,12 @@ export interface LoginResponseDto {
   userId: string;
   role: UserRole;
   mustChangePassword: boolean;
+}
+
+export interface RefreshTokenResponseDto {
+  accessToken: string;
+  accessTokenExpiresAtUtc: string;
+  refreshToken: string;
 }
 
 export interface CurrentUserDto {
@@ -115,14 +122,48 @@ export interface ApplicationListItemDto {
   regionName: string;
   status: ApplicationStatusDto;
   submittedAtUtc: string;
+  /** Fecha en la que la purga automática (30 días tras decidir) la elimina; null mientras Pending. */
+  purgeScheduledAtUtc: string | null;
+}
+
+/** Catálogo vivo (Configuración → Documentos de inscripción): un ítem por documento activo. */
+export interface ChecklistItemStateDto {
+  id: string;
+  label: string;
+  checked: boolean;
+}
+
+export interface ApplicationChecklistDto {
+  items: ChecklistItemStateDto[];
+  isComplete: boolean;
 }
 
 export interface ApplicationDetailDto {
   id: string;
   folio: string;
-  applicantName: string;
+  fullName: string;
+  birthDate: string;
+  maritalStatus: string;
   email: string;
   phone: string;
+  street: string;
+  neighborhood: string;
+  locality: string;
+  municipality: string;
+  state: string | null;
+  churchName: string;
+  churchStreet: string;
+  churchNeighborhood: string;
+  churchLocality: string;
+  churchMunicipality: string;
+  pastorName: string;
+  timeAttending: string;
+  hasMinistryRole: boolean;
+  ministryRoleName: string | null;
+  educationLevel: SchoolingLevelDto;
+  otherEducationDescription: string | null;
+  theologicalBackground: string;
+  studyPurpose: string;
   modality: ModalityDto;
   regionName: string;
   onlineReason: string | null;
@@ -130,11 +171,67 @@ export interface ApplicationDetailDto {
   submittedAtUtc: string;
   decisionReason: string | null;
   decidedAtUtc: string | null;
+  isDeletable: boolean;
+  approvedViaQuickAction: boolean;
+  purgeScheduledAtUtc: string | null;
+  checklist: ApplicationChecklistDto;
+}
+
+export interface UpdateChecklistRequestDto {
+  checkedItemIds: string[];
+}
+
+export interface ApproveApplicationRequestDto {
+  viaQuickAction: boolean;
+}
+
+export interface ApproveApplicationResponseDto {
+  userId: string;
+  enrollmentNumber: number;
+  matricula: string;
+  temporaryPassword: string;
+}
+
+/** Configuración → Documentos de inscripción (catálogo editable del checklist). */
+export interface ChecklistItemListItemDto {
+  id: string;
+  label: string;
+  displayOrder: number;
+  isActive: boolean;
+}
+
+export interface CreateChecklistItemRequestDto {
+  label: string;
+}
+
+export interface UpdateChecklistItemRequestDto {
+  label: string;
+  displayOrder: number;
+}
+
+export interface SetChecklistItemActiveRequestDto {
+  isActive: boolean;
+}
+
+/** Configuración → Regiones (vista/edición administrativa completa). */
+export interface RegionAdminListItemDto {
+  id: string;
+  code: number;
+  name: string;
+  abbreviation: string;
+  modalityScope: ModalityDto[];
+  isActive: boolean;
+}
+
+export interface UpdateRegionRequestDto {
+  modalityScope: ModalityDto[];
+  abbreviation: string;
 }
 
 export interface UserListItemDto {
   id: string;
   enrollmentNumber: number;
+  matricula: string | null;
   fullName: string;
   email: string;
   role: UserRole;
@@ -142,6 +239,50 @@ export interface UserListItemDto {
   regionName: string | null;
   modality: ModalityDto | null;
   currentTerm: number | null;
+  plan: StudyPlanDto | null;
+}
+
+/** Alumnos → "Agregar alumno" → formulario manual. */
+export interface CreateStudentRequestDto {
+  fullName: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  regionId: string;
+  modality: ModalityDto;
+  plan: StudyPlanDto;
+  currentTerm: number;
+}
+
+export interface CreateStudentResponseDto {
+  userId: string;
+  enrollmentNumber: number;
+  matricula: string;
+  temporaryPassword: string;
+}
+
+/** Alumnos → "Agregar alumno" → importar Excel. */
+export interface StudentImportRowErrorDto {
+  rowNumber: number;
+  code: string;
+  message: string;
+  rawValues: string[];
+}
+
+export interface StudentImportBatchDto {
+  id: string;
+  fileName: string;
+  status: 'Processing' | 'Completed' | 'Failed';
+  totalRows: number;
+  importedRows: number;
+  errors: StudentImportRowErrorDto[];
+}
+
+export interface ImportStudentsResponseDto {
+  batchId: string;
+  totalRows: number;
+  importedRows: number;
+  errors: StudentImportRowErrorDto[];
 }
 
 export interface PeriodListItemDto {

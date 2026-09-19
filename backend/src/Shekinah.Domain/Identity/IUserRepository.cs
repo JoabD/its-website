@@ -26,4 +26,18 @@ public interface IUserRepository
     Task UpdateAsync(User user, CancellationToken ct);
 
     Task<int> GetMaxEnrollmentNumberAsync(CancellationToken ct);
+
+    /// <summary>Alta manual de alumnos por Excel (mismo patrón fila-a-fila que
+    /// <c>IPaymentRepository</c>: reporta sin abortar el lote).</summary>
+    Task<StudentImportBatch> RegisterStudentImportBatchAsync(string fileName, string uploadedByUserId, int totalRows, CancellationToken ct);
+
+    Task CompleteStudentImportBatchAsync(string batchId, int importedRows, IReadOnlyList<StudentImportRowError> errors, CancellationToken ct);
+
+    Task<StudentImportBatch?> GetStudentImportBatchAsync(string batchId, CancellationToken ct);
 }
+
+public sealed record StudentImportRowError(int RowNumber, string Code, string Message, IReadOnlyList<string> RawValues);
+
+public sealed record StudentImportBatch(
+    string Id, string FileName, string UploadedByUserId, DateTime UploadedAtUtc,
+    int TotalRows, int ImportedRows, ImportBatchStatus Status, IReadOnlyList<StudentImportRowError> Errors);

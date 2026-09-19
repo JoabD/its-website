@@ -14,7 +14,14 @@ public static class UsersEndpoints
     {
         var group = app.MapGroup("/api/v1/users").WithTags("Usuarios").RequireAuthorization();
 
-        group.MapGet("/", async (UserRole? role, string? regionId, string? search, int page, int pageSize, IDispatcher dispatcher, CancellationToken ct) =>
+        // BUG REAL encontrado: al declarar "int page, int pageSize" SIN valor por defecto, Minimal
+        // API exige que el query string los incluya SIEMPRE — si la petición los omite (como hacían
+        // Alumnos y Docentes, que solo mandan role/pageSize o ni eso), ASP.NET Core lanza
+        // BadHttpRequestException ANTES de llegar aquí dentro ("Required parameter \"int page\" was
+        // not provided"), devolviendo 500 y dejando el fallback "page == 0 ? 1 : page" como código
+        // muerto (nunca se ejecuta porque el binding falla primero). Al darles valor por defecto,
+        // el parámetro se vuelve opcional para el binder y el fallback sí puede operar.
+        group.MapGet("/", async (UserRole? role, string? regionId, string? search, IDispatcher dispatcher, CancellationToken ct, int page = 0, int pageSize = 0) =>
             (await dispatcher.QueryAsync(new GetUsersQuery(role, regionId, search, page == 0 ? 1 : page, pageSize == 0 ? 20 : pageSize), ct)).ToApiResult());
 
         group.MapPost("/", async (CreateUserCommand command, IDispatcher dispatcher, CancellationToken ct) =>
