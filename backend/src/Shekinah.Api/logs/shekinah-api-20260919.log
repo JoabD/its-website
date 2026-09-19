@@ -1,0 +1,311 @@
+2026-09-19 08:58:35.311 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-19 08:58:35.705 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-19 08:58:35.716 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-19 08:58:35.736 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-19 08:58:35.742 -06:00 [INF] Hosting environment: Development
+2026-09-19 08:58:35.745 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-19 08:58:36.226 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-19 08:58:36.354 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-19 08:58:36.360 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-19 08:58:36.363 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 141.5615ms
+2026-09-19 08:59:02.919 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 08:59:02.928 -06:00 [INF] CORS policy execution successful.
+2026-09-19 08:59:02.936 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 08:59:02.973 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 08:59:03.691 -06:00 [INF] LoginCommand completado
+2026-09-19 08:59:03.699 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 08:59:03.705 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 08:59:03.718 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 08:59:03.727 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 807.3677ms
+2026-09-19 08:59:03.745 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 08:59:03.824 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 08:59:03.829 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 08:59:03.837 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 08:59:03.839 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 08:59:03.841 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 08:59:03.849 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 08:59:03.852 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 107.1167ms
+2026-09-19 09:00:09.504 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:00:09.509 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:00:09.511 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:00:09.515 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:00:09.748 -06:00 [INF] LoginCommand completado
+2026-09-19 09:00:09.750 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:00:09.752 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:00:09.754 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:00:09.757 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 253.1863ms
+2026-09-19 09:00:09.766 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:00:09.772 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:00:09.777 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:00:09.781 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:00:09.783 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:00:09.786 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:00:09.792 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:00:09.795 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 28.4383ms
+2026-09-19 09:05:36.899 -06:00 [INF] Application is shutting down...
+2026-09-19 09:05:43.870 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-19 09:05:44.260 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-19 09:05:44.263 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-19 09:05:44.266 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-19 09:05:44.267 -06:00 [INF] Hosting environment: Development
+2026-09-19 09:05:44.269 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-19 09:05:44.841 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-19 09:05:44.971 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-19 09:05:44.977 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-19 09:05:44.980 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 145.9218ms
+2026-09-19 09:05:55.513 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:05:55.522 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:05:55.529 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:05:55.563 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:05:56.195 -06:00 [INF] LoginCommand completado
+2026-09-19 09:05:56.206 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:05:56.214 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:05:56.231 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:05:56.238 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 725.2007ms
+2026-09-19 09:05:56.255 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:05:56.333 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:05:56.340 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:05:56.348 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:05:56.350 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:05:56.354 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:05:56.362 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:05:56.364 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 109.5898ms
+2026-09-19 09:06:18.425 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:06:18.430 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:06:18.431 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:06:18.436 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:06:18.671 -06:00 [INF] LoginCommand completado
+2026-09-19 09:06:18.674 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:06:18.676 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:06:18.679 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:06:18.681 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 255.6065ms
+2026-09-19 09:06:18.691 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:06:18.697 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:06:18.701 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:06:18.704 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:06:18.707 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:06:18.709 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:06:18.712 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:06:18.715 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 23.9967ms
+2026-09-19 09:06:49.906 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:06:49.910 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:06:49.911 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:06:49.919 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:06:50.154 -06:00 [INF] LoginCommand completado
+2026-09-19 09:06:50.156 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:06:50.158 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:06:50.161 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:06:50.163 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 257.3806ms
+2026-09-19 09:06:50.174 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:06:50.179 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:06:50.186 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:06:50.189 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:06:50.192 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:06:50.194 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:06:50.196 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:06:50.198 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 24.3563ms
+2026-09-19 09:10:41.180 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 76
+2026-09-19 09:10:41.184 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:10:41.185 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:10:41.187 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:10:41.433 -06:00 [WRN] LoginCommand falló: Auth.InvalidCredentials - Correo o contraseña incorrectos.
+2026-09-19 09:10:41.441 -06:00 [INF] Setting HTTP status code 401.
+2026-09-19 09:10:41.467 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:10:41.472 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 401 null application/problem+json 291.2978ms
+2026-09-19 09:17:18.854 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 76
+2026-09-19 09:17:18.858 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:17:18.859 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:17:18.861 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:17:19.093 -06:00 [WRN] LoginCommand falló: Auth.InvalidCredentials - Correo o contraseña incorrectos.
+2026-09-19 09:17:19.096 -06:00 [INF] Setting HTTP status code 401.
+2026-09-19 09:17:19.099 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:17:19.101 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 401 null application/problem+json 247.5417ms
+2026-09-19 09:17:48.762 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:17:48.766 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:17:48.767 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:17:48.769 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:17:49.004 -06:00 [INF] LoginCommand completado
+2026-09-19 09:17:49.006 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:17:49.008 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:17:49.010 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:17:49.012 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 250.7032ms
+2026-09-19 09:17:49.021 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:17:49.026 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:17:49.028 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:17:49.030 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:17:49.032 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:17:49.035 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:17:49.039 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:17:49.041 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 20.0394ms
+2026-09-19 09:18:01.409 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - null null
+2026-09-19 09:18:01.413 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:18:01.421 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-09-19 09:18:01.515 -06:00 [INF] GetApplicationsQuery completado
+2026-09-19 09:18:01.516 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:18:01.530 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-19 09:18:01.540 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:18:01.543 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 133.8895ms
+2026-09-19 09:18:07.636 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - null null
+2026-09-19 09:18:07.641 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:18:07.644 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-09-19 09:18:07.648 -06:00 [INF] GetApplicationsQuery completado
+2026-09-19 09:18:07.650 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:18:07.652 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-19 09:18:07.653 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:18:07.655 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 19.3556ms
+2026-09-19 09:19:15.579 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:19:15.583 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:19:15.585 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:19:15.587 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:19:15.589 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:19:15.591 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:19:15.592 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:19:15.594 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 15.4306ms
+2026-09-19 09:30:34.891 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:30:34.898 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:30:34.900 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:30:34.903 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:30:34.906 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:30:34.908 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:30:34.912 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:30:34.914 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 23.5847ms
+2026-09-19 09:30:45.040 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:30:45.046 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:30:45.048 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:30:45.051 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:30:45.053 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:30:45.055 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:30:45.056 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:30:45.059 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 18.9872ms
+2026-09-19 09:31:07.738 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:31:07.745 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:07.747 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:31:07.750 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:31:07.752 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:31:07.753 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:31:07.755 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:07.758 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 19.7417ms
+2026-09-19 09:31:17.950 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:31:17.956 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:17.959 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:31:17.961 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:31:17.963 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:31:17.965 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:31:17.967 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:17.969 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 18.7454ms
+2026-09-19 09:31:28.091 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:31:28.096 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:28.098 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:31:28.100 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:31:28.102 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:31:28.104 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:31:28.106 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:31:28.108 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 16.3362ms
+2026-09-19 09:31:28.561 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - null null
+2026-09-19 09:31:28.565 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:31:28.571 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-09-19 09:31:28.573 -06:00 [INF] GetApplicationsQuery completado
+2026-09-19 09:31:28.575 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:31:28.577 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-19 09:31:28.579 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:31:28.581 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 19.9894ms
+2026-09-19 09:32:58.657 -06:00 [INF] Application is shutting down...
+2026-09-19 09:33:04.237 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-19 09:33:04.771 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-19 09:33:04.774 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-19 09:33:04.778 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-19 09:33:04.780 -06:00 [INF] Hosting environment: Development
+2026-09-19 09:33:04.781 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-19 09:33:05.063 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-19 09:33:05.201 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-19 09:33:05.207 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-19 09:33:05.212 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 152.7267ms
+2026-09-19 09:33:52.091 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-09-19 09:33:52.098 -06:00 [INF] CORS policy execution successful.
+2026-09-19 09:33:52.105 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:33:52.141 -06:00 [INF] Ejecutando LoginCommand
+2026-09-19 09:33:52.820 -06:00 [INF] LoginCommand completado
+2026-09-19 09:33:52.830 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:33:52.834 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-09-19 09:33:52.849 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-09-19 09:33:52.858 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 766.7154ms
+2026-09-19 09:33:52.879 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:33:52.968 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:52.972 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:33:52.979 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:33:52.981 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:33:52.984 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:33:52.993 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:52.995 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 116.2865ms
+2026-09-19 09:33:56.136 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:33:56.141 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:56.144 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:33:56.147 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:33:56.149 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:33:56.152 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:33:56.154 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:56.156 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 20.222ms
+2026-09-19 09:33:56.994 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:33:57.000 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:57.010 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:33:57.013 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:33:57.015 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:33:57.018 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:33:57.021 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:33:57.024 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 29.8356ms
+2026-09-19 09:34:00.457 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:34:00.462 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:34:00.464 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:34:00.466 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:34:00.468 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:34:00.470 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:34:00.472 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:34:00.475 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 17.3586ms
+2026-09-19 09:34:02.911 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-19 09:34:02.917 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:34:02.919 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-19 09:34:02.922 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-19 09:34:02.925 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:34:02.927 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-19 09:34:02.930 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-19 09:34:02.933 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 22.194ms
+2026-09-19 09:34:08.744 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-19 09:34:08.748 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-19 09:34:08.755 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-19 09:34:08.760 -06:00 [ERR] Excepción no controlada procesando /api/v1/users
+Microsoft.AspNetCore.Http.BadHttpRequestException: Required parameter "int page" was not provided from query string.
+   at lambda_method92(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_4>d.MoveNext() in C:\NG\Angular\shekina-site\backend\src\Shekinah.Api\Program.cs:line 94
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2026-09-19 09:34:08.776 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 500 null application/json; charset=utf-8 32.1564ms
+2026-09-19 09:34:11.370 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - null null
+2026-09-19 09:34:11.374 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:34:11.378 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-09-19 09:34:11.483 -06:00 [INF] GetApplicationsQuery completado
+2026-09-19 09:34:11.485 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:34:11.495 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-19 09:34:11.503 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:34:11.505 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 134.9875ms
+2026-09-19 09:34:12.329 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Approved&page=1&pageSize=20 - null null
+2026-09-19 09:34:12.334 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:34:12.337 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-09-19 09:34:12.342 -06:00 [INF] GetApplicationsQuery completado
+2026-09-19 09:34:12.344 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:34:12.347 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-19 09:34:12.350 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-09-19 09:34:12.353 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Approved&page=1&pageSize=20 - 200 null application/json; charset=utf-8 24.1557ms
+2026-09-19 09:34:17.972 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications/eb64268509fec4ca5d788e58 - null null
+2026-09-19 09:34:17.976 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications/{id}'
+2026-09-19 09:34:17.979 -06:00 [INF] Ejecutando GetApplicationByIdQuery
+2026-09-19 09:34:17.993 -06:00 [INF] GetApplicationByIdQuery completado
+2026-09-19 09:34:17.994 -06:00 [INF] Setting HTTP status code 200.
+2026-09-19 09:34:18.002 -06:00 [INF] Writing value of type 'ApplicationDetail' as Json.
+2026-09-19 09:34:18.019 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications/{id}'
+2026-09-19 09:34:18.022 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications/eb64268509fec4ca5d788e58 - 200 null application/json; charset=utf-8 50.1209ms

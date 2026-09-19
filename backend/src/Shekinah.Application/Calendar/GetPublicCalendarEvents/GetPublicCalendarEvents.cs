@@ -19,9 +19,20 @@ public sealed record CalendarEventListItem(
 public sealed class GetPublicCalendarEventsQueryHandler(ICalendarEventRepository calendarEvents, IClock clock)
     : IQueryHandler<GetPublicCalendarEventsQuery, IReadOnlyList<CalendarEventListItem>>
 {
+    // BUG REAL encontrado: "hoy" se calculaba con clock.UtcNow.Date (medianoche UTC), pero el
+    // instituto opera en hora de México (Centro, UTC-6, sin horario de verano desde 2022 — huso
+    // fijo). Como México va 6 horas detrás de UTC, entre las 6:00pm y la medianoche hora de México
+    // el reloj UTC YA marca el día siguiente. Resultado: cualquier evento capturado con hora antes
+    // de las 6:00pm (hora de México) del día actual, consultado después de las 6:00pm, calificaba
+    // como "de ayer" según UTC y desaparecía del calendario público — justo lo que reportó el
+    // usuario (evento de las 4:00pm capturado a las 9:50pm, mismo día calendario en México).
+    // Se calcula la medianoche de "hoy" en hora de México y se convierte a UTC para el filtro.
+    private static readonly TimeSpan InstitutionUtcOffset = TimeSpan.FromHours(-6);
+
     public async Task<Result<IReadOnlyList<CalendarEventListItem>>> HandleAsync(GetPublicCalendarEventsQuery query, CancellationToken ct)
     {
-        var fromUtc = query.FromUtc ?? clock.UtcNow.Date;
+        var localNow = clock.UtcNow + InstitutionUtcOffset;
+        var fromUtc = query.FromUtc ?? (localNow.Date - InstitutionUtcOffset);
         var items = await calendarEvents.GetUpcomingAsync(fromUtc, ct);
 
         IReadOnlyList<CalendarEventListItem> mapped = items

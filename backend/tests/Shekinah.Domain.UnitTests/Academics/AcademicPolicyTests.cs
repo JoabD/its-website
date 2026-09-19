@@ -76,11 +76,11 @@ public class AcademicPolicyTests
             new TeacherRef("t1", 500, "Profesor X")).Value;
 
         var matchingStudent = User.CreateStudentFromApplication(
-            "student-a", EnrollmentNumber.Create(2001).Value, "app-a",
+            "student-a", EnrollmentNumber.Create(2001).Value, "ITS/TEST/02001", "app-a",
             TestProfiles.Valid(), Modality.Onsite, new RegionRef("region-A", 1, "Región A"), "hash", new TestClock()).Value;
 
         var wrongRegionStudent = User.CreateStudentFromApplication(
-            "student-b", EnrollmentNumber.Create(2002).Value, "app-b",
+            "student-b", EnrollmentNumber.Create(2002).Value, "ITS/TEST/02002", "app-b",
             TestProfiles.Valid(), Modality.Onsite, new RegionRef("region-B", 2, "Región B"), "hash", new TestClock()).Value;
 
         AutoEnrollmentPolicy.IsEligible(matchingStudent, offering).ShouldBeTrue();

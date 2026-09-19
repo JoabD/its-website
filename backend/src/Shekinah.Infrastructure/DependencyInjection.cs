@@ -11,6 +11,7 @@ using Shekinah.Domain.Calendar;
 using Shekinah.Domain.Catalog;
 using Shekinah.Domain.Common;
 using Shekinah.Domain.Identity;
+using Shekinah.Infrastructure.Admissions;
 using Shekinah.Infrastructure.Auth;
 using Shekinah.Infrastructure.Documents;
 using Shekinah.Infrastructure.Outbox;
@@ -51,6 +52,7 @@ public static class DependencyInjection
         services.AddSingleton<INotificationRecipients, EmailSettingsNotificationRecipients>();
         services.AddScoped<IRefreshTokenStore, MongoRefreshTokenStore>();
         services.AddScoped<IEnrollmentNumberGenerator, EnrollmentNumberGenerator>();
+        services.AddScoped<IMatriculaGenerator, MatriculaGenerator>();
         services.AddSingleton<ISpreadsheetReader, SpreadsheetReader>();
         services.AddScoped<IPaymentMatrixReader, PaymentMatrixReader>();
         services.AddSingleton<IFileStorage>(_ => new LocalFileStorage(configuration["Storage:RootPath"] ?? "/data/uploads"));
@@ -62,6 +64,7 @@ public static class DependencyInjection
         services.AddScoped<ISubjectRepository, SubjectRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAdmissionApplicationRepository, AdmissionApplicationRepository>();
+        services.AddScoped<IChecklistItemDefinitionRepository, ChecklistItemDefinitionRepository>();
         services.AddScoped<IAcademicPeriodRepository, AcademicPeriodRepository>();
         services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -71,10 +74,13 @@ public static class DependencyInjection
 
         services.AddSingleton<IMongoMigration, M001_CreateIndexesAndValidators>();
         services.AddSingleton<IMongoMigration, M002_RenameOnsiteRegions>();
+        services.AddSingleton<IMongoMigration, M003_AddRegionAbbreviations>();
+        services.AddSingleton<IMongoMigration, M004_SeedChecklistItemDefinitions>();
         services.AddScoped<MigrationRunner>();
         services.AddScoped<DatabaseSeeder>();
 
         services.AddHostedService<OutboxProcessor>();
+        services.AddHostedService<AdmissionApplicationPurgeJob>();
 
         return services;
     }

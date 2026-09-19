@@ -75,6 +75,18 @@ public interface IEnrollmentNumberGenerator
     Task EnsureSequenceAtLeastAsync(int minimumValue, CancellationToken ct);
 }
 
+/// <summary>
+/// Puerto hacia la matrícula "amigable" ITS/{Abreviatura de región}/{consecutivo} (ej. "ITS/SM/00001"),
+/// generada al aprobar una solicitud — aditiva a <see cref="IEnrollmentNumberGenerator"/>, no lo
+/// reemplaza (ver comentario en <c>User.Matricula</c>). Un contador atómico independiente POR REGIÓN
+/// (mismo patrón findAndModify que <see cref="IEnrollmentNumberGenerator"/>), para que cada sede
+/// tenga su propio consecutivo.
+/// </summary>
+public interface IMatriculaGenerator
+{
+    Task<string> NextAsync(string regionAbbreviation, CancellationToken ct);
+}
+
 public interface IUnitOfWork
 {
     Task ExecuteInTransactionAsync(Func<CancellationToken, Task> operation, CancellationToken ct);

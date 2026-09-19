@@ -52,6 +52,7 @@ import { MODALITY_LABELS } from '../../../domain/models';
       <table class="w-full text-left text-sm">
         <thead class="text-slate-500">
           <tr>
+            <th class="py-2">No. control</th>
             <th class="py-2">Matrícula</th>
             <th class="py-2">Nombre</th>
             <th class="py-2">Correo</th>
@@ -64,7 +65,8 @@ import { MODALITY_LABELS } from '../../../domain/models';
         <tbody>
           @for (student of filteredStudents(); track student.id) {
             <tr class="border-t border-slate-100">
-              <td class="py-2 font-medium">{{ student.enrollmentNumber }}</td>
+              <td class="py-2 text-slate-500">{{ student.enrollmentNumber }}</td>
+              <td class="py-2 font-medium">{{ student.matricula ?? '—' }}</td>
               <td class="py-2">{{ student.fullName }}</td>
               <td class="py-2 text-slate-500">{{ student.email }}</td>
               <td class="py-2">{{ student.regionName ?? '—' }}</td>
@@ -73,7 +75,7 @@ import { MODALITY_LABELS } from '../../../domain/models';
               <td class="py-2"><shk-badge [tone]="student.status === 'Active' ? 'success' : 'neutral'">{{ statusLabel(student.status) }}</shk-badge></td>
             </tr>
           } @empty {
-            <tr><td colspan="7" class="py-6 text-center text-slate-400">Sin alumnos que coincidan con el filtro.</td></tr>
+            <tr><td colspan="8" class="py-6 text-center text-slate-400">Sin alumnos que coincidan con el filtro.</td></tr>
           }
         </tbody>
       </table>

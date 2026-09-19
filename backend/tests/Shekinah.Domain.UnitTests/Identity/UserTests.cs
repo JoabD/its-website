@@ -19,7 +19,7 @@ public class UserTests
     public void RN_05_RN_24_Requiere_cambio_de_password()
     {
         var user = User.CreateStudentFromApplication(
-            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1001).Value, "app-1", ValidProfile(),
+            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1001).Value, "ITS/TEST/00001", "app-1", ValidProfile(),
             Modality.Onsite, Region(), "hashed-temp-password", new TestClock()).Value;
 
         user.Credentials.MustChangePassword.ShouldBeTrue();
@@ -31,7 +31,7 @@ public class UserTests
     public void RN_07_Usuario_bloqueado_no_autentica()
     {
         var user = User.CreateStudentFromApplication(
-            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1002).Value, "app-2", ValidProfile(),
+            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1002).Value, "ITS/TEST/00002", "app-2", ValidProfile(),
             Modality.Onsite, Region(), "hash", new TestClock()).Value;
 
         for (var i = 0; i < 4; i++)
@@ -48,7 +48,7 @@ public class UserTests
     public void RN_19_Bloqueo_al_cuarto_aviso()
     {
         var user = User.CreateStudentFromApplication(
-            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1003).Value, "app-3", ValidProfile(),
+            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1003).Value, "ITS/TEST/00003", "app-3", ValidProfile(),
             Modality.Onsite, Region(), "hash", new TestClock()).Value;
 
         user.RegisterPaymentNotice(new TestClock());
@@ -65,7 +65,7 @@ public class UserTests
     public void RN_18_Importar_pago_desbloquea()
     {
         var user = User.CreateStudentFromApplication(
-            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1004).Value, "app-4", ValidProfile(),
+            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1004).Value, "ITS/TEST/00004", "app-4", ValidProfile(),
             Modality.Onsite, Region(), "hash", new TestClock()).Value;
 
         for (var i = 0; i < 4; i++) user.RegisterPaymentNotice(new TestClock());
@@ -82,7 +82,7 @@ public class UserTests
     public void RN_14_Promocion_sexto_marca_egresado()
     {
         var user = User.CreateStudentFromApplication(
-            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1005).Value, "app-5", ValidProfile(),
+            Guid.NewGuid().ToString(), EnrollmentNumber.Create(1005).Value, "ITS/TEST/00005", "app-5", ValidProfile(),
             Modality.Onsite, Region(), "hash", new TestClock()).Value;
 
         for (var i = 0; i < 5; i++) user.PromoteTerm(new TestClock());

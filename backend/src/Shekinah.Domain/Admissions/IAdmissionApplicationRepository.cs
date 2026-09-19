@@ -15,5 +15,7 @@ public interface IAdmissionApplicationRepository
 
     Task UpdateAsync(AdmissionApplication application, CancellationToken ct);
 
+    Task DeleteAsync(string id, CancellationToken ct);
+
     Task<int> GetNextLegacySequenceAsync(CancellationToken ct);
 }

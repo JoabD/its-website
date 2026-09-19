@@ -63,6 +63,8 @@ public sealed class MongoContext
 
     public IMongoCollection<BsonDocument> CalendarEvents => Database.GetCollection<BsonDocument>("calendarEvents");
 
+    public IMongoCollection<BsonDocument> ChecklistItemDefinitions => Database.GetCollection<BsonDocument>("checklistItemDefinitions");
+
     private static void RegisterConventions()
     {
         var pack = new ConventionPack

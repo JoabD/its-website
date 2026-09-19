@@ -89,6 +89,7 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         {
             ["_id"] = ObjectId.Parse(user.Id),
             ["enrollmentNumber"] = user.EnrollmentNumber.Value,
+            ["matricula"] = user.Matricula is null ? BsonNull.Value : user.Matricula,
             ["role"] = user.Role.ToString(),
             ["status"] = user.Status.ToString(),
             ["credentials"] = new BsonDocument
@@ -193,7 +194,8 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             doc.TryGetValue("admissionApplicationId", out var appId) && !appId.IsBsonNull ? appId.AsObjectId.ToString() : null,
             doc.TryGetValue("lastLoginAt", out var lla) && !lla.IsBsonNull ? lla.ToUniversalTime() : null,
             doc["createdAt"].ToUniversalTime(),
-            doc.GetValue("version", 1).AsInt32);
+            doc.GetValue("version", 1).AsInt32,
+            doc.TryGetValue("matricula", out var mat) && !mat.IsBsonNull ? mat.AsString : null);
     }
 
     private static Credentials RehydrateCredentials(BsonDocument credentialsDoc) => Credentials.Rehydrate(

@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthStore } from '../auth/auth.store';
 import { LoginModalService } from '../auth/login-modal.service';
 
@@ -22,12 +22,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 /**
- * Interceptor de 401: en un refactor posterior encolaría la petición fallida y reintentaría tras
- * refrescar el token (spec técnico §6: "interceptores (auth bearer, refresh 401, error → toast,
- * loading)"). Aquí, para mantener el alcance de este entregable, se cierra sesión de forma segura
- * ante un 401 — el flujo de refresh completo (cola de peticiones en vuelo) queda documentado como
- * siguiente paso en docs/DECISIONS.md. `authStore.logout()` ya redirige a la raíz; aquí solo se
- * reabre el modal de acceso para que la persona pueda volver a autenticarse sin buscar el botón.
+ * Interceptor de 401: BUG REAL encontrado — este interceptor nunca intentaba refrescar el token,
+ * pese a que el backend ya soporta POST /auth/refresh (7 días, Jwt:RefreshTokenDays) y a que el
+ * access token dura apenas 15 minutos (Jwt:AccessTokenMinutes). En la práctica, cualquier sesión se
+ * cerraba sola a los 15 minutos de la siguiente petición — el usuario percibía esto como "la sesión
+ * no se mantiene", agravado por sessionStorage (ver auth.store.ts) y por que el 401 llegaba en
+ * cualquier ventana nueva que no tuviera el token todavía.
+ *
+ * Ahora: ante un 401 que no sea de /auth/login ni /auth/refresh (para no reintentar en bucle),
+ * intenta renovar en silencio con el refresh token guardado y reintenta la petición original con el
+ * access token nuevo. Solo si el refresh también falla (refresh token vencido/revocado, o no había
+ * ninguno guardado) se cierra sesión y se reabre el modal de acceso.
  */
 export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthStore);
@@ -35,9 +40,20 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: unknown) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && req.url.includes('/api/') && !req.url.includes('/auth/login')) {
-        authStore.logout();
-        loginModal.open();
+      const isAuthEndpoint = req.url.includes('/auth/login') || req.url.includes('/auth/refresh');
+
+      if (error instanceof HttpErrorResponse && error.status === 401 && req.url.includes('/api/') && !isAuthEndpoint) {
+        return authStore.refreshAccessToken().pipe(
+          switchMap((refreshed) => {
+            if (!refreshed) {
+              authStore.logout();
+              loginModal.open();
+              return throwError(() => error);
+            }
+
+            return next(req.clone({ setHeaders: { Authorization: `Bearer ${refreshed.accessToken}` } }));
+          }),
+        );
       }
 
       return throwError(() => error);
