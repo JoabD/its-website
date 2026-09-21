@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, computed, inject, signal, viewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, afterNextRender, computed, inject, signal, viewChildren } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
@@ -343,9 +343,19 @@ interface Grupo {
     }
   `,
 })
-export class CatalogComponent implements AfterViewInit, OnDestroy {
+export class CatalogComponent implements OnDestroy {
   private readonly api = inject(ApiClient);
   private readonly secciones = viewChildren<ElementRef<HTMLElement>>('seccion');
+
+  constructor() {
+    // SEO fase 3 (prerendering, ver docs/Plan-SEO-Google-Search.md): antes esto vivía en
+    // ngAfterViewInit + queueMicrotask, que SÍ corre durante el prerender de `ng build` — y
+    // actualizarSeccionActiva() usa getBoundingClientRect(), que no existe en el DOM del servidor
+    // (@angular/platform-server), así que tronaba el build de /programas. afterNextRender está
+    // diseñado exactamente para esto: Angular garantiza que solo se ejecuta en el navegador, nunca
+    // en el servidor/prerender.
+    afterNextRender(() => this.actualizarSeccionActiva());
+  }
 
   protected readonly subjects = toSignal(
     this.api.get<CurriculumSubjectDto[]>('/catalog/curriculum').pipe(catchError(() => of<CurriculumSubjectDto[]>([]))),
@@ -372,11 +382,6 @@ export class CatalogComponent implements AfterViewInit, OnDestroy {
   protected readonly diplomadoMaterias = computed(() => this.subjects().filter((s) => s.programType === 'Diploma'));
 
   protected readonly seccionActiva = signal<string>('');
-
-  ngAfterViewInit(): void {
-    // Evalúa la sección visible una vez montado el DOM (equivalente al scroll-spy de programas.js).
-    queueMicrotask(() => this.actualizarSeccionActiva());
-  }
 
   ngOnDestroy(): void {}
 

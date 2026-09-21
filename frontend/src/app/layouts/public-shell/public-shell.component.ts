@@ -73,7 +73,7 @@ import { AuthStore } from '../../core/auth/auth.store';
         <div class="foot-grid">
           <div>
             <div class="foot-marca">
-              <img src="/img/icap-logo.png" alt="Logo Icap" id="logoi-img" />
+              <img src="/img/icap-logo.png" alt="Logo de la Instituto Comunidad Apostólica Pentecostal (ICAP) A.R." id="logoi-img" />
               <span>ICAP A.R.</span>
             </div>
             <p style="font-size: 14.5px; line-height: 1.7; max-width: 320px;">

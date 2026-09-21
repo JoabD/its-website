@@ -36,12 +36,23 @@ interface AuthState {
 // entre todas las pestañas/ventanas del mismo origen, que es el comportamiento "sesión abierta"
 // esperado. La expiración real de la sesión ya no depende de esto — la controla el refresh token
 // (7 días, Jwt:RefreshTokenDays) vía refreshTokens() más abajo.
-const storedAccessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+//
+// SEO fase 3 (prerendering, ver docs/Plan-SEO-Google-Search.md): este módulo se importa siempre
+// (App inyecta AuthStore en el constructor, incluso en rutas públicas), y este bloque de nivel de
+// módulo se ejecuta en cuanto se importa. Al prerenderizar (ng build con outputMode: 'static') este
+// código corre en Node vía @angular/platform-server, donde `localStorage` NO existe — sin esta
+// guarda, `ng build` truena con "localStorage is not defined" al generar el HTML estático de home,
+// planes, etc. `safeLocalStorage()` devuelve null fuera del navegador en vez de lanzar.
+function safeLocalStorage(): Storage | null {
+  return typeof localStorage === 'undefined' ? null : localStorage;
+}
+
+const storedAccessToken = safeLocalStorage()?.getItem(ACCESS_TOKEN_KEY) ?? null;
 
 const initialState: AuthState = {
   user: null,
   accessToken: storedAccessToken,
-  refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY),
+  refreshToken: safeLocalStorage()?.getItem(REFRESH_TOKEN_KEY) ?? null,
   loading: false,
   error: null,
   // true solo si hay un token guardado: en ese caso SÍ vamos a intentar /auth/me al arrancar

@@ -18,32 +18,62 @@ export const routes: Routes = [
       {
         path: '',
         title: 'Instituto Shekinah | Formación Bíblica y Ministerial',
+        data: {
+          description:
+            'Instituto Teológico Shekinah (ITS): formación bíblica y ministerial con planes de estudio, ' +
+            'sedes regionales e inscripción en línea. Prepárate para servir con una base sólida en las Escrituras.',
+        },
         loadComponent: () => import('./features/public/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'planes',
         title: 'Planes de Estudio | Instituto Shekinah',
+        data: {
+          description:
+            'Conoce los planes de estudio del Instituto Teológico Shekinah: duración, modalidades y requisitos ' +
+            'para cada nivel de formación bíblica y ministerial.',
+        },
         loadComponent: () => import('./features/public/plans/plans.component').then((m) => m.PlansComponent),
       },
       {
         path: 'programas',
         title: 'Catálogo de Materias | Instituto Shekinah',
+        data: {
+          description:
+            'Catálogo completo de materias del Instituto Teológico Shekinah, organizado por plan de estudios ' +
+            'y semestre.',
+        },
         loadComponent: () => import('./features/public/catalog/catalog.component').then((m) => m.CatalogComponent),
       },
       {
         path: 'contacto',
         title: 'Contacto | Instituto Shekinah',
+        data: {
+          description:
+            'Contacto del Instituto Teológico Shekinah: correo, teléfono y datos de la asociación religiosa ' +
+            '(ICAP A.R.). Escríbenos y con gusto resolvemos tus dudas.',
+        },
         loadComponent: () => import('./features/public/contact/contact.component').then((m) => m.ContactComponent),
       },
       {
         path: 'inscripcion',
         title: 'Formulario de Inscripción | Instituto Shekinah',
+        data: {
+          description:
+            'Inscríbete en línea al Instituto Teológico Shekinah: completa el formulario de admisión y elige tu ' +
+            'sede regional y modalidad de estudio.',
+        },
         loadComponent: () =>
           import('./features/public/admission/admission-form.component').then((m) => m.AdmissionFormComponent),
       },
       {
         path: 'calendario',
         title: 'Calendario Institucional | Instituto Shekinah',
+        data: {
+          description:
+            'Calendario público de eventos del Instituto Teológico Shekinah: fechas de inscripción, actividades ' +
+            'y eventos por sede regional.',
+        },
         loadComponent: () =>
           import('./features/public/calendar/calendar.component').then((m) => m.PublicCalendarComponent),
       },
@@ -60,6 +90,10 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () => import('./layouts/admin-shell/admin-shell.component').then((m) => m.AdminShellComponent),
     canActivate: [authGuard],
+    // SEO: todo el panel admin es privado y no debe aparecer en buscadores. SeoService (core/seo)
+    // hereda este `noIndex` a cada sub-ruta y agrega <meta name="robots" content="noindex, nofollow">;
+    // robots.txt además bloquea /admin por completo para el rastreo.
+    data: { noIndex: true },
     children: [
       {
         path: 'cambiar-password',
