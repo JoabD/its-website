@@ -1,15 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="es-MX">
 <head>
   <meta charset="utf-8">
-  <title>Instituto Teológico Shekinah</title>
+  <title>Instituto Teológico Shekinah | Formación Bíblica y Ministerial</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--
+    SEO fase 1 (docs/Plan-SEO-Google-Search.md): estos son los valores por defecto que ve un
+    rastreador antes de que Angular ejecute JS (o si no lo ejecuta). SeoService (core/seo) los
+    sobreescribe en el cliente con los de cada ruta (ver app.routes.ts, campo `data.description`);
+    aquí solo viven los del home / el fallback general, para que nunca quede vacío.
+  -->
+  <meta name="description" content="Instituto Teológico Shekinah (ITS): formación bíblica y ministerial con planes de estudio, sedes regionales e inscripción en línea. Prepárate para servir con una base sólida en las Escrituras.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://institutoteologicoshekinah.com/">
+
+  <meta property="og:site_name" content="Instituto Teológico Shekinah">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Instituto Teológico Shekinah | Formación Bíblica y Ministerial">
+  <meta property="og:description" content="Formación bíblica y ministerial con planes de estudio, sedes regionales e inscripción en línea.">
+  <meta property="og:image" content="https://institutoteologicoshekinah.com/img/instituto-1.jpg">
+  <meta property="og:url" content="https://institutoteologicoshekinah.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Instituto Teológico Shekinah | Formación Bíblica y Ministerial">
+  <meta name="twitter:description" content="Formación bíblica y ministerial con planes de estudio, sedes regionales e inscripción en línea.">
+  <meta name="twitter:image" content="https://institutoteologicoshekinah.com/img/instituto-1.jpg">
+
   <link rel="icon" type="image/png" href="/img/shekina-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+
+  <!--
+    Datos estructurados (schema.org / JSON-LD): describe al instituto como organización educativa
+    para que Google pueda mostrar nombre, logo y datos de contacto directamente en el resultado de
+    búsqueda. Se declara una sola vez aquí (no cambia por ruta) — plan SEO fase 1, sección 3.5.
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Instituto Teológico Shekinah",
+    "alternateName": "ITS",
+    "url": "https://institutoteologicoshekinah.com/",
+    "logo": "https://institutoteologicoshekinah.com/img/shekina-logo.png",
+    "image": "https://institutoteologicoshekinah.com/img/instituto-1.jpg",
+    "email": "contacto@its-shekinah.edu.mx",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "Instituto Comunidad Apostólica Pentecostal (ICAP) A.R."
+    },
+    "sameAs": []
+  }
+  </script>
 </head>
 <body>
   <app-root></app-root>
