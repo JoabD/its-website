@@ -1,17 +1,16 @@
-name: Deploy API
+name: Deploy API (deshabilitado — ver master_its-apps.yml)
 
-# Despliega Shekinah.Api a Azure App Service (tier F1 gratuito) en cada push a main.
-# Requiere el secreto AZURE_WEBAPP_PUBLISH_PROFILE en Settings → Secrets → Actions del repositorio
-# (se descarga desde "Get publish profile" en el App Service de Azure). Si en vez de Azure se elige
-# MonsterASP.NET (ver PROMPT-MAESTRO.md §3-bis), este workflow se reemplaza por el paso de
-# publicación (FTP/Web Deploy) que exponga su panel — ese detalle no es público y se confirma dentro
-# de la cuenta de MonsterASP al darla de alta.
+# DESHABILITADO (ver docs/Plan-SEO-Google-Search.md, sección CI/CD): este workflow apuntaba a
+# `branches: [main]`, que no existe en este repo (la rama real es `master`), así que nunca se había
+# ejecutado — y además usa un secreto, AZURE_WEBAPP_PUBLISH_PROFILE, que no está configurado en
+# Settings → Secrets → Actions (ahí solo existen AZURE_CLIENT_ID/AZURE_TENANT_ID/
+# AZURE_SUBSCRIPTION_ID, que sí usa master_its-apps.yml). El despliegue real del backend a Azure ya
+# lo hace master_its-apps.yml, con pruebas obligatorias antes de desplegar — dos workflows
+# desplegando al mismo Azure Web App competirían entre sí. Se deja solo con `workflow_dispatch`
+# (disparo manual desde la pestaña Actions de GitHub) por si algún día se vuelve a necesitar; si no,
+# puedes borrar este archivo sin problema.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
   workflow_dispatch:
 
 env:
