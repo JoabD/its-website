@@ -1,17 +1,63 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
+#
+# CI/CD real (ver docs/Plan-SEO-Google-Search.md): este es el único workflow que de verdad se
+# ejecuta hoy (dispara con push a `master`, que es la rama real del repo — los otros dos archivos
+# de este folder apuntaban a `main`, que no existe, así que nunca corrían). Antes solo hacía
+# build + deploy, sin ninguna prueba antes — cualquier cosa que rompiera un test se enteraba
+# hasta que ya estaba en producción. Se agregó el job `test` (las mismas pruebas de ci.yml) y
+# `build`/`deploy` ahora dependen de él (`needs`) — si algo falla, no se despliega. `paths:
+# backend/**` evita reconstruir y redesplegar el backend en cada push que solo toca el frontend
+# (antes corría siempre, sin importar qué hubiera cambiado).
 
-name: Build and deploy ASP.Net Core app to Azure Web App - its-apps
+name: Build, test and deploy backend to Azure Web App - its-apps
 
 on:
   push:
     branches:
       - master
+    paths:
+      - "backend/**"
   workflow_dispatch:
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Restore
+        working-directory: backend
+        run: dotnet restore Shekinah.sln
+
+      - name: Build (Release)
+        working-directory: backend
+        run: dotnet build Shekinah.sln --no-restore -c Release
+
+      # Domain.UnitTests y Architecture.Tests no requieren infraestructura externa.
+      - name: Unit + architecture tests
+        working-directory: backend
+        run: |
+          dotnet test tests/Shekinah.Domain.UnitTests/Shekinah.Domain.UnitTests.csproj --no-build -c Release
+          dotnet test tests/Shekinah.Architecture.Tests/Shekinah.Architecture.Tests.csproj --no-build -c Release
+          dotnet test tests/Shekinah.Application.UnitTests/Shekinah.Application.UnitTests.csproj --no-build -c Release
+
+      # Requieren Docker (Testcontainers / WebApplicationFactory contra Mongo real) — los runners
+      # hospedados de GitHub sí traen Docker.
+      - name: Integration + functional tests
+        working-directory: backend
+        run: |
+          dotnet test tests/Shekinah.Infrastructure.IntegrationTests/Shekinah.Infrastructure.IntegrationTests.csproj -c Release
+          dotnet test tests/Shekinah.Api.FunctionalTests/Shekinah.Api.FunctionalTests.csproj -c Release
+
   build:
     runs-on: ubuntu-latest
+    needs: test
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -47,7 +93,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
