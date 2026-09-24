@@ -58,6 +58,7 @@ public static class DependencyInjection
         services.AddSingleton<IFileStorage>(_ => new LocalFileStorage(configuration["Storage:RootPath"] ?? "/data/uploads"));
         services.AddSingleton<IKardexPdfGenerator, KardexPdfGenerator>();
         services.AddSingleton<IAdmissionFichaPdfGenerator, AdmissionFichaPdfGenerator>();
+        services.AddSingleton<IPaymentReceiptPdfGenerator, PaymentReceiptPdfGenerator>();
         services.AddHttpClient<IRecaptchaVerifier, RecaptchaVerifier>();
 
         services.AddScoped<IRegionRepository, RegionRepository>();

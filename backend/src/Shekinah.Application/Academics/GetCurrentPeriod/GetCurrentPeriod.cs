@@ -5,7 +5,7 @@ namespace Shekinah.Application.Academics.GetCurrentPeriod;
 
 public sealed record GetCurrentPeriodQuery : IQuery<CurrentPeriodResponse?>;
 
-public sealed record CurrentPeriodResponse(string Id, string Code, string Name, DateTime StartsOnUtc, DateTime EndsOnUtc, IReadOnlyList<string> MonthCodes);
+public sealed record CurrentPeriodResponse(string Id, string Code, string Name, DateTime StartsOnUtc, DateTime EndsOnUtc, IReadOnlyList<string> MonthCodes, IReadOnlyList<string> AllMonthCodes);
 
 public sealed class GetCurrentPeriodQueryHandler(Domain.Academics.IAcademicPeriodRepository periods) : IQueryHandler<GetCurrentPeriodQuery, CurrentPeriodResponse?>
 {
@@ -17,8 +17,11 @@ public sealed class GetCurrentPeriodQueryHandler(Domain.Academics.IAcademicPerio
             return Result.Success<CurrentPeriodResponse?>(null);
         }
 
+        var allMonthCodes = Domain.Academics.Policies.AcademicPeriodMonthsCalculator.CalculateFullRange(active.DateRange);
+
         return Result.Success<CurrentPeriodResponse?>(new CurrentPeriodResponse(
             active.Id, active.Code.Value, active.Name, active.DateRange.StartsOnUtc, active.DateRange.EndsOnUtc,
-            active.MonthCodes.Select(m => m.Value).ToList()));
+            active.MonthCodes.Select(m => m.Value).ToList(),
+            allMonthCodes.Select(m => m.Value).ToList()));
     }
 }

@@ -16,6 +16,11 @@ namespace Shekinah.Application.Billing.RegisterManualPayment;
 /// RN-09: un coordinador/secretario regional solo puede marcar pagos de alumnos de su propia
 /// región — se valida en el handler contra <see cref="IRegionScopeResolver"/>, nunca confiando en
 /// el cliente.
+///
+/// Panel de verificación de pagos (ver docs/Plan-Panel-Pagos.md): cuota fija confirmada de $500
+/// MXN/mes — se fija aquí en vez de capturarse a mano, así todo pago manual queda con un
+/// <see cref="Payment.Amount"/> real desde el registro (antes siempre se guardaba null), lo que
+/// habilita el resumen financiero (GetBillingSummary) y el recibo en PDF (SendPaymentReceipt).
 /// </summary>
 [RequireRole(UserRole.Administrator, UserRole.RegionalCoordinator, UserRole.RegionalSecretary)]
 public sealed record RegisterManualPaymentCommand(string StudentId, string MonthCode) : ICommand<ManualPaymentResponse>;
@@ -36,6 +41,11 @@ public sealed class RegisterManualPaymentCommandHandler(
     IRegionScopeResolver regionScope, ICurrentUser currentUser, IClock clock)
     : ICommandHandler<RegisterManualPaymentCommand, ManualPaymentResponse>
 {
+    /// <summary>Cuota fija mensual confirmada por el instituto (docs/Plan-Panel-Pagos.md) — no varía
+    /// por plan ni por región. El día que exista una cuota variable, esto se vuelve un parámetro del
+    /// comando en vez de una constante.</summary>
+    public const decimal FixedMonthlyQuota = 500m;
+
     public async Task<Result<ManualPaymentResponse>> HandleAsync(RegisterManualPaymentCommand command, CancellationToken ct)
     {
         var monthCodeResult = MonthCode.Create(command.MonthCode);
@@ -63,11 +73,12 @@ public sealed class RegisterManualPaymentCommandHandler(
         }
 
         var activePeriod = await periods.GetActiveAsync(ct);
+        var amount = Money.Create(FixedMonthlyQuota).Value;
 
         var paymentResult = Payment.Register(
             EntityId.NewId(),
             new StudentRef(student.Id, student.EnrollmentNumber.Value, student.Profile.FullName.FullName),
-            monthCodeResult.Value, activePeriod?.Id ?? string.Empty, null, PaymentSource.Manual,
+            monthCodeResult.Value, activePeriod?.Id ?? string.Empty, amount, PaymentSource.Manual,
             null, currentUser.UserId ?? "system", clock);
 
         if (paymentResult.IsFailure)

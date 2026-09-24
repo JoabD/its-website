@@ -18,4 +18,19 @@ public static class AcademicPeriodMonthsCalculator
 
         return start.CompareTo(end) > 0 ? [start] : start.UpTo(end);
     }
+
+    /// <summary>
+    /// Panel de verificación de pagos (docs/Plan-Panel-Pagos.md): a diferencia de <see cref="Calculate"/>
+    /// (que solo materializa meses YA transcurridos — correcto para RN-17/avisos de mora, nunca se
+    /// debe notificar adeudo de un mes que todavía no llega), el panel de pagos necesita mostrar y
+    /// dejar marcar TODO el cuatrimestre desde el día uno, para que el admin pueda adelantar pagos
+    /// sin esperar a que cada mes "llegue". Misma fórmula, sin el tope de "hasta hoy".
+    /// </summary>
+    public static IReadOnlyList<MonthCode> CalculateFullRange(DateRange dateRange)
+    {
+        var start = MonthCode.FromYearMonth(dateRange.StartsOnUtc.Year, dateRange.StartsOnUtc.Month);
+        var end = MonthCode.FromYearMonth(dateRange.EndsOnUtc.Year, dateRange.EndsOnUtc.Month);
+
+        return start.CompareTo(end) > 0 ? [start] : start.UpTo(end);
+    }
 }

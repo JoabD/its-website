@@ -324,8 +324,53 @@ export interface StudentPaymentRowDto {
   enrollmentNumber: number;
   studentName: string;
   regionName: string;
+  email: string;
+  phone: string;
   paidByMonth: Record<string, boolean>;
   monthsDue: string[];
+}
+
+/** Panel de verificación de pagos: periodo activo (docs/Plan-Panel-Pagos.md). */
+export interface CurrentPeriodResponseDto {
+  id: string;
+  code: string;
+  name: string;
+  startsOnUtc: string;
+  endsOnUtc: string;
+  monthCodes: string[];
+  /** Todos los meses del cuatrimestre (sin tope de "hasta hoy") — usado por el panel de pagos para dejar marcar meses futuros. */
+  allMonthCodes: string[];
+}
+
+/** Panel de verificación de pagos, fase 1: respuesta al enviar un recibo (email automático + datos para WhatsApp + PDF para descarga). */
+export interface SendPaymentReceiptResponseDto {
+  sentTo: string;
+  whatsAppPhone: string;
+  whatsAppMessage: string;
+  pdfBase64: string;
+  fileName: string;
+}
+
+/** Panel de verificación de pagos, sección 8: resumen financiero de un mes, por región. */
+export interface BillingSummaryRegionRowDto {
+  regionId: string;
+  regionName: string;
+  activeStudents: number;
+  paidCount: number;
+  dueCount: number;
+  expectedTotal: number;
+  collectedTotal: number;
+}
+
+export interface BillingSummaryResponseDto {
+  monthCode: string;
+  activeStudents: number;
+  paidCount: number;
+  dueCount: number;
+  expectedTotal: number;
+  collectedTotal: number;
+  collectionRatePercent: number;
+  byRegion: BillingSummaryRegionRowDto[];
 }
 
 /** Fase 6 del plan de control escolar: avisos institucionales. */
