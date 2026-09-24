@@ -76,6 +76,9 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         await context.Users.ReplaceOneAsync(filter, ToBson(user), cancellationToken: ct);
     }
 
+    public async Task DeleteAsync(string id, CancellationToken ct) =>
+        await context.Users.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id)), ct);
+
     public async Task<int> GetMaxEnrollmentNumberAsync(CancellationToken ct)
     {
         var doc = await context.Users.Find(Builders<BsonDocument>.Filter.Empty)

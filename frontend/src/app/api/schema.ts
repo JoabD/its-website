@@ -234,12 +234,45 @@ export interface UserListItemDto {
   matricula: string | null;
   fullName: string;
   email: string;
+  phone: string;
   role: UserRole;
   status: string;
   regionName: string | null;
   modality: ModalityDto | null;
   currentTerm: number | null;
   plan: StudyPlanDto | null;
+}
+
+/** Panel de Usuarios → "Agregar usuario": alta de cualquier rol de staff (no alumnos — esos van
+ * por Alumnos → "Agregar alumno", que usa su propio flujo con matrícula/plan/cuatrimestre). */
+export interface CreateUserRequestDto {
+  role: UserRole;
+  fullName: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  regionId?: string | null;
+  modality?: ModalityDto | null;
+}
+
+export interface CreateUserResponseDto {
+  userId: string;
+  enrollmentNumber: number;
+  temporaryPassword: string;
+}
+
+/** Panel de Usuarios → editar (side panel): nombre/correo/teléfono + contraseña nueva opcional
+ * (elegida por el admin, no temporal — dejar vacía conserva la contraseña vigente). */
+export interface AdminUpdateUserRequestDto {
+  fullName: string;
+  email: string;
+  phone: string;
+  newPassword?: string | null;
+}
+
+/** Panel de Usuarios → restablecer contraseña (admin, no el propio usuario — ver ResetPasswordCommandHandler). */
+export interface ResetPasswordResponseDto {
+  temporaryPassword: string;
 }
 
 /** Alumnos → "Agregar alumno" → formulario manual. */

@@ -1,8 +1,11 @@
 using Shekinah.Api.Extensions;
 using Shekinah.Application.Abstractions;
+using Shekinah.Application.Identity.AdminUpdateUser;
 using Shekinah.Application.Identity.CreateUser;
+using Shekinah.Application.Identity.DeleteUser;
 using Shekinah.Application.Identity.GetUsers;
 using Shekinah.Application.Identity.ResetPassword;
+using Shekinah.Application.Identity.SetUserStatus;
 using Shekinah.Application.Identity.UpdateUser;
 using Shekinah.Domain.SharedKernel;
 
@@ -32,7 +35,22 @@ public static class UsersEndpoints
 
         group.MapPost("/{id}/reset-password", async (string id, IDispatcher dispatcher, CancellationToken ct) =>
             (await dispatcher.SendAsync(new ResetPasswordCommand(id), ct)).ToApiResult());
+
+        // Panel de Usuarios → editar (side panel): nombre/correo/teléfono + contraseña nueva
+        // opcional, distinto de MapPut("/{id}") de arriba, que solo toca rol/región/estatus.
+        group.MapPut("/{id}/profile", async (string id, AdminUpdateUserRequest request, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new AdminUpdateUserCommand(id, request.FullName, request.Email, request.Phone, request.NewPassword), ct)).ToApiResult());
+
+        group.MapDelete("/{id}", async (string id, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new DeleteUserCommand(id), ct)).ToApiResult());
+
+        group.MapPost("/{id}/status", async (string id, SetUserStatusRequest request, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new SetUserStatusCommand(id, request.Active), ct)).ToApiResult());
     }
 
     public sealed record UpdateUserRequest(UserRole Role, string? RegionId, Modality? Modality, string? Status);
+
+    public sealed record AdminUpdateUserRequest(string FullName, string Email, string Phone, string? NewPassword);
+
+    public sealed record SetUserStatusRequest(bool Active);
 }

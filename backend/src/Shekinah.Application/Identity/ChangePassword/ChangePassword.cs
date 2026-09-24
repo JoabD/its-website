@@ -12,7 +12,12 @@ public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePas
 {
     public ChangePasswordCommandValidator()
     {
-        RuleFor(x => x.NewPassword).MinimumLength(12).WithMessage("La nueva contraseña debe tener al menos 12 caracteres.");
+        // Ajustado a pedido explícito del cliente (era MinimumLength(12) — considerado excesivo para
+        // el usuario final). 8 caracteres + alfanumérico sigue siendo razonable y es el mínimo que
+        // ya validaba el frontend (change-password.component.ts), así que ahora ambos coinciden —
+        // antes un password de 8-11 caracteres pasaba la validación del cliente y luego el backend
+        // lo rechazaba, una inconsistencia silenciosa que el usuario nunca podía explicarse.
+        RuleFor(x => x.NewPassword).MinimumLength(8).WithMessage("La nueva contraseña debe tener al menos 8 caracteres.");
         RuleFor(x => x.NewPassword).Matches("[A-Za-z]").Matches("[0-9]").WithMessage("La nueva contraseña debe ser alfanumérica.");
     }
 }
