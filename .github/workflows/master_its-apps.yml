@@ -31,6 +31,24 @@ jobs:
     # GitHub secret para esto.
     env:
       Jwt__SigningKey: "ci-test-signing-key-nunca-usada-en-produccion-32chars-min"
+    # Shekinah.Api.FunctionalTests arranca Program.cs completo vía WebApplicationFactory, y Program.cs
+    # corre migraciones + seed contra Mongo AL ARRANCAR (sin importar el entorno) — a diferencia de
+    # Shekinah.Infrastructure.IntegrationTests, que trae su propio Mongo efímero vía Testcontainers,
+    # FunctionalTests no tiene esa infraestructura y simplemente asume que existe un Mongo real en
+    # localhost:27017 (el default de appsettings.json). Este service container se lo da: un Mongo
+    # real, vacío, disponible en localhost:27017 durante todo el job — así el WebApplicationFactory
+    # arranca sin "Connection refused". No interfiere con Testcontainers (usa Docker directo, no este
+    # mecanismo de "services").
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
