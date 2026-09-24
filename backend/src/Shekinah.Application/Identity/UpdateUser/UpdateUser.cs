@@ -8,11 +8,19 @@ namespace Shekinah.Application.Identity.UpdateUser;
 [RequireRole(UserRole.Administrator)]
 public sealed record UpdateUserCommand(string UserId, UserRole Role, string? RegionId, Modality? Modality, string? Status) : ICommand<Unit>;
 
-public sealed class UpdateUserCommandHandler(IUserRepository users, Domain.Catalog.IRegionRepository regions)
+public sealed class UpdateUserCommandHandler(IUserRepository users, Domain.Catalog.IRegionRepository regions, ICurrentUser currentUser)
     : ICommandHandler<UpdateUserCommand, Unit>
 {
     public async Task<Result<Unit>> HandleAsync(UpdateUserCommand command, CancellationToken ct)
     {
+        // Mismo principio que ResetPasswordCommandHandler: nadie edita su propio rol/región/estatus
+        // desde el panel de administración de usuarios (evita, por ejemplo, que un Administrator se
+        // autodesactive o se quite el rol por error, dejando el sistema sin administradores).
+        if (currentUser.UserId == command.UserId)
+        {
+            return Result.Failure<Unit>(Error.Forbidden("UpdateUser.CannotEditSelf", "No puedes editar tu propio usuario desde este panel."));
+        }
+
         var user = await users.GetByIdAsync(command.UserId, ct);
         if (user is null)
         {

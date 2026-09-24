@@ -10,22 +10,57 @@ interface NavItem {
   readonly roles?: readonly string[];
 }
 
-const NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Inicio', path: '/admin', icon: 'bi-house-door' },
-  { label: 'Avisos', path: '/admin/avisos', icon: 'bi-megaphone' },
-  { label: 'Inscripciones', path: '/admin/inscripciones', icon: 'bi-journal-check', roles: ['Administrator'] },
-  { label: 'Regiones', path: '/admin/configuracion/regiones', icon: 'bi-geo-alt', roles: ['Administrator'] },
-  { label: 'Documentos de inscripción', path: '/admin/configuracion/checklist', icon: 'bi-ui-checks', roles: ['Administrator'] },
-  { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
-  { label: 'Docentes', path: '/admin/docentes', icon: 'bi-person-workspace', roles: ['Administrator'] },
-  { label: 'Académico', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator'] },
-  { label: 'Calificaciones', path: '/admin/calificaciones', icon: 'bi-clipboard-check', roles: ['Teacher', 'Administrator'] },
-  { label: 'Mis materias', path: '/admin/mis-materias', icon: 'bi-book', roles: ['Student'] },
-  { label: 'Mi Kardex', path: '/admin/mi-kardex', icon: 'bi-file-earmark-text', roles: ['Student'] },
-  { label: 'Mi información', path: '/admin/mi-perfil', icon: 'bi-person-circle', roles: ['Student'] },
-  { label: 'Pagos', path: '/admin/pagos', icon: 'bi-cash-coin', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
-  { label: 'Calendario', path: '/admin/calendario', icon: 'bi-calendar-event', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
-  { label: 'Kardex', path: '/admin/kardex', icon: 'bi-file-earmark-text', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+interface NavGroup {
+  readonly label: string | null;
+  readonly items: readonly NavItem[];
+}
+
+/**
+ * Menú agrupado en 3 categorías (pedido del cliente, 2026-09: "dale orden al menu, agrupa en 3
+ * grandes categorias"). "Inicio" queda suelto arriba, sin encabezado, como es estándar en un
+ * dashboard (patrón "Home" separado de las secciones). Criterio de agrupación:
+ * - Administración: gestión institucional — avisos, inscripciones, staff, académico, calificaciones,
+ *   pagos y el calendario institucional.
+ * - Alumnos: todo lo referente al alumnado, tanto la vista administrativa (listado, Kardex de
+ *   cualquier alumno) como la vista propia del alumno (Mis materias/Mi Kardex/Mi información).
+ * - Configuración: catálogos de bajo cambio que alimentan al resto del sistema (regiones, checklist
+ *   de documentos de inscripción).
+ */
+const NAV_GROUPS: readonly NavGroup[] = [
+  {
+    label: null,
+    items: [{ label: 'Inicio', path: '/admin', icon: 'bi-house-door' }],
+  },
+  {
+    label: 'Administración',
+    items: [
+      { label: 'Avisos', path: '/admin/avisos', icon: 'bi-megaphone' },
+      { label: 'Inscripciones', path: '/admin/inscripciones', icon: 'bi-journal-check', roles: ['Administrator'] },
+      { label: 'Docentes', path: '/admin/docentes', icon: 'bi-person-workspace', roles: ['Administrator'] },
+      { label: 'Usuarios', path: '/admin/usuarios', icon: 'bi-people', roles: ['Administrator'] },
+      { label: 'Académico', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator'] },
+      { label: 'Calificaciones', path: '/admin/calificaciones', icon: 'bi-clipboard-check', roles: ['Teacher', 'Administrator'] },
+      { label: 'Pagos', path: '/admin/pagos', icon: 'bi-cash-coin', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+      { label: 'Calendario', path: '/admin/calendario', icon: 'bi-calendar-event', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+    ],
+  },
+  {
+    label: 'Alumnos',
+    items: [
+      { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+      { label: 'Kardex', path: '/admin/kardex', icon: 'bi-file-earmark-text', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
+      { label: 'Mis materias', path: '/admin/mis-materias', icon: 'bi-book', roles: ['Student'] },
+      { label: 'Mi Kardex', path: '/admin/mi-kardex', icon: 'bi-file-earmark-text', roles: ['Student'] },
+      { label: 'Mi información', path: '/admin/mi-perfil', icon: 'bi-person-circle', roles: ['Student'] },
+    ],
+  },
+  {
+    label: 'Configuración',
+    items: [
+      { label: 'Regiones', path: '/admin/configuracion/regiones', icon: 'bi-geo-alt', roles: ['Administrator'] },
+      { label: 'Documentos de inscripción', path: '/admin/configuracion/checklist', icon: 'bi-ui-checks', roles: ['Administrator'] },
+    ],
+  },
 ];
 
 /**
@@ -61,18 +96,27 @@ const NAV_ITEMS: readonly NavItem[] = [
           </div>
         </div>
 
-        <nav class="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
-          @for (item of visibleItems(); track item.path) {
-            <a
-              [routerLink]="item.path"
-              [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
-              routerLinkActive="bg-white/10 text-white shadow-inner"
-              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/5 hover:text-white"
-              (click)="sidebarOpen.set(false)"
-            >
-              <i class="bi {{ item.icon }} text-base text-[var(--shk-color-accent-light)] group-hover:text-[var(--shk-color-accent)]"></i>
-              {{ item.label }}
-            </a>
+        <nav class="flex-1 space-y-4 overflow-y-auto px-3 pb-4">
+          @for (group of visibleGroups(); track group.label ?? '$root') {
+            <div>
+              @if (group.label) {
+                <div class="px-3 pb-1.5 pt-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">{{ group.label }}</div>
+              }
+              <div class="space-y-1">
+                @for (item of group.items; track item.path) {
+                  <a
+                    [routerLink]="item.path"
+                    [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+                    routerLinkActive="bg-white/10 text-white shadow-inner"
+                    class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/5 hover:text-white"
+                    (click)="sidebarOpen.set(false)"
+                  >
+                    <i class="bi {{ item.icon }} text-base text-[var(--shk-color-accent-light)] group-hover:text-[var(--shk-color-accent)]"></i>
+                    {{ item.label }}
+                  </a>
+                }
+              </div>
+            </div>
           }
         </nav>
 
@@ -167,9 +211,12 @@ export class AdminShellComponent {
   protected readonly sidebarOpen = signal(false);
   protected readonly userMenuOpen = signal(false);
 
-  protected visibleItems(): readonly NavItem[] {
+  protected visibleGroups(): readonly NavGroup[] {
     const role = this.auth.role();
-    return NAV_ITEMS.filter((item) => !item.roles || (role !== null && item.roles.includes(role)));
+    return NAV_GROUPS.map((group) => ({
+      label: group.label,
+      items: group.items.filter((item) => !item.roles || (role !== null && item.roles.includes(role))),
+    })).filter((group) => group.items.length > 0);
   }
 
   protected pageTitle(): string {

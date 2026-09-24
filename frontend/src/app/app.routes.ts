@@ -149,6 +149,12 @@ export const routes: Routes = [
             loadComponent: () => import('./features/admin/teachers/teachers.component').then((m) => m.TeachersComponent),
           },
           {
+            path: 'usuarios',
+            title: 'Usuarios | Panel ITS',
+            canActivate: [roleGuard(['Administrator'])],
+            loadComponent: () => import('./features/admin/users/users.component').then((m) => m.UsersComponent),
+          },
+          {
             path: 'academico',
             title: 'Académico | Panel ITS',
             canActivate: [roleGuard(['Administrator'])],

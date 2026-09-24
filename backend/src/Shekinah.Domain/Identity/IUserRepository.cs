@@ -25,6 +25,12 @@ public interface IUserRepository
 
     Task UpdateAsync(User user, CancellationToken ct);
 
+    /// <summary>Panel de Usuarios → "Eliminar usuario" (solo staff — nunca alumnos, ver
+    /// DeleteUserCommandHandler). Borrado físico: los pocos campos que referencian un userId en otras
+    /// colecciones (openedByUserId, resetByUserId, uploadedByUserId, etc.) son bitácora histórica en
+    /// Mongo, no llaves foráneas — no hay integridad referencial que romper.</summary>
+    Task DeleteAsync(string id, CancellationToken ct);
+
     Task<int> GetMaxEnrollmentNumberAsync(CancellationToken ct);
 
     /// <summary>Alta manual de alumnos por Excel (mismo patrón fila-a-fila que

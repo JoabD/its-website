@@ -1,3 +1,4 @@
+using System.Net;
 using FluentValidation;
 using Shekinah.Application.Abstractions;
 using Shekinah.Domain.Common;
@@ -20,13 +21,18 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
     {
         RuleFor(x => x.FullName).NotEmpty();
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
+        RuleFor(x => x.Phone).NotEmpty();
         RuleFor(x => x.RegionId).NotEmpty().When(x => x.Role is UserRole.RegionalCoordinator or UserRole.RegionalSecretary);
+        // User.CreateStaff ya rechaza Role=Student con un mensaje pensado para el desarrollador
+        // ("use CreateStudentFromApplication") — aquí se valida antes, con un mensaje que sí tiene
+        // sentido para el admin que usa el panel: los alumnos se dan de alta en Alumnos, no aquí.
+        RuleFor(x => x.Role).NotEqual(UserRole.Student).WithMessage("Para dar de alta un alumno usa la sección \"Alumnos\".");
     }
 }
 
 public sealed class CreateUserCommandHandler(
     IUserRepository users, Domain.Catalog.IRegionRepository regions, IEnrollmentNumberGenerator enrollmentNumbers,
-    IPasswordHasher passwordHasher, IClock clock)
+    IPasswordHasher passwordHasher, IEmailSender emailSender, IClock clock)
     : ICommandHandler<CreateUserCommand, CreateUserResponse>
 {
     public async Task<Result<CreateUserResponse>> HandleAsync(CreateUserCommand command, CancellationToken ct)
@@ -38,6 +44,12 @@ public sealed class CreateUserCommandHandler(
         if (nameResult.IsFailure) return Result.Failure<CreateUserResponse>(nameResult.Error);
         if (emailResult.IsFailure) return Result.Failure<CreateUserResponse>(emailResult.Error);
         if (phoneResult.IsFailure) return Result.Failure<CreateUserResponse>(phoneResult.Error);
+
+        var existing = await users.GetByEmailAsync(emailResult.Value.Value, ct);
+        if (existing is not null)
+        {
+            return Result.Failure<CreateUserResponse>(Error.Conflict("CreateUser.EmailInUse", "Ya existe un usuario con ese correo."));
+        }
 
         RegionRef? region = null;
         if (!string.IsNullOrWhiteSpace(command.RegionId))
@@ -69,6 +81,21 @@ public sealed class CreateUserCommandHandler(
         if (userResult.IsFailure) return Result.Failure<CreateUserResponse>(userResult.Error);
 
         await users.AddAsync(userResult.Value, ct);
+
+        // Pedido explícito del cliente: igual que CreateStudentCommandHandler, se manda por correo
+        // la contraseña temporal en texto plano — el admin ya la ve en pantalla al crear, esto es
+        // para que el propio usuario nuevo la reciba sin que se la tengan que copiar/pegar a mano.
+        await emailSender.SendAsync(
+            emailResult.Value.Value,
+            "Tus credenciales de acceso — Instituto Teológico Shekinah",
+            $"""
+            <p>Hola {WebUtility.HtmlEncode(nameResult.Value.FullName)},</p>
+            <p>Se creó tu cuenta en el sistema del Instituto Teológico Shekinah con el rol de <strong>{command.Role}</strong>.</p>
+            <p>Correo: {WebUtility.HtmlEncode(emailResult.Value.Value)}<br>Contraseña temporal: <strong>{WebUtility.HtmlEncode(temporaryPassword)}</strong></p>
+            <p>Deberás cambiarla en tu primer inicio de sesión.</p>
+            """,
+            ct);
+
         return Result.Success(new CreateUserResponse(userResult.Value.Id, enrollmentNumber.Value, temporaryPassword));
     }
 }
