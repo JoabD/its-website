@@ -219,3 +219,4 @@ Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime
 2026-09-24 09:41:35.448 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
 2026-09-24 09:41:35.451 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
 2026-09-24 09:41:35.455 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 36.675ms
+2026-09-24 09:42:18.159 -06:00 [INF] Application is shutting down...
