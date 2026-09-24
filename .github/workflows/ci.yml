@@ -14,6 +14,14 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    # Jwt:SigningKey vive solo en appsettings.Development.json (git-ignored, R8: nunca un secreto
+    # real versionado) — por eso nunca llega a CI. Shekinah.Api.FunctionalTests levanta Program.cs
+    # completo vía WebApplicationFactory, y AddShekinahAuth explota si esa clave no está configurada
+    # (aunque los tests en sí no emitan tokens). Se inyecta aquí una clave de prueba, sin ningún
+    # significado fuera de este job — no es la clave real de producción, así que no hace falta un
+    # GitHub secret para esto.
+    env:
+      Jwt__SigningKey: "ci-test-signing-key-nunca-usada-en-produccion-32chars-min"
     steps:
       - uses: actions/checkout@v4
 
