@@ -118,7 +118,7 @@ public interface IPaymentMatrixReader
 
 public sealed record PaymentMatrixFilter(string PeriodId, string? RegionId, int Page, int PageSize);
 
-public sealed record StudentPaymentRow(string StudentId, int EnrollmentNumber, string StudentName, string RegionName, IReadOnlyDictionary<string, bool> PaidByMonth, IReadOnlyList<string> MonthsDue);
+public sealed record StudentPaymentRow(string StudentId, int EnrollmentNumber, string StudentName, string RegionName, string Email, string Phone, IReadOnlyDictionary<string, bool> PaidByMonth, IReadOnlyList<string> MonthsDue);
 
 /// <summary>Fase 8 (Kardex): fila de materia dentro del documento PDF institucional.</summary>
 public sealed record KardexPdfSubjectRow(string SubjectName, int? TermNumber, int? Grade, string Status, string PeriodCode);
@@ -152,6 +152,22 @@ public sealed record AdmissionFichaPdfModel(
 public interface IAdmissionFichaPdfGenerator
 {
     byte[] Generate(AdmissionFichaPdfModel model);
+}
+
+/// <summary>Panel de verificación de pagos (docs/Plan-Panel-Pagos.md, fase 1): una fila etiqueta/valor
+/// del recibo de pago en PDF — mismo criterio que <see cref="AdmissionFichaPdfRow"/>.</summary>
+public sealed record PaymentReceiptPdfRow(string Label, string Value);
+
+/// <summary>Modelo plano que alimenta al generador de PDF del recibo de pago (DIP, mismo patrón que
+/// <see cref="AdmissionFichaPdfModel"/>/<see cref="IAdmissionFichaPdfGenerator"/>).</summary>
+public sealed record PaymentReceiptPdfModel(
+    string Folio, string StudentFullName, string EnrollmentNumber, DateTime GeneratedAtUtc, IReadOnlyList<PaymentReceiptPdfRow> Rows);
+
+/// <summary>Puerto hacia el generador de PDF del recibo de pago (DIP): Application no sabe que por
+/// debajo hay QuestPDF.</summary>
+public interface IPaymentReceiptPdfGenerator
+{
+    byte[] Generate(PaymentReceiptPdfModel model);
 }
 
 /// <summary>

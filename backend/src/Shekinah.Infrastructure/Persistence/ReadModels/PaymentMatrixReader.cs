@@ -17,7 +17,7 @@ public sealed class PaymentMatrixReader(MongoContext context, Domain.Academics.I
     public async Task<PagedResult<StudentPaymentRow>> GetMatrixAsync(PaymentMatrixFilter filter, CancellationToken ct)
     {
         var period = await periods.GetByIdAsync(filter.PeriodId, ct);
-        var monthCodes = period?.MonthCodes.Select(m => m.Value).ToList() ?? [];
+        var monthCodes = period is null ? [] : AcademicPeriodMonthsCalculator.CalculateFullRange(period.DateRange).Select(m => m.Value).ToList();
 
         var studentFilter = Builders<BsonDocument>.Filter.Eq("role", nameof(UserRole.Student));
         if (!string.IsNullOrWhiteSpace(filter.RegionId))
@@ -41,10 +41,13 @@ public sealed class PaymentMatrixReader(MongoContext context, Domain.Academics.I
             var monthsDue = monthCodes.Where(m => !paidMonths.Contains(m)).ToList();
 
             var regionName = student.TryGetValue("region", out var r) && !r.IsBsonNull ? r.AsBsonDocument["name"].AsString : string.Empty;
+            var profile = student["profile"].AsBsonDocument;
+            var email = profile.TryGetValue("email", out var em) && !em.IsBsonNull ? em.AsString : string.Empty;
+            var phone = profile.TryGetValue("phone", out var ph) && !ph.IsBsonNull ? ph.AsString : string.Empty;
 
             rows.Add(new StudentPaymentRow(
                 studentId.ToString(), student["enrollmentNumber"].AsInt32, student["profile"]["fullName"].AsString,
-                regionName, paidByMonth, monthsDue));
+                regionName, email, phone, paidByMonth, monthsDue));
         }
 
         return new PagedResult<StudentPaymentRow>(rows, filter.Page, filter.PageSize, total) { Months = monthCodes };
