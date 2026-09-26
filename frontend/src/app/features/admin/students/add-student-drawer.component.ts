@@ -16,6 +16,7 @@ import {
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 
 type AddStudentTab = 'manual' | 'excel';
 
@@ -25,10 +26,13 @@ type AddStudentTab = 'manual' | 'excel';
  * masiva por Excel/CSV (mismo patrón de reporte fila-a-fila que Pagos → Importar). Estructura
  * calcada de ApplicationReviewDrawerComponent (encabezado/cuerpo/pie fijos, Esc cierra, foco
  * regresa a quien abrió el drawer) para mantener consistencia visual entre ambos drawers.
+ *
+ * Usabilidad móvil (2026-09): shkSwipeToClose agrega el gesto de "deslizar para cerrar" con el dedo
+ * en pantallas angostas (ver swipe-to-close.directive.ts) — en escritorio no cambia nada.
  */
 @Component({
   selector: 'shk-add-student-drawer',
-  imports: [ButtonComponent, InputComponent, FormsModule],
+  imports: [ButtonComponent, InputComponent, FormsModule, SwipeToCloseDirective],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -36,6 +40,8 @@ type AddStudentTab = 'manual' | 'excel';
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-xl flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

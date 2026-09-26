@@ -15,6 +15,14 @@ export const appConfig: ApplicationConfig = {
     // dirigida por signals.
     provideZonelessChangeDetection(),
     provideRouter(routes),
+    // Ionic (usabilidad móvil, pedido del cliente 2026-09) se registra a nivel de la ruta /admin en
+    // app.routes.ts, NO aquí: si se registrara aquí (root providers) su runtime se metería en el
+    // bundle inicial que descarga CUALQUIER visitante del sitio público, aunque nunca vea un
+    // componente ion-*. Se comprobó con un build real: puesto aquí, ~190 KB de JS de Ionic/Stencil
+    // aparecían en el "Initial chunk" (el que se manda a /, /planes, /contacto, etc.) y el <html>
+    // de esas páginas quedaba con la clase "ion-ce" agregada por su inicializador. Registrado en la
+    // ruta 'admin' en vez, Angular lo empaqueta junto con el resto del panel admin (que ya es
+    // lazy-loaded) y el sitio público no lo descarga ni lo inicializa en absoluto.
     // withFetch: SEO fase 3 (prerendering, ver docs/Plan-SEO-Google-Search.md) — /programas e
     // /inscripcion llaman a la API (catalog/curriculum, catalog/regions) al inicializar; durante el
     // prerender esas peticiones corren en Node (@angular/platform-server), que no tiene el backend

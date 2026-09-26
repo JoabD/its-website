@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { IonTabBar, IonTabButton } from '@ionic/angular';
 import { AuthStore } from '../../core/auth/auth.store';
 import { ROLE_LABELS } from '../../domain/models';
 
@@ -72,10 +73,18 @@ const NAV_GROUPS: readonly NavGroup[] = [
  *   "Cerrar sesión" — el patrón estándar de cualquier dashboard, en vez de un botón suelto.
  * - Sidebar oscura con iconos Bootstrap Icons (ya cargados globalmente en index.html) en vez de
  *   una lista de texto plano; colapsable en móvil.
+ *
+ * Usabilidad móvil (pedido del cliente, 2026-09: "agregar Ionic para darle más versatilidad móvil"
+ * — alcance acordado: piezas puntuales, sin tocar el sistema de diseño propio): además del sidebar
+ * de arriba (que se sigue usando tal cual en escritorio y como menú "Más" completo en móvil), se
+ * agrega una barra de pestañas inferior (ion-tab-bar) SOLO visible por debajo de "lg" — el patrón
+ * de navegación estándar en apps móviles, con los primeros accesos visibles del rol actual a un
+ * toque del pulgar, en vez de tener que abrir el menú hamburguesa para todo. "Más" reabre el mismo
+ * sidebar de siempre (sidebarOpen) para el resto de las opciones — no se duplica lógica de menú.
  */
 @Component({
   selector: 'shk-admin-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, IonTabBar, IonTabButton],
   template: `
     <div class="flex min-h-screen bg-slate-50">
       <!-- Overlay móvil al abrir el sidebar -->
@@ -197,10 +206,33 @@ const NAV_GROUPS: readonly NavGroup[] = [
           </div>
         </header>
 
-        <main class="flex-1 p-4 sm:p-6">
+        <main class="flex-1 p-4 pb-20 sm:p-6 lg:pb-6">
           <router-outlet />
         </main>
       </div>
+
+      <!-- Barra de pestañas inferior — solo móvil/tablet angosto (lg:hidden), a un toque del
+           pulgar. Los primeros accesos visibles del rol actual + "Más" para el resto (reabre el
+           sidebar de siempre). safe-area-inset ya lo maneja ion-tab-bar por su cuenta (notch/home
+           indicator de iOS). -->
+      <ion-tab-bar class="fixed inset-x-0 bottom-0 z-30 lg:hidden" style="--background: var(--shk-color-primary-dark); --border: none">
+        @for (item of mobileTabs(); track item.path) {
+          <ion-tab-button
+            [routerLink]="item.path"
+            [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+            routerLinkActive="text-[var(--shk-color-accent)]"
+            class="text-white/60"
+            style="--color: inherit; --color-selected: var(--shk-color-accent)"
+          >
+            <i class="bi {{ item.icon }} text-lg"></i>
+            <span class="mt-0.5 text-[10px]">{{ item.label }}</span>
+          </ion-tab-button>
+        }
+        <ion-tab-button (click)="sidebarOpen.set(true)" class="text-white/60" style="--color: inherit">
+          <i class="bi bi-grid-3x3-gap text-lg"></i>
+          <span class="mt-0.5 text-[10px]">Más</span>
+        </ion-tab-button>
+      </ion-tab-bar>
     </div>
   `,
 })
@@ -217,6 +249,15 @@ export class AdminShellComponent {
       label: group.label,
       items: group.items.filter((item) => !item.roles || (role !== null && item.roles.includes(role))),
     })).filter((group) => group.items.length > 0);
+  }
+
+  /** Los primeros 4 accesos visibles del rol actual (siempre incluye "Inicio", por ser el primero
+   * en NAV_GROUPS) — el resto vive detrás de "Más". Misma fuente que el sidebar (visibleGroups()),
+   * así que un rol nuevo o un cambio de menú no requiere tocar esto aparte. */
+  protected mobileTabs(): readonly NavItem[] {
+    return this.visibleGroups()
+      .flatMap((group) => group.items)
+      .slice(0, 4);
   }
 
   protected pageTitle(): string {
