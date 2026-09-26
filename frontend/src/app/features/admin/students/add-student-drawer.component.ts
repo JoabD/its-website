@@ -10,6 +10,7 @@ import {
   ImportStudentsResponseDto,
   ModalityDto,
   RegionListItemDto,
+  StudentImportTemplateResponseDto,
   StudyPlanDto,
 } from '../../../api/schema';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -80,16 +81,25 @@ type AddStudentTab = 'manual' | 'excel';
             @if (tab() === 'manual') {
               <div class="space-y-4">
                 <shk-input label="Nombre completo" [required]="true" [ngModel]="manualFullName()" (ngModelChange)="manualFullName.set($event)" [ngModelOptions]="{standalone: true}" />
-                <shk-input label="Correo" type="email" [required]="true" [ngModel]="manualEmail()" (ngModelChange)="manualEmail.set($event)" [ngModelOptions]="{standalone: true}" />
-                <shk-input label="Teléfono" [required]="true" [ngModel]="manualPhone()" (ngModelChange)="manualPhone.set($event)" [ngModelOptions]="{standalone: true}" />
+                <shk-input label="Correo (opcional)" type="email" [ngModel]="manualEmail()" (ngModelChange)="manualEmail.set($event)" [ngModelOptions]="{standalone: true}" />
+                <p class="-mt-2.5 text-xs text-slate-400">Si no lo capturas, el alumno queda registrado pero sin acceso al sistema por ahora.</p>
+                <shk-input label="Teléfono (opcional)" [ngModel]="manualPhone()" (ngModelChange)="manualPhone.set($event)" [ngModelOptions]="{standalone: true}" />
+                <p class="-mt-2.5 text-xs text-slate-400">Si no lo capturas, el alumno queda registrado pero sin la opción de "enviar por WhatsApp".</p>
                 <shk-input label="Fecha de nacimiento" type="date" [required]="true" [ngModel]="manualBirthDate()" (ngModelChange)="manualBirthDate.set($event)" [ngModelOptions]="{standalone: true}" />
 
                 <label class="flex flex-col gap-1.5 text-sm">
                   <span class="font-medium text-slate-700">Región <span class="text-[var(--shk-color-accent-dark)]">*</span></span>
+                  <!-- BUG REAL encontrado (mismo caso que add-user-drawer): [value]/(change) planos en
+                       un <select> con <option> generadas por @for pueden desincronizarse y seguir
+                       enviando el valor inicial del signal sin importar qué se elija en pantalla.
+                       [ngModel]/(ngModelChange) usa el SelectControlValueAccessor de Angular, que sí
+                       mantiene la selección sincronizada de forma confiable. -->
                   <select
                     class="shk-field"
-                    [value]="manualRegionId()"
-                    (change)="manualRegionId.set($any($event.target).value)"
+                    [ngModel]="manualRegionId()"
+                    (ngModelChange)="manualRegionId.set($event)"
+                    [ngModelOptions]="{standalone: true}"
+                    name="manualRegionId"
                   >
                     <option value="">Selecciona una región…</option>
                     @for (region of regions(); track region.id) {
@@ -100,7 +110,7 @@ type AddStudentTab = 'manual' | 'excel';
 
                 <label class="flex flex-col gap-1.5 text-sm">
                   <span class="font-medium text-slate-700">Modalidad <span class="text-[var(--shk-color-accent-dark)]">*</span></span>
-                  <select class="shk-field" [value]="manualModality()" (change)="manualModality.set($any($event.target).value)">
+                  <select class="shk-field" [ngModel]="manualModality()" (ngModelChange)="manualModality.set($event)" [ngModelOptions]="{standalone: true}" name="manualModality">
                     <option value="Onsite">Presencial</option>
                     <option value="Online">Virtual</option>
                     <option value="Diploma">Diplomado</option>
@@ -109,7 +119,7 @@ type AddStudentTab = 'manual' | 'excel';
 
                 <label class="flex flex-col gap-1.5 text-sm">
                   <span class="font-medium text-slate-700">Plan <span class="text-[var(--shk-color-accent-dark)]">*</span></span>
-                  <select class="shk-field" [value]="manualPlan()" (change)="manualPlan.set($any($event.target).value)">
+                  <select class="shk-field" [ngModel]="manualPlan()" (ngModelChange)="manualPlan.set($event)" [ngModelOptions]="{standalone: true}" name="manualPlan">
                     <option value="Quarterly">Cuatrimestral</option>
                     <option value="Semester">Semestral</option>
                   </select>
@@ -119,7 +129,7 @@ type AddStudentTab = 'manual' | 'excel';
                   <span class="font-medium text-slate-700">
                     {{ manualPlan() === 'Semester' ? 'Semestre' : 'Cuatrimestre' }} actual <span class="text-[var(--shk-color-accent-dark)]">*</span>
                   </span>
-                  <select class="shk-field" [value]="manualCurrentTerm()" (change)="manualCurrentTerm.set(+$any($event.target).value)">
+                  <select class="shk-field" [ngModel]="manualCurrentTerm()" (ngModelChange)="manualCurrentTerm.set(+$event)" [ngModelOptions]="{standalone: true}" name="manualCurrentTerm">
                     @for (n of termOptions(); track n) {
                       <option [value]="n">{{ n }}</option>
                     }
@@ -132,9 +142,26 @@ type AddStudentTab = 'manual' | 'excel';
               </div>
             } @else {
               <div class="space-y-4">
-                <p class="text-sm text-slate-600">
-                  Usa la plantilla oficial para asegurar que las columnas y valores sean los esperados.
-                </p>
+                <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-50 p-4">
+                  <p class="text-sm text-slate-600">
+                    Usa la plantilla oficial para asegurar que las columnas y valores sean los esperados. Las columnas CORREO y TELEFONO son
+                    opcionales — sin correo, el alumno queda registrado pero sin acceso al sistema por ahora; sin teléfono, se queda sin la
+                    opción de "enviar por WhatsApp".
+                  </p>
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[var(--shk-color-primary)] transition hover:border-[var(--shk-color-accent)] disabled:cursor-not-allowed disabled:opacity-50"
+                    [disabled]="downloadingTemplate()"
+                    (click)="downloadTemplate()"
+                  >
+                    <i class="bi bi-download"></i>
+                    {{ downloadingTemplate() ? 'Descargando…' : 'Descargar plantilla' }}
+                  </button>
+                </div>
+
+                @if (templateError()) {
+                  <p class="text-sm text-red-600">{{ templateError() }}</p>
+                }
 
                 <div class="rounded-xl border border-dashed border-slate-300 p-4">
                   <input
@@ -227,6 +254,9 @@ export class AddStudentDrawerComponent {
   protected readonly importResult = signal<ImportStudentsResponseDto | null>(null);
   protected readonly importError = signal<string | null>(null);
 
+  protected readonly downloadingTemplate = signal(false);
+  protected readonly templateError = signal<string | null>(null);
+
   protected readonly termOptions = () => Array.from({ length: 6 }, (_, i) => i + 1);
 
   private readonly regionsResource = toSignal(
@@ -269,6 +299,33 @@ export class AddStudentDrawerComponent {
     this.selectedFileName.set(null);
     this.importResult.set(null);
     this.importError.set(null);
+    this.downloadingTemplate.set(false);
+    this.templateError.set(null);
+  }
+
+  protected downloadTemplate(): void {
+    if (this.downloadingTemplate()) return;
+
+    this.templateError.set(null);
+    this.downloadingTemplate.set(true);
+    this.api
+      .get<StudentImportTemplateResponseDto>('/students/import/template')
+      .pipe(
+        map((response) => ({ ok: true as const, response })),
+        catchError((error) => of({ ok: false as const, error })),
+      )
+      .subscribe((result) => {
+        this.downloadingTemplate.set(false);
+        if (!result.ok) {
+          this.templateError.set(result.error?.error?.detail ?? 'No se pudo descargar la plantilla.');
+          return;
+        }
+        this.downloadFile(
+          result.response.contentBase64,
+          result.response.fileName,
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        );
+      });
   }
 
   protected onFileSelected(files: FileList | null): void {
@@ -282,15 +339,15 @@ export class AddStudentDrawerComponent {
   protected submitManual(): void {
     this.manualError.set(null);
 
-    if (!this.manualFullName().trim() || !this.manualEmail().trim() || !this.manualPhone().trim() || !this.manualBirthDate() || !this.manualRegionId()) {
+    if (!this.manualFullName().trim() || !this.manualBirthDate() || !this.manualRegionId()) {
       this.manualError.set('Completa todos los campos obligatorios.');
       return;
     }
 
     const body: CreateStudentRequestDto = {
       fullName: this.manualFullName().trim(),
-      email: this.manualEmail().trim(),
-      phone: this.manualPhone().trim(),
+      email: this.manualEmail().trim() || null,
+      phone: this.manualPhone().trim() || null,
       birthDate: this.manualBirthDate(),
       regionId: this.manualRegionId(),
       modality: this.manualModality(),
@@ -349,5 +406,24 @@ export class AddStudentDrawerComponent {
           this.toast.error(`${result.response.errors.length} fila(s) con error — revisa el detalle.`);
         }
       });
+  }
+
+  /** Mismo patrón que payment-detail-drawer.downloadPdf: el archivo viaja en base64 dentro del JSON
+   * (requiere Authorization, así que no puede ser un <a href> plano) y la descarga se dispara desde
+   * JS creando un blob temporal. */
+  private downloadFile(base64: string, fileName: string, contentType: string): void {
+    const bytes = atob(base64);
+    const buffer = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+      buffer[i] = bytes.charCodeAt(i);
+    }
+
+    const blob = new Blob([buffer], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 }

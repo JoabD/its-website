@@ -27,7 +27,7 @@ public sealed class GetCurrentUserQueryHandler(Domain.Identity.IUserRepository u
         }
 
         return Result.Success(new CurrentUserResponse(
-            user.Id, user.EnrollmentNumber.Value, user.Role, user.Profile.FullName.FullName, user.Profile.Email.Value,
+            user.Id, user.EnrollmentNumber.Value, user.Role, user.Profile.FullName.FullName, user.Profile.Email?.Value ?? string.Empty,
             user.Region?.Name, user.Modality, user.Academic?.CurrentTerm.Value, user.Credentials.MustChangePassword));
     }
 }

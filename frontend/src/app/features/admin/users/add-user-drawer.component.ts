@@ -88,7 +88,13 @@ const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'Teacher', 'Regi
               <div class="space-y-4">
                 <label class="flex flex-col gap-1.5 text-sm">
                   <span class="font-medium text-slate-700">Rol <span class="text-[var(--shk-color-accent-dark)]">*</span></span>
-                  <select class="shk-field" [value]="role()" (change)="role.set($any($event.target).value)">
+                  <!-- BUG REAL encontrado: un <select> con [value]/(change) planos, cuyas <option> se
+                       generan con @for, puede desincronizarse del valor real seleccionado por el
+                       usuario y seguir enviando el valor inicial del signal ("Teacher") sin importar
+                       qué se elija en pantalla. [ngModel]/(ngModelChange) (mismo patrón que el resto
+                       del formulario) usa el SelectControlValueAccessor de Angular, que sí registra
+                       cada <option> y mantiene la selección sincronizada de forma confiable. -->
+                  <select class="shk-field" [ngModel]="role()" (ngModelChange)="role.set($event)" [ngModelOptions]="{standalone: true}" name="role">
                     @for (r of assignableRoles; track r) {
                       <option [value]="r">{{ roleLabel(r) }}</option>
                     }
@@ -103,7 +109,7 @@ const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'Teacher', 'Regi
                 @if (needsRegion()) {
                   <label class="flex flex-col gap-1.5 text-sm">
                     <span class="font-medium text-slate-700">Región <span class="text-[var(--shk-color-accent-dark)]">*</span></span>
-                    <select class="shk-field" [value]="regionId()" (change)="regionId.set($any($event.target).value)">
+                    <select class="shk-field" [ngModel]="regionId()" (ngModelChange)="regionId.set($event)" [ngModelOptions]="{standalone: true}" name="regionId">
                       <option value="">Selecciona una región…</option>
                       @for (region of regions(); track region.id) {
                         <option [value]="region.id">{{ region.name }}</option>

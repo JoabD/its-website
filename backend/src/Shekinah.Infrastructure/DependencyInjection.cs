@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IEnrollmentNumberGenerator, EnrollmentNumberGenerator>();
         services.AddScoped<IMatriculaGenerator, MatriculaGenerator>();
         services.AddSingleton<ISpreadsheetReader, SpreadsheetReader>();
+        services.AddSingleton<ISpreadsheetWriter, SpreadsheetWriter>();
         services.AddScoped<IPaymentMatrixReader, PaymentMatrixReader>();
         services.AddSingleton<IFileStorage>(_ => new LocalFileStorage(configuration["Storage:RootPath"] ?? "/data/uploads"));
         services.AddSingleton<IKardexPdfGenerator, KardexPdfGenerator>();
@@ -77,6 +78,7 @@ public static class DependencyInjection
         services.AddSingleton<IMongoMigration, M002_RenameOnsiteRegions>();
         services.AddSingleton<IMongoMigration, M003_AddRegionAbbreviations>();
         services.AddSingleton<IMongoMigration, M004_SeedChecklistItemDefinitions>();
+        services.AddSingleton<IMongoMigration, M005_FixNullEmailUniqueIndex>();
         services.AddScoped<MigrationRunner>();
         services.AddScoped<DatabaseSeeder>();
 

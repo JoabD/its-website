@@ -16,7 +16,7 @@ namespace Shekinah.Application.Identity.CreateStudent;
 /// </summary>
 [RequireRole(UserRole.Administrator)]
 public sealed record CreateStudentCommand(
-    string FullName, string Email, string Phone, DateOnly BirthDate, string RegionId,
+    string FullName, string? Email, string? Phone, DateOnly BirthDate, string RegionId,
     Modality Modality, StudyPlan Plan, int CurrentTerm) : ICommand<CreateStudentResponse>;
 
 public sealed record CreateStudentResponse(string UserId, int EnrollmentNumber, string Matricula, string TemporaryPassword);
@@ -26,8 +26,12 @@ public sealed class CreateStudentCommandValidator : AbstractValidator<CreateStud
     public CreateStudentCommandValidator()
     {
         RuleFor(x => x.FullName).NotEmpty();
-        RuleFor(x => x.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Phone).NotEmpty();
+        // Ajuste de flujo real: en la práctica el administrador no siempre tiene el correo ni el
+        // teléfono del alumno al capturarlo, así que ninguno de los dos es obligatorio ya — pero si
+        // se capturan, deben ser válidos. Sin correo, el alumno queda registrado (matrícula,
+        // materias, calificaciones, pagos) pero sin acceso al sistema por ahora, ya que el login es
+        // por correo. Sin teléfono, simplemente no se le puede ofrecer "enviar por WhatsApp".
+        RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
         RuleFor(x => x.RegionId).NotEmpty();
         RuleFor(x => x.CurrentTerm).InclusiveBetween(1, 6);
     }
@@ -41,25 +45,44 @@ public sealed class CreateStudentCommandHandler(
     public async Task<Result<CreateStudentResponse>> HandleAsync(CreateStudentCommand command, CancellationToken ct)
     {
         var nameResult = PersonName.Create(command.FullName);
-        var emailResult = Email.Create(command.Email);
-        var phoneResult = PhoneNumber.Create(command.Phone);
         var termResult = TermNumber.Create(command.CurrentTerm);
 
         if (nameResult.IsFailure) return Result.Failure<CreateStudentResponse>(nameResult.Error);
-        if (emailResult.IsFailure) return Result.Failure<CreateStudentResponse>(emailResult.Error);
-        if (phoneResult.IsFailure) return Result.Failure<CreateStudentResponse>(phoneResult.Error);
         if (termResult.IsFailure) return Result.Failure<CreateStudentResponse>(termResult.Error);
 
-        var existing = await users.GetByEmailAsync(emailResult.Value.Value, ct);
-        if (existing is not null)
+        Email? emailValue = null;
+        if (!string.IsNullOrWhiteSpace(command.Email))
         {
-            return Result.Failure<CreateStudentResponse>(Error.Conflict("CreateStudent.EmailInUse", "Ya existe un usuario con ese correo."));
+            var emailResult = Email.Create(command.Email);
+            if (emailResult.IsFailure) return Result.Failure<CreateStudentResponse>(emailResult.Error);
+            emailValue = emailResult.Value;
+
+            var existing = await users.GetByEmailAsync(emailValue.Value, ct);
+            if (existing is not null)
+            {
+                return Result.Failure<CreateStudentResponse>(Error.Conflict("CreateStudent.EmailInUse", "Ya existe un usuario con ese correo."));
+            }
+        }
+
+        PhoneNumber? phoneValue = null;
+        if (!string.IsNullOrWhiteSpace(command.Phone))
+        {
+            var phoneResult = PhoneNumber.Create(command.Phone);
+            if (phoneResult.IsFailure) return Result.Failure<CreateStudentResponse>(phoneResult.Error);
+            phoneValue = phoneResult.Value;
         }
 
         var regionEntity = await regions.GetByIdAsync(command.RegionId, ct);
         if (regionEntity is null)
         {
             return Result.Failure<CreateStudentResponse>(Error.Validation("CreateStudent.InvalidRegion", "La región indicada no existe."));
+        }
+
+        if (!regionEntity.Serves(command.Modality))
+        {
+            return Result.Failure<CreateStudentResponse>(Error.Validation(
+                "CreateStudent.ModalityNotServed",
+                $"La región \"{regionEntity.Name}\" no ofrece la modalidad {ModalityLabel(command.Modality)}."));
         }
 
         var region = new RegionRef(regionEntity.Id, regionEntity.LegacyCode, regionEntity.Name);
@@ -72,7 +95,7 @@ public sealed class CreateStudentCommandHandler(
         var education = EducationLevel.Create(SchoolingLevel.Other, "N/D").Value;
 
         var profileResult = PersonalProfile.Create(
-            nameResult.Value, emailResult.Value, phoneResult.Value, command.BirthDate, null, address, church, education, null, null);
+            nameResult.Value, emailValue, phoneValue, command.BirthDate, null, address, church, education, null, null);
         if (profileResult.IsFailure) return Result.Failure<CreateStudentResponse>(profileResult.Error);
 
         var enrollmentNumber = await enrollmentNumbers.NextAsync(ct);
@@ -86,12 +109,26 @@ public sealed class CreateStudentCommandHandler(
 
         await users.AddAsync(userResult.Value, ct);
 
-        await emailSender.SendAsync(
-            emailResult.Value.Value,
-            "Tus credenciales de acceso — Instituto Teológico Shekinah",
-            $"<p>Matrícula: {matricula}</p><p>Contraseña temporal: {temporaryPassword}</p><p>Deberás cambiarla en tu primer inicio de sesión.</p>",
-            ct);
+        // Sin correo, no hay a quién enviarle credenciales — el alumno queda de alta sin acceso al
+        // sistema por ahora (RN de flujo real: el administrador podrá capturar el correo después
+        // desde "editar alumno" para habilitarle el acceso).
+        if (emailValue is not null)
+        {
+            await emailSender.SendAsync(
+                emailValue.Value,
+                "Tus credenciales de acceso — Instituto Teológico Shekinah",
+                $"<p>Matrícula: {matricula}</p><p>Contraseña temporal: {temporaryPassword}</p><p>Deberás cambiarla en tu primer inicio de sesión.</p>",
+                ct);
+        }
 
         return Result.Success(new CreateStudentResponse(userResult.Value.Id, enrollmentNumber.Value, matricula, temporaryPassword));
     }
+
+    private static string ModalityLabel(Modality modality) => modality switch
+    {
+        Modality.Onsite => "Presencial",
+        Modality.Online => "Virtual",
+        Modality.Diploma => "Diplomado",
+        _ => modality.ToString(),
+    };
 }

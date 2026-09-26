@@ -2,9 +2,12 @@ using Shekinah.Api.Extensions;
 using Shekinah.Application.Abstractions;
 using Shekinah.Application.Academics.GetMyCourses;
 using Shekinah.Application.Identity.CreateStudent;
+using Shekinah.Application.Identity.DeleteStudent;
 using Shekinah.Application.Identity.GetCurrentUser;
 using Shekinah.Application.Identity.GetStudentImportBatch;
+using Shekinah.Application.Identity.GetStudentImportTemplate;
 using Shekinah.Application.Identity.ImportStudents;
+using Shekinah.Application.Identity.SetStudentStatus;
 using Shekinah.Application.Identity.UpdateMyProfile;
 using Shekinah.Domain.SharedKernel;
 
@@ -47,9 +50,29 @@ public static class StudentEndpoints
 
         adminGroup.MapGet("/import/{batchId}", async (string batchId, IDispatcher dispatcher, CancellationToken ct) =>
             (await dispatcher.QueryAsync(new GetStudentImportBatchQuery(batchId), ct)).ToApiResult());
+
+        // "Agregar alumno" → pestaña Excel → "Descargar plantilla" (antes solo se mencionaba en
+        // texto, sin ningún lugar de dónde bajarla). Va ANTES de /import/{batchId} en este archivo
+        // solo por orden de lectura — con rutas literales como esta, el orden de registro no importa
+        // para el matching (no compite con el parámetro {batchId}).
+        adminGroup.MapGet("/import/template", async (IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.QueryAsync(new GetStudentImportTemplateQuery(), ct)).ToApiResult());
+
+        // Alumnos → "Dar de baja" / "Reactivar" y "Eliminar" (pedido explícito del cliente, 2026-09:
+        // "necesitamos un mecanismo para dar de baja alumnos, y una vez dados de baja, que se puedan
+        // eliminar"). Mismo patrón de rutas que UsersEndpoints (POST /{id}/status, DELETE /{id}),
+        // pero con comandos propios de Alumnos — ver SetStudentStatus.cs/DeleteStudent.cs para el
+        // porqué de tenerlos separados de SetUserStatusCommand/DeleteUserCommand.
+        adminGroup.MapPost("/{id}/status", async (string id, SetStudentStatusRequest request, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new SetStudentStatusCommand(id, request.Active), ct)).ToApiResult());
+
+        adminGroup.MapDelete("/{id}", async (string id, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new DeleteStudentCommand(id), ct)).ToApiResult());
     }
 
     public sealed record CreateStudentRequest(
         string FullName, string Email, string Phone, DateOnly BirthDate, string RegionId,
         Modality Modality, StudyPlan Plan, int CurrentTerm);
+
+    public sealed record SetStudentStatusRequest(bool Active);
 }

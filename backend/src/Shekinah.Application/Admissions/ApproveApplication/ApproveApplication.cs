@@ -72,7 +72,7 @@ public sealed class ApproveApplicationCommandHandler(
         await applications.UpdateAsync(application, ct);
 
         await emailSender.SendAsync(
-            profile.Email.Value,
+            application.Applicant.Email.Value,
             "Tus credenciales de acceso — Instituto Teológico Shekinah",
             $"<p>Matrícula: {matricula}</p><p>Contraseña temporal: {temporaryPassword}</p><p>Deberás cambiarla en tu primer inicio de sesión.</p>",
             ct);

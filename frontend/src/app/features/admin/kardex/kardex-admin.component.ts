@@ -37,7 +37,7 @@ import { KardexViewComponent } from './kardex-view.component';
               (click)="selectedStudentId.set(student.id)"
             >
               <span class="font-medium text-slate-700">{{ student.fullName }}</span>
-              <span class="text-xs text-slate-400">{{ student.email }} · Mat. {{ student.enrollmentNumber }}</span>
+              <span class="text-xs text-slate-400">{{ student.email ?? 'Sin correo' }} · Mat. {{ student.enrollmentNumber }}</span>
             </button>
           } @empty {
             <p class="py-4 text-center text-sm text-slate-400">Sin resultados.</p>

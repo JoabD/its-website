@@ -12,9 +12,13 @@ namespace Shekinah.Application.Identity.ImportStudents;
 /// Importar Excel): mismo patrón que ImportPayments — reporta fila a fila SIN abortar el lote
 /// (una fila mala no tumba a las demás). Columnas esperadas, en este orden exacto (ver plantilla
 /// oficial "Plantilla_Alta_Alumnos.xlsx"):
-///   NOMBRE_COMPLETO | CORREO | TELEFONO | FECHA_NACIMIENTO (dd/mm/aaaa) | REGION (nombre o
-///   abreviatura de una región activa) | MODALIDAD (Presencial|Virtual|Diplomado) |
+///   NOMBRE_COMPLETO | CORREO (opcional) | TELEFONO (opcional) | FECHA_NACIMIENTO (dd/mm/aaaa) |
+///   REGION (nombre o abreviatura de una región activa) | MODALIDAD (Presencial|Virtual|Diplomado) |
 ///   PLAN (Cuatrimestral|Semestral) | CUATRIMESTRE_O_SEMESTRE (1-6, el punto en el que entra).
+/// CORREO y TELEFONO ya no son obligatorios (ajuste de flujo real: en la práctica no siempre se
+/// tienen al capturar al alumno) — sin ellos, el alumno queda de alta con matrícula, materias,
+/// calificaciones y pagos normales; sin correo se queda sin acceso al sistema por ahora (login es
+/// por correo), y sin teléfono se queda sin la opción de "enviar por WhatsApp".
 /// </summary>
 [RequireRole(UserRole.Administrator)]
 public sealed record ImportStudentsCommand(string FileName, Stream Content) : ICommand<ImportStudentsResponse>;
@@ -70,18 +74,32 @@ public sealed class ImportStudentsCommandHandler(
                 continue;
             }
 
-            var emailResult = Email.Create(row.Values.GetValueOrDefault("CORREO"));
-            if (emailResult.IsFailure)
+            var correoRaw = row.Values.GetValueOrDefault("CORREO");
+            Email? emailValue = null;
+            if (!string.IsNullOrWhiteSpace(correoRaw))
             {
-                errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_CORREO", emailResult.Error.Message, raw));
-                continue;
+                var emailResult = Email.Create(correoRaw);
+                if (emailResult.IsFailure)
+                {
+                    errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_CORREO", emailResult.Error.Message, raw));
+                    continue;
+                }
+
+                emailValue = emailResult.Value;
             }
 
-            var phoneResult = PhoneNumber.Create(row.Values.GetValueOrDefault("TELEFONO"));
-            if (phoneResult.IsFailure)
+            var telefonoRaw = row.Values.GetValueOrDefault("TELEFONO");
+            PhoneNumber? phoneValue = null;
+            if (!string.IsNullOrWhiteSpace(telefonoRaw))
             {
-                errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_TELEFONO", phoneResult.Error.Message, raw));
-                continue;
+                var phoneResult = PhoneNumber.Create(telefonoRaw);
+                if (phoneResult.IsFailure)
+                {
+                    errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_TELEFONO", phoneResult.Error.Message, raw));
+                    continue;
+                }
+
+                phoneValue = phoneResult.Value;
             }
 
             if (!DateOnly.TryParseExact(
@@ -94,7 +112,8 @@ public sealed class ImportStudentsCommandHandler(
             var regionRaw = row.Values.GetValueOrDefault("REGION", "").Trim();
             var regionEntity = activeRegions.FirstOrDefault(r =>
                 string.Equals(r.Name, regionRaw, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(r.Abbreviation, regionRaw, StringComparison.OrdinalIgnoreCase));
+                string.Equals(r.Abbreviation, regionRaw, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeRegionName(r.Name), NormalizeRegionName(regionRaw), StringComparison.OrdinalIgnoreCase));
             if (regionEntity is null)
             {
                 errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_REGION", $"No existe una región activa llamada \"{regionRaw}\".", raw));
@@ -104,6 +123,14 @@ public sealed class ImportStudentsCommandHandler(
             if (!TryParseModality(row.Values.GetValueOrDefault("MODALIDAD"), out var modality))
             {
                 errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_MODALIDAD", "MODALIDAD debe ser Presencial, Virtual o Diplomado.", raw));
+                continue;
+            }
+
+            if (!regionEntity.Serves(modality))
+            {
+                errors.Add(new StudentImportRowError(
+                    row.RowNumber, "MODALITY_NOT_SERVED",
+                    $"La región \"{regionEntity.Name}\" no ofrece la modalidad {ModalityLabel(modality)}.", raw));
                 continue;
             }
 
@@ -126,18 +153,21 @@ public sealed class ImportStudentsCommandHandler(
                 continue;
             }
 
-            var existing = await users.GetByEmailAsync(emailResult.Value.Value, ct);
-            if (existing is not null)
+            if (emailValue is not null)
             {
-                errors.Add(new StudentImportRowError(row.RowNumber, "EMAIL_IN_USE", $"Ya existe un usuario con el correo {emailResult.Value.Value}.", raw));
-                continue;
+                var existing = await users.GetByEmailAsync(emailValue.Value, ct);
+                if (existing is not null)
+                {
+                    errors.Add(new StudentImportRowError(row.RowNumber, "EMAIL_IN_USE", $"Ya existe un usuario con el correo {emailValue.Value}.", raw));
+                    continue;
+                }
             }
 
             var address = Address.Create("N/D", "N/D", "N/D", "N/D").Value;
             var church = ChurchInfo.Create("N/D", address, "N/D", "N/D", MinistryRole.None).Value;
             var education = EducationLevel.Create(SchoolingLevel.Other, "N/D").Value;
             var profileResult = PersonalProfile.Create(
-                nameResult.Value, emailResult.Value, phoneResult.Value, birthDate, null, address, church, education, null, null);
+                nameResult.Value, emailValue, phoneValue, birthDate, null, address, church, education, null, null);
             if (profileResult.IsFailure)
             {
                 errors.Add(new StudentImportRowError(row.RowNumber, "INVALID_PROFILE", profileResult.Error.Message, raw));
@@ -160,11 +190,14 @@ public sealed class ImportStudentsCommandHandler(
 
             await users.AddAsync(userResult.Value, ct);
 
-            await emailSender.SendAsync(
-                emailResult.Value.Value,
-                "Tus credenciales de acceso — Instituto Teológico Shekinah",
-                $"<p>Matrícula: {matricula}</p><p>Contraseña temporal: {temporaryPassword}</p><p>Deberás cambiarla en tu primer inicio de sesión.</p>",
-                ct);
+            if (emailValue is not null)
+            {
+                await emailSender.SendAsync(
+                    emailValue.Value,
+                    "Tus credenciales de acceso — Instituto Teológico Shekinah",
+                    $"<p>Matrícula: {matricula}</p><p>Contraseña temporal: {temporaryPassword}</p><p>Deberás cambiarla en tu primer inicio de sesión.</p>",
+                    ct);
+            }
 
             imported++;
         }
@@ -193,4 +226,34 @@ public sealed class ImportStudentsCommandHandler(
             default: plan = default; return false;
         }
     }
+
+    /// <summary>
+    /// Tolera variaciones comunes al escribir el nombre de una región a mano ("Región Cuautla" vs
+    /// "Cuautla", espacios de más, mayúsculas/minúsculas) — quita el prefijo "Región"/"Region" y
+    /// colapsa espacios antes de comparar, además del match exacto por nombre/abreviatura ya
+    /// existente. Con la plantilla nueva (dropdown de REGION) este caso ya casi no debería darse,
+    /// pero sigue siendo un respaldo útil para quien pega el valor a mano o usa una plantilla vieja.
+    /// </summary>
+    private static string NormalizeRegionName(string value)
+    {
+        var trimmed = value.Trim();
+        if (trimmed.StartsWith("región ", StringComparison.OrdinalIgnoreCase))
+        {
+            trimmed = trimmed[7..];
+        }
+        else if (trimmed.StartsWith("region ", StringComparison.OrdinalIgnoreCase))
+        {
+            trimmed = trimmed[7..];
+        }
+
+        return string.Join(' ', trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    private static string ModalityLabel(Modality modality) => modality switch
+    {
+        Modality.Onsite => "Presencial",
+        Modality.Online => "Virtual",
+        Modality.Diploma => "Diplomado",
+        _ => modality.ToString(),
+    };
 }
