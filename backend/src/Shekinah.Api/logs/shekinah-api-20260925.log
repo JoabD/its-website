@@ -1141,3 +1141,89 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-09-25 18:48:56.805 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
 2026-09-25 18:48:56.814 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
 2026-09-25 18:48:56.817 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 50.3993ms
+2026-09-25 18:51:31.319 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-09-25 18:51:31.787 -06:00 [INF] Now listening on: https://localhost:5081
+2026-09-25 18:51:31.790 -06:00 [INF] Now listening on: http://localhost:5080
+2026-09-25 18:51:31.794 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-09-25 18:51:31.796 -06:00 [INF] Hosting environment: Development
+2026-09-25 18:51:31.798 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-09-25 18:51:32.181 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-09-25 18:51:32.310 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-09-25 18:51:32.315 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-09-25 18:51:32.318 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 140.7186ms
+2026-09-25 18:51:45.117 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-09-25 18:51:45.257 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-25 18:51:45.344 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-09-25 18:51:45.387 -06:00 [INF] GetCurrentUserQuery completado
+2026-09-25 18:51:45.397 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:45.404 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-09-25 18:51:45.420 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-09-25 18:51:45.427 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 310.7291ms
+2026-09-25 18:51:45.475 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-25 18:51:45.485 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-25 18:51:45.490 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - null null
+2026-09-25 18:51:45.492 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-25 18:51:45.495 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:45.503 -06:00 [INF] GetRegionsQuery completado
+2026-09-25 18:51:45.506 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:45.507 -06:00 [INF] Ejecutando GetUsersQuery
+2026-09-25 18:51:45.509 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-25 18:51:45.525 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-25 18:51:45.529 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 54.3911ms
+2026-09-25 18:51:45.566 -06:00 [INF] GetUsersQuery completado
+2026-09-25 18:51:45.569 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:45.576 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-25 18:51:45.587 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:45.590 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 99.8349ms
+2026-09-25 18:51:49.457 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-09-25 18:51:49.463 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-25 18:51:49.464 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-25 18:51:49.468 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:49.471 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-09-25 18:51:49.473 -06:00 [INF] Ejecutando GetUsersQuery
+2026-09-25 18:51:49.475 -06:00 [INF] GetRegionsQuery completado
+2026-09-25 18:51:49.477 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:49.479 -06:00 [INF] GetUsersQuery completado
+2026-09-25 18:51:49.479 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-09-25 18:51:49.481 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:49.483 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-09-25 18:51:49.485 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-25 18:51:49.488 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 30.8839ms
+2026-09-25 18:51:49.493 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:49.501 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 38.0136ms
+2026-09-25 18:51:54.012 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/students/cb4bb75a751fe8e9d341962e/status - application/json 16
+2026-09-25 18:51:54.018 -06:00 [INF] CORS policy execution successful.
+2026-09-25 18:51:54.020 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/students/{id}/status'
+2026-09-25 18:51:54.041 -06:00 [INF] Ejecutando SetStudentStatusCommand
+2026-09-25 18:51:54.161 -06:00 [INF] SetStudentStatusCommand completado
+2026-09-25 18:51:54.165 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:54.174 -06:00 [INF] Writing value of type 'Unit' as Json.
+2026-09-25 18:51:54.186 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/students/{id}/status'
+2026-09-25 18:51:54.188 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/students/cb4bb75a751fe8e9d341962e/status - 200 null application/json; charset=utf-8 175.4951ms
+2026-09-25 18:51:54.197 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-25 18:51:54.201 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:54.208 -06:00 [INF] Ejecutando GetUsersQuery
+2026-09-25 18:51:54.212 -06:00 [INF] GetUsersQuery completado
+2026-09-25 18:51:54.214 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:54.216 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-25 18:51:54.218 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:54.220 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 23.6017ms
+2026-09-25 18:51:56.053 -06:00 [INF] Request starting HTTP/1.1 DELETE https://localhost:5081/api/v1/students/cb4bb75a751fe8e9d341962e - null 0
+2026-09-25 18:51:56.057 -06:00 [INF] CORS policy execution successful.
+2026-09-25 18:51:56.059 -06:00 [INF] Executing endpoint 'HTTP: DELETE /api/v1/students/{id}'
+2026-09-25 18:51:56.062 -06:00 [INF] Ejecutando DeleteStudentCommand
+2026-09-25 18:51:56.083 -06:00 [INF] DeleteStudentCommand completado
+2026-09-25 18:51:56.084 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:56.086 -06:00 [INF] Writing value of type 'Unit' as Json.
+2026-09-25 18:51:56.088 -06:00 [INF] Executed endpoint 'HTTP: DELETE /api/v1/students/{id}'
+2026-09-25 18:51:56.090 -06:00 [INF] Request finished HTTP/1.1 DELETE https://localhost:5081/api/v1/students/cb4bb75a751fe8e9d341962e - 200 null application/json; charset=utf-8 37.3164ms
+2026-09-25 18:51:56.101 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-09-25 18:51:56.106 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:56.107 -06:00 [INF] Ejecutando GetUsersQuery
+2026-09-25 18:51:56.110 -06:00 [INF] GetUsersQuery completado
+2026-09-25 18:51:56.112 -06:00 [INF] Setting HTTP status code 200.
+2026-09-25 18:51:56.114 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-09-25 18:51:56.116 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-09-25 18:51:56.119 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 17.7218ms
+2026-09-25 18:51:59.188 -06:00 [INF] Application is shutting down...
