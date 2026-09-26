@@ -10,6 +10,7 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 
 type DrawerMode = 'create' | 'view';
 
@@ -25,7 +26,7 @@ type DrawerMode = 'create' | 'view';
  */
 @Component({
   selector: 'shk-calendar-event-drawer',
-  imports: [ButtonComponent, BadgeComponent, ReactiveFormsModule, DatePipe],
+  imports: [ButtonComponent, BadgeComponent, ReactiveFormsModule, DatePipe, SwipeToCloseDirective],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -33,6 +34,8 @@ type DrawerMode = 'create' | 'view';
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-lg flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

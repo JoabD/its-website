@@ -7,6 +7,7 @@ import { AdminUpdateUserRequestDto, UserListItemDto } from '../../../api/schema'
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 
 /**
  * Panel de Usuarios → editar (side panel, mismo patrón visual que AddUserDrawerComponent/
@@ -20,7 +21,7 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
  */
 @Component({
   selector: 'shk-edit-user-drawer',
-  imports: [ButtonComponent, InputComponent, FormsModule],
+  imports: [ButtonComponent, InputComponent, FormsModule, SwipeToCloseDirective],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -28,6 +29,8 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-xl flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

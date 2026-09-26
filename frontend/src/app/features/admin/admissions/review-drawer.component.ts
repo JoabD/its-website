@@ -7,6 +7,7 @@ import { ApplicationDetailDto, ApproveApplicationResponseDto, ChecklistItemState
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { BadgeComponent, BadgeTone } from '../../../shared/ui/badge/badge.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 import { APPLICATION_STATUS_LABELS, ApplicationStatus, MODALITY_LABELS, Modality } from '../../../domain/models';
 
 /**
@@ -26,7 +27,7 @@ import { APPLICATION_STATUS_LABELS, ApplicationStatus, MODALITY_LABELS, Modality
  */
 @Component({
   selector: 'shk-application-review-drawer',
-  imports: [ButtonComponent, BadgeComponent, DatePipe],
+  imports: [ButtonComponent, BadgeComponent, DatePipe, SwipeToCloseDirective],
   template: `
     @if (applicationId()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -34,6 +35,8 @@ import { APPLICATION_STATUS_LABELS, ApplicationStatus, MODALITY_LABELS, Modality
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-xl flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

@@ -8,6 +8,7 @@ import { CreateUserRequestDto, CreateUserResponseDto, RegionListItemDto } from '
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 import { ROLE_LABELS, UserRole } from '../../../domain/models';
 
 /** Roles que se pueden dar de alta desde este panel — Student queda fuera a propósito: tiene su
@@ -27,7 +28,7 @@ const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'Teacher', 'Regi
  */
 @Component({
   selector: 'shk-add-user-drawer',
-  imports: [ButtonComponent, InputComponent, FormsModule],
+  imports: [ButtonComponent, InputComponent, FormsModule, SwipeToCloseDirective],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -35,6 +36,8 @@ const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'Teacher', 'Regi
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-xl flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

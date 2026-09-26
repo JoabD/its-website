@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
 /*
+  Usabilidad móvil (pedido del cliente, 2026-09): SOLO el CSS "core" de Ionic (variables de tema +
+  lo mínimo para que sus componentes funcionen) — a propósito NO se importan normalize.css,
+  structure.css, typography.css, padding.css, etc. (los paquetes "utilitarios" de Ionic), porque
+  chocarían con el reset y las utilidades de Tailwind que ya gobiernan el resto del sitio. Ionic
+  aquí es solo para piezas puntuales (drawers tipo bottom-sheet, tab bar móvil) — el sistema de
+  diseño propio (shk-button/shk-card/tokens de abajo) sigue siendo la base de toda la app.
+*/
+@import "@ionic/angular/css/core.css";
+
+/*
   Sistema de diseño del ITS — portado 1:1 desde resources/views + public/css/site.css del proyecto
   Laravel original (C:\laragon\www\shekinah). Los tokens y las reglas de abajo son una traducción
   fiel de ese site.css: mismos colores, tipografías, espaciados y sombras. shared/ui y los formularios

@@ -5,6 +5,7 @@ import { ApiClient } from '../../../core/http/api-client';
 import { SendPaymentReceiptResponseDto, StudentPaymentRowDto } from '../../../api/schema';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { SwipeToCloseDirective } from '../../../shared/gestures/swipe-to-close.directive';
 
 const MONTH_NAMES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
@@ -38,7 +39,7 @@ type MonthAction = 'mark' | 'undo' | 'receipt';
  */
 @Component({
   selector: 'shk-payment-detail-drawer',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, SwipeToCloseDirective],
   template: `
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end" (keydown.escape)="close.emit()">
@@ -46,6 +47,8 @@ type MonthAction = 'mark' | 'undo' | 'receipt';
 
         <aside
           #panel
+          shkSwipeToClose
+          (swipeClose)="close.emit()"
           class="relative flex h-full w-full max-w-2xl flex-col bg-[var(--shk-color-surface)] shadow-2xl focus:outline-none"
           role="dialog"
           aria-modal="true"

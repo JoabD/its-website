@@ -1,16 +1,27 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SwipeHorizontalDirective } from '../../../shared/gestures/swipe-horizontal.directive';
 
 /**
  * Página de inicio portada 1:1 desde resources/views/index.blade.php + public/css/pages/home.css
  * del proyecto Laravel original (C:\laragon\www\shekinah). Mismas secciones/ids/clases (#hero,
  * #valores, #conocenos, #mision, #ofrecemos, #dirigido-a, #galeria, #cta-final), mismos textos,
  * mismos íconos Bootstrap Icons y las mismas imágenes reales del instituto. El carrusel de la
- * galería replica el crossfade + flechas + puntos de home.js.
+ * galería replica el crossfade + flechas + puntos de home.js, y además responde a swipe en móvil
+ * (SwipeHorizontalDirective, usabilidad móvil 2026-09) — las flechas/puntos originales siguen
+ * intactos, el swipe es un control adicional, no un reemplazo.
+ *
+ * OJO: esta es la primera pantalla del sitio PÚBLICO que importa algo de @ionic/angular (solo la
+ * función createGesture, vía el directive) — y a diferencia de /admin (RenderMode.Client, nunca se
+ * prerenderiza), "/" SÍ se prerenderiza en cada build (RenderMode.Prerender, ver
+ * app.routes.server.ts). Se verificó con un build real que esto no rompe el prerender: el import es
+ * solo una referencia a una función (createGesture no se invoca hasta ngOnInit, y el directive corta
+ * antes por el guard `typeof window === 'undefined'`), y @ionic/core no ejecuta nada a nivel de
+ * módulo que dependa de window/document en el momento de importarse.
  */
 @Component({
   selector: 'shk-home',
-  imports: [RouterLink],
+  imports: [RouterLink, SwipeHorizontalDirective],
   template: `
     <section id="hero">
       <div class="contenedor">
@@ -147,7 +158,7 @@ import { RouterLink } from '@angular/router';
           <span class="eyebrow">Galería</span>
           <h2>Un vistazo a nuestra comunidad</h2>
         </div>
-        <div class="carrusel">
+        <div class="carrusel" shkSwipeHorizontal (swipeLeft)="nextSlide()" (swipeRight)="prevSlide()">
           <span class="flecha izq" role="button" aria-label="Anterior" (click)="prevSlide()">&#10094;</span>
           <span class="flecha der" role="button" aria-label="Siguiente" (click)="nextSlide()">&#10095;</span>
 
