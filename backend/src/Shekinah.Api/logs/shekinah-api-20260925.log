@@ -1141,28 +1141,3 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2026-09-25 18:48:56.805 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
 2026-09-25 18:48:56.814 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
 2026-09-25 18:48:56.817 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 50.3993ms
-2026-09-25 18:49:33.975 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
-2026-09-25 18:49:33.981 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
-2026-09-25 18:49:33.984 -06:00 [INF] Ejecutando GetCurrentUserQuery
-2026-09-25 18:49:33.989 -06:00 [INF] GetCurrentUserQuery completado
-2026-09-25 18:49:33.992 -06:00 [INF] Setting HTTP status code 200.
-2026-09-25 18:49:33.995 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
-2026-09-25 18:49:33.998 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
-2026-09-25 18:49:34.001 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 26.0404ms
-2026-09-25 18:49:34.188 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
-2026-09-25 18:49:34.193 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
-2026-09-25 18:49:34.194 -06:00 [INF] Ejecutando GetRegionsQuery
-2026-09-25 18:49:34.198 -06:00 [INF] GetRegionsQuery completado
-2026-09-25 18:49:34.200 -06:00 [INF] Setting HTTP status code 200.
-2026-09-25 18:49:34.202 -06:00 [INF] Writing value of type 'List`1' as Json.
-2026-09-25 18:49:34.204 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
-2026-09-25 18:49:34.207 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 19.4833ms
-2026-09-25 18:49:34.214 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - null null
-2026-09-25 18:49:34.219 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
-2026-09-25 18:49:34.221 -06:00 [INF] Ejecutando GetUsersQuery
-2026-09-25 18:49:34.226 -06:00 [INF] GetUsersQuery completado
-2026-09-25 18:49:34.228 -06:00 [INF] Setting HTTP status code 200.
-2026-09-25 18:49:34.230 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
-2026-09-25 18:49:34.233 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
-2026-09-25 18:49:34.236 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 21.8171ms
-2026-09-25 18:49:41.035 -06:00 [INF] Application is shutting down...

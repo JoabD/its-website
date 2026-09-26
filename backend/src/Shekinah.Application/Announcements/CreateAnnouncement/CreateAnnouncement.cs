@@ -50,7 +50,7 @@ public sealed class CreateAnnouncementCommandHandler(
         var notified = 0;
         foreach (var teacher in teachers)
         {
-            if (teacher.Status != UserStatus.Active)
+            if (teacher.Status != UserStatus.Active || teacher.Profile.Email is null)
             {
                 continue;
             }

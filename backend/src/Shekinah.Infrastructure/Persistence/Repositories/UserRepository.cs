@@ -127,8 +127,8 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             ["profile"] = new BsonDocument
             {
                 ["fullName"] = user.Profile.FullName.FullName,
-                ["email"] = user.Profile.Email.Value,
-                ["phone"] = user.Profile.Phone.Value,
+                ["email"] = user.Profile.Email is null ? BsonNull.Value : user.Profile.Email.Value,
+                ["phone"] = user.Profile.Phone is null ? BsonNull.Value : user.Profile.Phone.Value,
                 ["birthDate"] = user.Profile.BirthDate.ToDateTime(TimeOnly.MinValue),
                 ["maritalStatus"] = user.Profile.MaritalStatus,
                 ["address"] = user.Profile.Address.ToBson(),
@@ -181,10 +181,14 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             billingDoc.TryGetValue("blockedAt", out var ba) && !ba.IsBsonNull ? ba.ToUniversalTime() : null);
 
         var profileDoc = doc["profile"].AsBsonDocument;
+        Email? email = profileDoc.TryGetValue("email", out var emailValue) && !emailValue.IsBsonNull
+            ? Email.Create(emailValue.AsString).Value : null;
+        PhoneNumber? phone = profileDoc.TryGetValue("phone", out var phoneValue) && !phoneValue.IsBsonNull
+            ? PhoneNumber.Create(phoneValue.AsString).Value : null;
         var profile = PersonalProfile.Create(
             PersonName.Create(profileDoc["fullName"].AsString).Value,
-            Email.Create(profileDoc["email"].AsString).Value,
-            PhoneNumber.Create(profileDoc["phone"].AsString).Value,
+            email,
+            phone,
             DateOnly.FromDateTime(profileDoc["birthDate"].ToUniversalTime()),
             profileDoc.GetValue("maritalStatus", "").AsString,
             BsonMappingExtensions.AddressFromBson(profileDoc["address"].AsBsonDocument),

@@ -233,8 +233,8 @@ export interface UserListItemDto {
   enrollmentNumber: number;
   matricula: string | null;
   fullName: string;
-  email: string;
-  phone: string;
+  email: string | null;
+  phone: string | null;
   role: UserRole;
   status: string;
   regionName: string | null;
@@ -275,11 +275,13 @@ export interface ResetPasswordResponseDto {
   temporaryPassword: string;
 }
 
-/** Alumnos → "Agregar alumno" → formulario manual. */
+/** Alumnos → "Agregar alumno" → formulario manual. Correo y teléfono opcionales (ajuste de flujo
+ * real: no siempre se tienen al capturar al alumno) — sin correo, el alumno queda registrado pero
+ * sin acceso al sistema por ahora; sin teléfono, se queda sin la opción de "enviar por WhatsApp". */
 export interface CreateStudentRequestDto {
   fullName: string;
-  email: string;
-  phone: string;
+  email?: string | null;
+  phone?: string | null;
   birthDate: string;
   regionId: string;
   modality: ModalityDto;
@@ -316,6 +318,14 @@ export interface ImportStudentsResponseDto {
   totalRows: number;
   importedRows: number;
   errors: StudentImportRowErrorDto[];
+}
+
+/** Alumnos → "Agregar alumno" → pestaña Excel → "Descargar plantilla". Mismo patrón que
+ * SendPaymentReceiptResponseDto: el .xlsx viaja en base64 dentro del JSON (no un <a href> plano)
+ * porque el endpoint requiere el header Authorization, así que la descarga se dispara desde JS. */
+export interface StudentImportTemplateResponseDto {
+  fileName: string;
+  contentBase64: string;
 }
 
 export interface PeriodListItemDto {
@@ -377,9 +387,9 @@ export interface CurrentPeriodResponseDto {
 
 /** Panel de verificación de pagos, fase 1: respuesta al enviar un recibo (email automático + datos para WhatsApp + PDF para descarga). */
 export interface SendPaymentReceiptResponseDto {
-  sentTo: string;
-  whatsAppPhone: string;
-  whatsAppMessage: string;
+  sentTo: string | null;
+  whatsAppPhone: string | null;
+  whatsAppMessage: string | null;
   pdfBase64: string;
   fileName: string;
 }
@@ -438,7 +448,7 @@ export interface KardexResponseDto {
   studentId: string;
   enrollmentNumber: number;
   fullName: string;
-  email: string;
+  email: string | null;
   regionName: string | null;
   modality: ModalityDto | null;
   currentTerm: number | null;

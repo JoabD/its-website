@@ -47,7 +47,16 @@ public sealed class RegionRepository(MongoContext context) : IRegionRepository
 
     internal static Region ToDomain(BsonDocument doc)
     {
-        var scope = doc["modalityScope"].AsBsonArray.Select(v => Enum.Parse<Modality>(v.AsString));
+        // Defensivo (bug real 2026-09: 500 al "Descargar plantilla" — la primera función que carga
+        // TODAS las regiones activas de un jalón y lee modalityScope de cada una): algunas regiones
+        // existentes (aparentemente creadas/editadas a mano en Mongo antes de que este campo
+        // existiera — ej. las que el cliente reportó no saber cómo quedaron internamente) no tienen
+        // "modalityScope" guardado, y el indexador de BsonDocument truena si la llave no existe. Si
+        // falta, se asume que la región sirve las tres modalidades (comportamiento histórico antes de
+        // que existiera esta restricción), en vez de tumbar toda la petición.
+        var scope = doc.TryGetValue("modalityScope", out var scopeValue) && !scopeValue.IsBsonNull && scopeValue.AsBsonArray.Count > 0
+            ? scopeValue.AsBsonArray.Select(v => Enum.Parse<Modality>(v.AsString))
+            : Enum.GetValues<Modality>();
         var abbreviation = doc.TryGetValue("abbreviation", out var abbr) && !abbr.IsBsonNull ? abbr.AsString : null;
         var region = Region.Create(doc["_id"].AsObjectId.ToString(), doc["code"].AsInt32, doc["name"].AsString, scope, abbreviation).Value;
         if (!doc.GetValue("isActive", true).AsBoolean) region.Deactivate();

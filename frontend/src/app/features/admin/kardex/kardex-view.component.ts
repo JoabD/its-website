@@ -26,7 +26,7 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
         <div class="flex items-start justify-between gap-4">
           <div>
             <h2 class="text-lg font-semibold text-slate-900">{{ data.fullName }}</h2>
-            <p class="text-sm text-slate-500">{{ data.email }} · Matrícula {{ data.enrollmentNumber }}</p>
+            <p class="text-sm text-slate-500">{{ data.email ?? 'Sin correo registrado' }} · Matrícula {{ data.enrollmentNumber }}</p>
           </div>
           <shk-badge [tone]="data.isGraduated ? 'success' : 'warning'">{{ data.isGraduated ? 'Egresado' : 'Activo' }}</shk-badge>
         </div>
@@ -59,7 +59,7 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
             <input
               type="email"
               class="shk-field w-64"
-              placeholder="Correo destino (opcional, por defecto el del alumno)"
+              [placeholder]="data.email ? 'Correo destino (opcional, por defecto el del alumno)' : 'El alumno no tiene correo — captura uno para enviarlo'"
               [value]="overrideEmail()"
               (input)="overrideEmail.set($any($event.target).value)"
             />
@@ -168,7 +168,7 @@ export class KardexViewComponent {
     this.api.post(`/kardex/${this.studentId()}/email`, { email: email || null }).pipe(
       tap({
         next: () => this.toast.success('Kardex enviado por correo.'),
-        error: () => this.toast.error('No se pudo enviar el Kardex por correo.'),
+        error: (error) => this.toast.error(error?.error?.detail ?? 'No se pudo enviar el Kardex por correo.'),
       }),
       catchError(() => of(null)),
     ).subscribe(() => this.sending.set(false));

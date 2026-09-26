@@ -12,9 +12,21 @@ public sealed record PersonalProfile
 {
     public PersonName FullName { get; }
 
-    public Email Email { get; }
+    /// <summary>
+    /// Opcional (ajuste de flujo real): en la práctica el administrador no siempre tiene el correo
+    /// del alumno al capturarlo. Sin correo, el alumno queda de alta con matrícula, materias,
+    /// calificaciones y pagos normales, pero SIN acceso al sistema (login es por correo — ver
+    /// <c>LoginCommand</c> —, así que sin correo simplemente no hay forma de autenticar). El acceso
+    /// se puede activar después capturando el correo.
+    /// </summary>
+    public Email? Email { get; }
 
-    public PhoneNumber Phone { get; }
+    /// <summary>
+    /// Opcional, mismo ajuste de flujo real que <see cref="Email"/>: el administrador tampoco
+    /// siempre tiene el teléfono del alumno al capturarlo. Sin teléfono, el alumno igual queda de
+    /// alta con normalidad — solo se queda sin la opción de "enviar por WhatsApp" (recibos, Kardex).
+    /// </summary>
+    public PhoneNumber? Phone { get; }
 
     public DateOnly BirthDate { get; }
 
@@ -31,7 +43,7 @@ public sealed record PersonalProfile
     public string StudyPurpose { get; }
 
     private PersonalProfile(
-        PersonName fullName, Email email, PhoneNumber phone, DateOnly birthDate, string maritalStatus,
+        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly birthDate, string maritalStatus,
         Address address, ChurchInfo church, EducationLevel education, string theologicalBackground, string studyPurpose)
     {
         FullName = fullName;
@@ -51,7 +63,7 @@ public sealed record PersonalProfile
         applicant.Address, applicant.Church, applicant.Education, applicant.TheologicalBackground, applicant.StudyPurpose);
 
     public static Result<PersonalProfile> Create(
-        PersonName fullName, Email email, PhoneNumber phone, DateOnly birthDate, string? maritalStatus,
+        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly birthDate, string? maritalStatus,
         Address address, ChurchInfo church, EducationLevel education, string? theologicalBackground, string? studyPurpose)
     {
         if (birthDate >= DateOnly.FromDateTime(DateTime.UtcNow))

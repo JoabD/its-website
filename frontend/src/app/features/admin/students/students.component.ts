@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { ApiClient } from '../../../core/http/api-client';
 import { PagedResultDto, UserListItemDto } from '../../../api/schema';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { MODALITY_LABELS, STUDY_PLAN_LABELS } from '../../../domain/models';
 import { AddStudentDrawerComponent } from './add-student-drawer.component';
 
@@ -20,6 +21,12 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
  * Nota: la llamada anterior (en el viejo "Usuarios") tipaba la respuesta como arreglo plano
  * (`UserListItemDto[]`) cuando el backend siempre devolvió `PagedResult<UserListItem>` — un bug
  * que hacía que la tabla nunca pintara filas. Se corrige aquí leyendo `.items`.
+ *
+ * "Dar de baja"/"Reactivar" y "Eliminar" (pedido explícito del cliente, 2026-09): mismo patrón de
+ * UI/UX que el panel de Usuarios (confirm() + toast + botón deshabilitado mientras se guarda), pero
+ * "Eliminar" además solo se habilita cuando el alumno ya está Inactivo — el backend
+ * (DeleteStudentCommandHandler) lo exige igual, este candado en el botón es solo para que la
+ * restricción sea obvia antes de intentarlo, no solo un error después de hacer clic.
  */
 @Component({
   selector: 'shk-students',
@@ -70,6 +77,7 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
             <th class="py-2">Plan</th>
             <th class="py-2">Cuatrimestre</th>
             <th class="py-2">Estatus</th>
+            <th class="py-2"></th>
           </tr>
         </thead>
         <tbody>
@@ -78,15 +86,37 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
               <td class="py-2 text-slate-500">{{ student.enrollmentNumber }}</td>
               <td class="py-2 font-medium">{{ student.matricula ?? '—' }}</td>
               <td class="py-2">{{ student.fullName }}</td>
-              <td class="py-2 text-slate-500">{{ student.email }}</td>
+              <td class="py-2 text-slate-500">{{ student.email ?? 'Sin correo' }}</td>
               <td class="py-2">{{ student.regionName ?? '—' }}</td>
               <td class="py-2">{{ student.modality ? modalityLabel(student.modality) : '—' }}</td>
               <td class="py-2">{{ student.plan ? planLabel(student.plan) : '—' }}</td>
               <td class="py-2">{{ student.currentTerm ?? '—' }}</td>
               <td class="py-2"><shk-badge [tone]="student.status === 'Active' ? 'success' : 'neutral'">{{ statusLabel(student.status) }}</shk-badge></td>
+              <td class="py-2">
+                <div class="flex flex-wrap items-center justify-end gap-1.5">
+                  <button
+                    type="button"
+                    class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    [disabled]="statusUpdatingId() === student.id"
+                    [title]="student.status === 'Inactive' ? 'Reactivar alumno' : 'Dar de baja'"
+                    (click)="toggleStatus(student)"
+                  >
+                    {{ statusUpdatingId() === student.id ? 'Guardando…' : (student.status === 'Inactive' ? 'Reactivar' : 'Dar de baja') }}
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    [disabled]="student.status !== 'Inactive' || deletingId() === student.id"
+                    [title]="student.status !== 'Inactive' ? 'Primero da de baja al alumno para poder eliminarlo.' : 'Eliminar alumno'"
+                    (click)="deleteStudent(student)"
+                  >
+                    {{ deletingId() === student.id ? 'Eliminando…' : 'Eliminar' }}
+                  </button>
+                </div>
+              </td>
             </tr>
           } @empty {
-            <tr><td colspan="9" class="py-6 text-center text-slate-400">Sin alumnos que coincidan con el filtro.</td></tr>
+            <tr><td colspan="10" class="py-6 text-center text-slate-400">Sin alumnos que coincidan con el filtro.</td></tr>
           }
         </tbody>
       </table>
@@ -107,12 +137,15 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
 })
 export class StudentsComponent {
   private readonly api = inject(ApiClient);
+  private readonly toast = inject(ToastService);
   protected readonly refreshTick = signal(0);
   protected readonly drawerOpen = signal(false);
 
   protected readonly searchText = signal('');
   protected readonly modalityFilter = signal<string | null>(null);
   protected readonly statusFilter = signal<string | null>(null);
+  protected readonly statusUpdatingId = signal<string | null>(null);
+  protected readonly deletingId = signal<string | null>(null);
 
   private readonly students = toSignal(
     toObservable(this.refreshTick).pipe(
@@ -150,5 +183,53 @@ export class StudentsComponent {
 
   protected statusLabel(status: string): string {
     return { Active: 'Activo', Blocked: 'Bloqueado', Inactive: 'Inactivo' }[status] ?? status;
+  }
+
+  protected toggleStatus(student: UserListItemDto): void {
+    if (this.statusUpdatingId() !== null) return;
+
+    const activating = student.status === 'Inactive';
+    const verb = activating ? 'reactivar' : 'dar de baja a';
+    if (!confirm(`¿Seguro que deseas ${verb} ${student.fullName}?`)) return;
+
+    this.statusUpdatingId.set(student.id);
+    this.api
+      .post<void>(`/students/${student.id}/status`, { active: activating })
+      .pipe(
+        map(() => ({ ok: true as const })),
+        catchError((error) => of({ ok: false as const, error })),
+      )
+      .subscribe((result) => {
+        this.statusUpdatingId.set(null);
+        if (!result.ok) {
+          this.toast.error(result.error?.error?.detail ?? 'No se pudo actualizar el estatus del alumno.');
+          return;
+        }
+        this.toast.success(activating ? 'Alumno reactivado.' : 'Alumno dado de baja.');
+        this.refreshTick.update((n) => n + 1);
+      });
+  }
+
+  protected deleteStudent(student: UserListItemDto): void {
+    if (student.status !== 'Inactive' || this.deletingId() !== null) return;
+
+    if (!confirm(`¿Eliminar permanentemente a ${student.fullName}? Esta acción no se puede deshacer.`)) return;
+
+    this.deletingId.set(student.id);
+    this.api
+      .delete<void>(`/students/${student.id}`)
+      .pipe(
+        map(() => ({ ok: true as const })),
+        catchError((error) => of({ ok: false as const, error })),
+      )
+      .subscribe((result) => {
+        this.deletingId.set(null);
+        if (!result.ok) {
+          this.toast.error(result.error?.error?.detail ?? 'No se pudo eliminar al alumno.');
+          return;
+        }
+        this.toast.success('Alumno eliminado.');
+        this.refreshTick.update((n) => n + 1);
+      });
   }
 }

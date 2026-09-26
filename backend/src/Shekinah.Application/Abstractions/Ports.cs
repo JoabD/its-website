@@ -111,6 +111,19 @@ public interface ISpreadsheetReader
     IAsyncEnumerable<SpreadsheetRow> ReadAsync(Stream content, string fileName, CancellationToken ct);
 }
 
+public sealed record StudentImportTemplateRegion(string Name, string Abbreviation, IReadOnlyList<Modality> ModalityScope);
+
+/// <summary>Alumnos → "Agregar alumno" → pestaña Excel → "Descargar plantilla" (pedido explícito del
+/// cliente: antes el texto decía "usa la plantilla oficial" pero no existía ningún lugar de dónde
+/// descargarla). Recibe las regiones activas — con su <see cref="StudentImportTemplateRegion.ModalityScope"/>
+/// — para poder listarlas como referencia y armar los dropdowns de REGION/MODALIDAD en la plantilla
+/// (columna REGION solo acepta nombre o abreviatura de una región activa — ver ImportStudentsCommandHandler;
+/// MODALIDAD queda acotada a las modalidades que esa región realmente ofrece, RN-03).</summary>
+public interface ISpreadsheetWriter
+{
+    byte[] BuildStudentImportTemplate(IReadOnlyList<StudentImportTemplateRegion> regions);
+}
+
 public interface IPaymentMatrixReader
 {
     Task<Shekinah.Application.Abstractions.PagedResult<StudentPaymentRow>> GetMatrixAsync(PaymentMatrixFilter filter, CancellationToken ct);
