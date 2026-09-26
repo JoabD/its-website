@@ -45,14 +45,28 @@ public sealed class SendKardexEmailCommandHandler(
 
         // El alumno SIEMPRE se envía el suyo a su propio correo — un OverrideEmail suyo se ignora
         // a propósito, para que "enviar mi Kardex" nunca termine filtrando datos a otra bandeja.
-        var recipient = currentUser.Role == UserRole.Student || string.IsNullOrWhiteSpace(command.OverrideEmail)
-            ? student.Profile.Email.Value
-            : command.OverrideEmail.Trim();
+        // (En la práctica este camino es inalcanzable para un alumno sin correo: sin correo no
+        // puede iniciar sesión — login es por correo — así que nunca llega a pedir su propio Kardex.)
+        string recipient;
+        if (currentUser.Role == UserRole.Student || string.IsNullOrWhiteSpace(command.OverrideEmail))
+        {
+            if (student.Profile.Email is null)
+            {
+                return Result.Failure<SendKardexEmailResponse>(Error.Validation(
+                    "SendKardexEmail.NoEmail", "El alumno no tiene correo registrado; captura un correo alterno para enviarle el Kardex."));
+            }
+
+            recipient = student.Profile.Email.Value;
+        }
+        else
+        {
+            recipient = command.OverrideEmail.Trim();
+        }
 
         var (subjects, average) = await KardexAggregator.BuildSubjectsAsync(student, offerings, ct);
 
         var pdfModel = new KardexPdfModel(
-            student.EnrollmentNumber.Value.ToString(), student.Profile.FullName.FullName, student.Profile.Email.Value,
+            student.EnrollmentNumber.Value.ToString(), student.Profile.FullName.FullName, student.Profile.Email?.Value ?? "Sin correo registrado",
             student.Region?.Name, student.Modality?.ToString(), student.Academic?.CurrentTerm.Value,
             student.Academic?.EnrolledAtUtc ?? student.CreatedAtUtc, student.Academic?.IsGraduated ?? false,
             average, subjects.Select(s => new KardexPdfSubjectRow(s.SubjectName, s.TermNumber, s.Grade, s.Status, s.PeriodCode)).ToList(),

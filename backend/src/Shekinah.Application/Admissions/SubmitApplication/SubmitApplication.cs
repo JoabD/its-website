@@ -121,6 +121,11 @@ public sealed class SubmitApplicationCommandHandler(
         var administrators = await administratorsSource.GetActiveAdministratorsAsync(ct);
         foreach (var admin in administrators)
         {
+            if (admin.Profile.Email is null)
+            {
+                continue;
+            }
+
             await emailSender.SendAsync(
                 admin.Profile.Email.Value,
                 $"Nueva solicitud de admisión: {folio}",

@@ -82,11 +82,16 @@ public sealed class IssueNoticesCommandHandler(
                 blocked++;
             }
 
-            await emailSender.SendAsync(
-                student.Profile.Email.Value,
-                $"Aviso de adeudo #{noticeNumber} — Instituto Teológico Shekinah",
-                $"<p>Tienes pendientes los meses: {string.Join(", ", monthsDue.Select(m => m.Value))}.</p>",
-                ct);
+            // Sin correo, el aviso igual se registra y cuenta para el bloqueo (RN-19/RN-07) — solo
+            // se omite la notificación por correo, que no tiene a quién llegar.
+            if (student.Profile.Email is not null)
+            {
+                await emailSender.SendAsync(
+                    student.Profile.Email.Value,
+                    $"Aviso de adeudo #{noticeNumber} — Instituto Teológico Shekinah",
+                    $"<p>Tienes pendientes los meses: {string.Join(", ", monthsDue.Select(m => m.Value))}.</p>",
+                    ct);
+            }
 
             issued++;
         }

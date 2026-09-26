@@ -30,7 +30,7 @@ public static class KardexEndpoints
 
             var kardex = result.Value;
             var pdfModel = new KardexPdfModel(
-                kardex.EnrollmentNumber.ToString(), kardex.FullName, kardex.Email, kardex.RegionName,
+                kardex.EnrollmentNumber.ToString(), kardex.FullName, kardex.Email ?? "Sin correo registrado", kardex.RegionName,
                 kardex.Modality?.ToString(), kardex.CurrentTerm, kardex.EnrolledAtUtc, kardex.IsGraduated,
                 kardex.AverageGrade, kardex.Subjects.Select(s => new KardexPdfSubjectRow(s.SubjectName, s.TermNumber, s.Grade, s.Status, s.PeriodCode)).ToList(),
                 clock.UtcNow);

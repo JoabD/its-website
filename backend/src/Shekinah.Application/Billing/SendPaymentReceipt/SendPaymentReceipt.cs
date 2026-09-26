@@ -17,6 +17,10 @@ namespace Shekinah.Application.Billing.SendPaymentReceipt;
 /// para la API oficial de Meta ni riesgo de una integración no oficial): el backend arma el número
 /// y el texto del mensaje, y el frontend abre el enlace `wa.me` — un clic humano en vez de cero,
 /// pero sin redactar nada a mano.
+/// El PDF SIEMPRE se genera y se devuelve para descargar, sin importar si hay correo o teléfono —
+/// el envío por correo se omite si el alumno no tiene correo, y los datos de WhatsApp vienen en
+/// null si no tiene teléfono (mismo ajuste de flujo real que el alta de alumnos: ninguno de los
+/// dos es obligatorio ya).
 /// RN-09: mismo chequeo de alcance regional que RegisterManualPayment/UndoManualPayment.
 /// </summary>
 [RequireRole(UserRole.Administrator, UserRole.RegionalCoordinator, UserRole.RegionalSecretary)]
@@ -27,7 +31,7 @@ public sealed record SendPaymentReceiptCommand(string StudentId, string MonthCod
 /// que envíe por correo Y descargue el recibo") van en la MISMA respuesta que ya generaba el PDF una
 /// vez — evita generarlo dos veces (una para el correo, otra para la descarga).
 /// </summary>
-public sealed record SendPaymentReceiptResponse(string SentTo, string WhatsAppPhone, string WhatsAppMessage, string PdfBase64, string FileName);
+public sealed record SendPaymentReceiptResponse(string? SentTo, string? WhatsAppPhone, string? WhatsAppMessage, string PdfBase64, string FileName);
 
 public sealed class SendPaymentReceiptCommandValidator : AbstractValidator<SendPaymentReceiptCommand>
 {
@@ -93,19 +97,33 @@ public sealed class SendPaymentReceiptCommandHandler(
             <p style="color:#8994a8;font-size:12px;">Instituto Teológico Shekinah — panel de control escolar.</p>
             """;
 
-        await emailSender.SendAsync(
-            student.Profile.Email.Value, $"Recibo de pago — {FormatMonth(monthCodeResult.Value.Value)} — Instituto Teológico Shekinah", bodyHtml, ct,
-            attachments: [new EmailAttachment(fileName, "application/pdf", pdfBytes)]);
+        // Sin correo registrado (ajuste de flujo real), no hay a quién enviarle el recibo por
+        // correo — el PDF de todos modos se genera y se puede descargar/enviar por WhatsApp.
+        if (student.Profile.Email is not null)
+        {
+            await emailSender.SendAsync(
+                student.Profile.Email.Value, $"Recibo de pago — {FormatMonth(monthCodeResult.Value.Value)} — Instituto Teológico Shekinah", bodyHtml, ct,
+                attachments: [new EmailAttachment(fileName, "application/pdf", pdfBytes)]);
+        }
 
         // wa.me espera el número completo con lada de país (52 = México) sin signos ni espacios —
-        // PhoneNumber ya garantiza 10 dígitos limpios (ver Domain.SharedKernel.PhoneNumber).
-        var whatsAppPhone = $"52{student.Profile.Phone.Value}";
-        var whatsAppMessage =
-            $"Hola {student.Profile.FullName.FullName}, confirmamos tu pago de {FormatMonth(monthCodeResult.Value.Value)} por ${amount:N2} MXN. " +
-            "Tu recibo también fue enviado a tu correo. — Instituto Teológico Shekinah";
+        // PhoneNumber ya garantiza 10 dígitos limpios (ver Domain.SharedKernel.PhoneNumber). Sin
+        // teléfono registrado (mismo ajuste de flujo real que el correo), simplemente no hay número
+        // que armar — el frontend ya construye su propio enlace wa.me con el teléfono del alumno,
+        // así que estos campos quedan en null y la opción de WhatsApp no se ofrece.
+        string? whatsAppPhone = null;
+        string? whatsAppMessage = null;
+        if (student.Profile.Phone is not null)
+        {
+            whatsAppPhone = $"52{student.Profile.Phone.Value}";
+            var emailNote = student.Profile.Email is not null ? " Tu recibo también fue enviado a tu correo." : string.Empty;
+            whatsAppMessage =
+                $"Hola {student.Profile.FullName.FullName}, confirmamos tu pago de {FormatMonth(monthCodeResult.Value.Value)} por ${amount:N2} MXN.{emailNote} " +
+                "— Instituto Teológico Shekinah";
+        }
 
         return Result.Success(new SendPaymentReceiptResponse(
-            student.Profile.Email.Value, whatsAppPhone, whatsAppMessage, Convert.ToBase64String(pdfBytes), fileName));
+            student.Profile.Email?.Value, whatsAppPhone, whatsAppMessage, Convert.ToBase64String(pdfBytes), fileName));
     }
 
     private static string FormatMonth(string monthCode)

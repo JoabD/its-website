@@ -17,7 +17,7 @@ public sealed record GetStudentKardexQuery(string StudentId) : IQuery<KardexResp
 public sealed record KardexSubjectRow(string SubjectName, int? TermNumber, int? Grade, string Status, string PeriodCode);
 
 public sealed record KardexResponse(
-    string StudentId, int EnrollmentNumber, string FullName, string Email, string? RegionName,
+    string StudentId, int EnrollmentNumber, string FullName, string? Email, string? RegionName,
     Modality? Modality, int? CurrentTerm, DateTime EnrolledAtUtc, bool IsGraduated,
     double? AverageGrade, IReadOnlyList<KardexSubjectRow> Subjects);
 
@@ -38,7 +38,7 @@ public sealed class GetStudentKardexQueryHandler(
         var (subjects, average) = await KardexAggregator.BuildSubjectsAsync(student, offerings, ct);
 
         var response = new KardexResponse(
-            student.Id, student.EnrollmentNumber.Value, student.Profile.FullName.FullName, student.Profile.Email.Value,
+            student.Id, student.EnrollmentNumber.Value, student.Profile.FullName.FullName, student.Profile.Email?.Value,
             student.Region?.Name, student.Modality, student.Academic?.CurrentTerm.Value,
             student.Academic?.EnrolledAtUtc ?? student.CreatedAtUtc, student.Academic?.IsGraduated ?? false,
             average, subjects);

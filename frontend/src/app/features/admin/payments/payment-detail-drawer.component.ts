@@ -121,19 +121,27 @@ type MonthAction = 'mark' | 'undo' | 'receipt';
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0a2.25 2.25 0 0 0-2.25-2.25h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                           </svg>
-                          {{ activeAction(month) === 'receipt' ? 'Enviando…' : 'Enviar por correo y descargar' }}
+                          @if (activeAction(month) === 'receipt') {
+                            Enviando…
+                          } @else if (s.email) {
+                            Enviar por correo y descargar
+                          } @else {
+                            Descargar recibo
+                          }
                         </button>
-                        <button
-                          type="button"
-                          class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-60"
-                          [disabled]="isBusy(month)"
-                          (click)="sendReceiptByWhatsApp(month)"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-3.5 w-3.5">
-                            <path d="M12.04 2.003c-5.523 0-10 4.477-10 10 0 1.766.463 3.42 1.27 4.856L2 22l5.25-1.276a9.94 9.94 0 0 0 4.79 1.222h.004c5.523 0 10-4.477 10-10s-4.477-9.943-10.004-9.943Zm5.824 14.152c-.245.69-1.213 1.263-1.99 1.428-.53.11-1.222.199-3.553-.763-2.983-1.234-4.901-4.253-5.05-4.451-.148-.198-1.208-1.61-1.208-3.07 0-1.46.767-2.178 1.04-2.475.245-.267.578-.386.923-.387.111 0 .234.006.335.011.294.013.442.03.635.492.245.586.837 2.024.91 2.172.074.148.124.32.025.518-.099.198-.148.32-.297.494-.148.173-.31.386-.443.518-.148.148-.302.31-.13.607.173.297.767 1.267 1.647 2.05 1.132 1.01 2.087 1.322 2.383 1.47.297.148.47.124.643-.074.173-.198.742-.866.94-1.163.197-.297.395-.247.667-.148.272.098 1.708.806 2.001.953.293.148.487.222.56.346.074.124.074.717-.171 1.407Z" />
-                          </svg>
-                          Enviar por WhatsApp
-                        </button>
+                        @if (s.phone) {
+                          <button
+                            type="button"
+                            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-60"
+                            [disabled]="isBusy(month)"
+                            (click)="sendReceiptByWhatsApp(month)"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-3.5 w-3.5">
+                              <path d="M12.04 2.003c-5.523 0-10 4.477-10 10 0 1.766.463 3.42 1.27 4.856L2 22l5.25-1.276a9.94 9.94 0 0 0 4.79 1.222h.004c5.523 0 10-4.477 10-10s-4.477-9.943-10.004-9.943Zm5.824 14.152c-.245.69-1.213 1.263-1.99 1.428-.53.11-1.222.199-3.553-.763-2.983-1.234-4.901-4.253-5.05-4.451-.148-.198-1.208-1.61-1.208-3.07 0-1.46.767-2.178 1.04-2.475.245-.267.578-.386.923-.387.111 0 .234.006.335.011.294.013.442.03.635.492.245.586.837 2.024.91 2.172.074.148.124.32.025.518-.099.198-.148.32-.297.494-.148.173-.31.386-.443.518-.148.148-.302.31-.13.607.173.297.767 1.267 1.647 2.05 1.132 1.01 2.087 1.322 2.383 1.47.297.148.47.124.643-.074.173-.198.742-.866.94-1.163.197-.297.395-.247.667-.148.272.098 1.708.806 2.001.953.293.148.487.222.56.346.074.124.074.717-.171 1.407Z" />
+                            </svg>
+                            Enviar por WhatsApp
+                          </button>
+                        }
                         <button
                           type="button"
                           class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100 disabled:cursor-wait disabled:opacity-60"
@@ -297,7 +305,11 @@ export class PaymentDetailDrawerComponent {
       .pipe(
         tap({
           next: (response) => {
-            this.toast.success(`Recibo enviado por correo a ${response.sentTo} y descargado.`);
+            if (response.sentTo) {
+              this.toast.success(`Recibo enviado por correo a ${response.sentTo} y descargado.`);
+            } else {
+              this.toast.success('Recibo descargado (el alumno no tiene correo registrado, no se pudo enviar).');
+            }
             this.downloadPdf(response.pdfBase64, response.fileName);
           },
           error: () => this.toast.error('No se pudo generar/enviar el recibo.'),

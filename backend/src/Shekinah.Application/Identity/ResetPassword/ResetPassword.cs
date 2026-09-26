@@ -41,17 +41,22 @@ public sealed class ResetPasswordCommandHandler(IUserRepository users, IPassword
         // Mismo principio de notificación que AdminUpdateUserCommand/CreateUserCommand: quien cambia
         // de contraseña se entera por correo, con la contraseña en texto plano (pedido explícito del
         // cliente). Esta sí es temporal (RN-05/24: user.ResetPassword deja MustChangePassword=true).
-        await emailSender.SendAsync(
-            user.Profile.Email.Value,
-            "Tu contraseña fue restablecida — Instituto Teológico Shekinah",
-            $"""
-            <p>Hola {WebUtility.HtmlEncode(user.Profile.FullName.FullName)},</p>
-            <p>Un administrador restableció tu contraseña.</p>
-            <p>Contraseña temporal: <strong>{WebUtility.HtmlEncode(temporaryPassword)}</strong></p>
-            <p>Deberás cambiarla en tu próximo inicio de sesión.</p>
-            <p style="color:#8994a8;font-size:12px;">Si no reconoces este cambio, contacta a la administración del instituto.</p>
-            """,
-            ct);
+        // Un alumno sin correo registrado (ajuste de flujo real) tampoco tiene acceso al sistema
+        // todavía, así que aquí solo se omite el aviso — la contraseña sigue restableciéndose.
+        if (user.Profile.Email is not null)
+        {
+            await emailSender.SendAsync(
+                user.Profile.Email.Value,
+                "Tu contraseña fue restablecida — Instituto Teológico Shekinah",
+                $"""
+                <p>Hola {WebUtility.HtmlEncode(user.Profile.FullName.FullName)},</p>
+                <p>Un administrador restableció tu contraseña.</p>
+                <p>Contraseña temporal: <strong>{WebUtility.HtmlEncode(temporaryPassword)}</strong></p>
+                <p>Deberás cambiarla en tu próximo inicio de sesión.</p>
+                <p style="color:#8994a8;font-size:12px;">Si no reconoces este cambio, contacta a la administración del instituto.</p>
+                """,
+                ct);
+        }
 
         return Result.Success(new ResetPasswordResponse(temporaryPassword));
     }
