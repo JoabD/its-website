@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApiClient } from '../../../core/http/api-client';
 import { PagedResultDto, UserListItemDto } from '../../../api/schema';
+import { AuthStore } from '../../../core/auth/auth.store';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { KardexViewComponent } from './kardex-view.component';
 
@@ -11,13 +13,21 @@ import { KardexViewComponent } from './kardex-view.component';
  * Plan de control escolar, fase 8: Kardex desde el panel admin. Administrator/RegionalCoordinator/
  * RegionalSecretary buscan un alumno (mismo endpoint /users?role=Student que ya usa "Alumnos" —
  * el backend acota por región para Coordinador/Secretario, RN-09) y ven su Kardex embebido.
+ *
+ * Rediseño del flujo de asignación (2026-10): esta pantalla ES el "detalle del alumno" donde se
+ * asignan/corrigen calificaciones por cuatrimestre/semestre que pidió el cliente — antes solo
+ * tenía su propio buscador, sin relación con "Alumnos"; ahora también se puede llegar aquí
+ * directamente desde el botón "Calificaciones" de cada fila en Alumnos (?studentId=...), y para
+ * Administrator el Kardex se abre en modo editable (ver KardexViewComponent.canEdit).
  */
 @Component({
   selector: 'shk-kardex-admin',
   imports: [CardComponent, KardexViewComponent],
   template: `
     <h1 class="text-2xl font-bold text-slate-900">Kardex</h1>
-    <p class="mt-1 text-sm text-slate-500">Busca un alumno para consultar, descargar o enviar su Kardex.</p>
+    <p class="mt-1 text-sm text-slate-500">
+      Busca un alumno para consultar, descargar o enviar su Kardex{{ isAdmin() ? ', o capturar/corregir sus calificaciones por cuatrimestre/semestre' : '' }}.
+    </p>
 
     <shk-card class="mt-6">
       <input
@@ -25,7 +35,7 @@ import { KardexViewComponent } from './kardex-view.component';
         class="shk-field w-full"
         placeholder="Buscar alumno por nombre…"
         [value]="searchText()"
-        (input)="searchText.set($any($event.target).value)"
+        (input)="onSearchInput($any($event.target).value)"
       />
 
       @if (searchText().length > 1) {
@@ -48,7 +58,7 @@ import { KardexViewComponent } from './kardex-view.component';
 
     @if (selectedStudentId(); as studentId) {
       <div class="mt-6">
-        <shk-kardex-view [studentId]="studentId" />
+        <shk-kardex-view [studentId]="studentId" [editable]="isAdmin()" />
       </div>
     }
   `,
@@ -67,9 +77,12 @@ import { KardexViewComponent } from './kardex-view.component';
 })
 export class KardexAdminComponent {
   private readonly api = inject(ApiClient);
+  private readonly auth = inject(AuthStore);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly searchText = signal('');
   protected readonly selectedStudentId = signal<string | null>(null);
+  protected readonly isAdmin = () => this.auth.role() === 'Administrator';
 
   private static readonly EMPTY_RESULT: PagedResultDto<UserListItemDto> = { items: [], page: 1, pageSize: 500, totalItems: 0, totalPages: 0 };
 
@@ -79,6 +92,19 @@ export class KardexAdminComponent {
     ),
     { initialValue: KardexAdminComponent.EMPTY_RESULT },
   );
+
+  constructor() {
+    // Llegada directa desde "Alumnos" → botón "Calificaciones" de una fila (?studentId=...): abre
+    // el Kardex de ese alumno de inmediato, sin obligar a volver a buscarlo por nombre.
+    this.route.queryParamMap.subscribe((params) => {
+      const studentId = params.get('studentId');
+      if (studentId) this.selectedStudentId.set(studentId);
+    });
+  }
+
+  protected onSearchInput(value: string): void {
+    this.searchText.set(value);
+  }
 
   protected students(): UserListItemDto[] {
     const text = this.searchText().trim().toLowerCase();

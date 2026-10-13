@@ -31,7 +31,7 @@ public sealed class Subject : AggregateRoot<string>
 {
     private Subject() { }
 
-    private Subject(string id, string code, int? legacyId, string name, ProgramType programType, TermNumber? termNumber, int displayOrder)
+    private Subject(string id, string code, int? legacyId, string name, ProgramType programType, TermNumber? termNumber, int displayOrder, StudyPlan plan)
         : base(id)
     {
         Code = code;
@@ -40,6 +40,7 @@ public sealed class Subject : AggregateRoot<string>
         ProgramType = programType;
         TermNumber = termNumber;
         DisplayOrder = displayOrder;
+        Plan = plan;
         Syllabus = Syllabus.NotPublished;
         IsActive = true;
     }
@@ -57,31 +58,38 @@ public sealed class Subject : AggregateRoot<string>
 
     public int DisplayOrder { get; private set; }
 
+    /// <summary>
+    /// Plan de estudios al que pertenece esta materia: Cuatrimestral (Virtual) o Semestral
+    /// (Presencial). Dos currículos distintos que coexisten — una materia solo pertenece a uno.
+    /// Materias de diplomado son siempre Cuatrimestral (no existe diplomado semestral por ahora).
+    /// </summary>
+    public StudyPlan Plan { get; private set; }
+
     public Syllabus Syllabus { get; private set; } = Syllabus.NotPublished;
 
     public bool IsActive { get; private set; }
 
-    public static Result<Subject> CreateQuarterly(string id, string code, string name, TermNumber termNumber, int displayOrder, int? legacyId = null)
+    public static Result<Subject> CreateQuarterly(string id, string code, string name, TermNumber termNumber, int displayOrder, int? legacyId = null, StudyPlan plan = StudyPlan.Quarterly)
     {
         if (termNumber.IsGraduated)
         {
-            return Result.Failure<Subject>(Error.Validation("Subject.InvalidTerm", "Una materia cuatrimestral no puede tener cuatrimestre 'Egresado'."));
+            return Result.Failure<Subject>(Error.Validation("Subject.InvalidTerm", "Una materia cuatrimestral/semestral no puede tener cuatrimestre/semestre 'Egresado'."));
         }
 
-        return ValidateAndCreate(id, code, legacyId, name, ProgramType.Quarterly, termNumber, displayOrder);
+        return ValidateAndCreate(id, code, legacyId, name, ProgramType.Quarterly, termNumber, displayOrder, plan);
     }
 
     public static Result<Subject> CreateDiploma(string id, string code, string name, int displayOrder, int? legacyId = null) =>
-        ValidateAndCreate(id, code, legacyId, name, ProgramType.Diploma, null, displayOrder);
+        ValidateAndCreate(id, code, legacyId, name, ProgramType.Diploma, null, displayOrder, StudyPlan.Quarterly);
 
-    private static Result<Subject> ValidateAndCreate(string id, string code, int? legacyId, string name, ProgramType programType, TermNumber? termNumber, int displayOrder)
+    private static Result<Subject> ValidateAndCreate(string id, string code, int? legacyId, string name, ProgramType programType, TermNumber? termNumber, int displayOrder, StudyPlan plan)
     {
         if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(name))
         {
             return Result.Failure<Subject>(Error.Validation("Subject.Incomplete", "Código y nombre de la materia son requeridos."));
         }
 
-        return Result.Success(new Subject(id, code.Trim(), legacyId, name.Trim(), programType, termNumber, displayOrder));
+        return Result.Success(new Subject(id, code.Trim(), legacyId, name.Trim(), programType, termNumber, displayOrder, plan));
     }
 
     public void PublishSyllabus(string pdfUrl, IClock clock) => Syllabus = Syllabus.Published(pdfUrl, clock.UtcNow);

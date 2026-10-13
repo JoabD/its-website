@@ -21,6 +21,12 @@ public interface IUserRepository
 
     Task<IReadOnlyList<User>> GetActiveStudentsInRegionAsync(string regionId, TermNumber? currentTerm, CancellationToken ct);
 
+    /// <summary>"Promover alumnos" (2026-10, pedido explícito del cliente): alumnos activos de un
+    /// plan y cuatrimestre/semestre puntuales, SIN filtrar por región — a diferencia de
+    /// <see cref="GetActiveStudentsInRegionAsync"/>, que exige una. La promoción es una acción
+    /// global (todas las regiones a la vez); ver PromoteStudentsCommand.</summary>
+    Task<IReadOnlyList<User>> GetActiveStudentsByPlanAndTermAsync(StudyPlan plan, TermNumber currentTerm, CancellationToken ct);
+
     Task AddAsync(User user, CancellationToken ct);
 
     Task UpdateAsync(User user, CancellationToken ct);

@@ -19,7 +19,10 @@ public sealed class GetOfferingEnrollmentsQueryHandler(Domain.Academics.ICourseO
             return Result.Failure<IReadOnlyList<EnrollmentRow>>(Error.NotFound("CourseOffering.NotFound", "Oferta no encontrada."));
         }
 
-        if (currentUser.Role == UserRole.Teacher && offering.Teacher.Id != currentUser.UserId)
+        // Mismo ajuste que RecordGrade/RecordGradesBatch (2026-10, "un usuario puede tener múltiples
+        // roles") — ver esos handlers para el detalle del hueco que esto cierra.
+        var isAdministrator = currentUser.Role == UserRole.Administrator || currentUser.ExtraRoles.Contains(UserRole.Administrator);
+        if (!isAdministrator && offering.Teacher.Id != currentUser.UserId)
         {
             return Result.Failure<IReadOnlyList<EnrollmentRow>>(Error.Forbidden("GetOfferingEnrollments.NotOwner", "Solo el profesor asignado o un administrador puede ver esta oferta."));
         }

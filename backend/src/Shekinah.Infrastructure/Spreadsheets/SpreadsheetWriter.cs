@@ -196,4 +196,125 @@ public sealed class SpreadsheetWriter : ISpreadsheetWriter
         Modality.Diploma => "Diplomado",
         _ => modality.ToString(),
     };
+
+    /// <summary>
+    /// Plantilla de importación de calificaciones (Kardex → Calificaciones → Importar desde Excel):
+    /// una plantilla por (periodo, plan, cuatrimestre/semestre, región) — cubre TODAS las materias
+    /// de ese grupo en un solo archivo, tal como lo pidió el cliente ("columna A los alumnos y en
+    /// columnas diferentes la materia"). MATRICULA y ALUMNO vienen prellenados con los alumnos
+    /// realmente inscritos (no son editables en la práctica: el importador solo mira MATRICULA para
+    /// ubicar al alumno, así que aunque se edite ALUMNO no tiene efecto — se deja de solo lectura
+    /// visualmente para evitar confusión). Sin fila de ejemplo aparte: los renglones ya son datos
+    /// reales del grupo, así que no hace falta inventar uno (a diferencia de la plantilla de alta de
+    /// alumnos, que parte de una hoja vacía).
+    /// </summary>
+    public byte[] BuildGradeImportTemplate(
+        string periodLabel, string planLabel, int termNumber, string regionName,
+        IReadOnlyList<GradeImportTemplateSubject> subjects, IReadOnlyList<GradeImportTemplateStudent> students)
+    {
+        using var workbook = new XLWorkbook();
+        var sheet = workbook.Worksheets.Add("Calificaciones");
+
+        var headers = new List<string> { "MATRICULA", "ALUMNO" };
+        headers.AddRange(subjects.Select(s => s.SubjectName.ToUpperInvariant()));
+
+        for (var i = 0; i < headers.Count; i++)
+        {
+            var cell = sheet.Cell(1, i + 1);
+            cell.Value = headers[i];
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontColor = XLColor.White;
+            cell.Style.Fill.BackgroundColor = XLColor.FromArgb(26, 39, 68);
+            cell.Style.Alignment.WrapText = true;
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        }
+
+        sheet.Row(1).Height = 32;
+
+        var readonlyFill = XLColor.FromArgb(238, 240, 244);
+        var row = 2;
+        foreach (var student in students)
+        {
+            sheet.Cell(row, 1).Value = student.EnrollmentNumber;
+            sheet.Cell(row, 2).Value = student.FullName;
+            sheet.Cell(row, 1).Style.Fill.BackgroundColor = readonlyFill;
+            sheet.Cell(row, 2).Style.Fill.BackgroundColor = readonlyFill;
+            row++;
+        }
+
+        var lastStudentRow = Math.Max(2, row - 1);
+
+        // Validación de datos: entero 0-10 en cada columna de materia (el mínimo aprobatorio real se
+        // aplica al importar, no aquí — esta validación solo evita capturar algo fuera de rango).
+        for (var i = 0; i < subjects.Count; i++)
+        {
+            var col = 3 + i;
+            var dv = sheet.Range(2, col, lastStudentRow, col).CreateDataValidation();
+            dv.WholeNumber.Between(0, 10);
+            dv.ErrorTitle = "Calificación inválida";
+            dv.ErrorMessage = "La calificación debe ser un número entero entre 0 y 10.";
+            dv.InputTitle = "Calificación";
+            dv.InputMessage = "Entero de 0 a 10. Deja la celda vacía si el alumno aún no tiene calificación.";
+        }
+
+        sheet.Column(1).Width = 14;
+        sheet.Column(2).Width = 34;
+        for (var i = 0; i < subjects.Count; i++)
+        {
+            sheet.Column(3 + i).Width = 20;
+        }
+
+        sheet.SheetView.FreezeRows(1);
+        sheet.SheetView.FreezeColumns(2);
+
+        BuildGradeInstructionsSheet(workbook, periodLabel, planLabel, termNumber, regionName, subjects);
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    private static void BuildGradeInstructionsSheet(
+        XLWorkbook workbook, string periodLabel, string planLabel, int termNumber, string regionName,
+        IReadOnlyList<GradeImportTemplateSubject> subjects)
+    {
+        var sheet = workbook.Worksheets.Add("Instrucciones");
+        var row = 1;
+
+        void Title(string text)
+        {
+            var cell = sheet.Cell(row, 1);
+            cell.Value = text;
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontSize = 13;
+            row += 2;
+        }
+
+        void Line(string text)
+        {
+            sheet.Cell(row, 1).Value = text;
+            row++;
+        }
+
+        Title($"Plantilla de calificaciones — {periodLabel} · {planLabel} · {(planLabel == "Semestral" ? "Semestre" : "Cuatrimestre")} {termNumber} · {regionName}");
+        Line("1. No modifiques la hoja \"Calificaciones\": ni el orden de las columnas, ni los encabezados, ni las filas ya prellenadas.");
+        Line("2. Las columnas MATRICULA y ALUMNO vienen prellenadas con los alumnos ya inscritos en este grupo — no se editan; el sistema ubica a cada alumno por su MATRICULA.");
+        Line("3. Cada columna de materia corresponde exactamente a una materia de este grupo. Captura ahí la calificación de cada alumno.");
+        Line("4. La calificación debe ser un número entero de 0 a 10 (sin decimales). Excel avisará si escribes un valor fuera de rango.");
+        Line("5. Deja la celda vacía si el alumno todavía no tiene calificación — no se importará como reprobado, quedará como \"Sin calificar\".");
+        Line("6. Guarda el archivo y súbelo en: Calificaciones → Importar desde Excel.");
+        row++;
+
+        Title("Qué pasa si algo sale mal");
+        Line("El sistema revisa el archivo fila por fila y columna por columna. Si una calificación está fuera de rango o una matrícula no pertenece a este grupo, esa celda se reporta con el motivo exacto — el resto del archivo se importa normalmente.");
+        row++;
+
+        Title("Materias de este grupo");
+        foreach (var subject in subjects)
+        {
+            Line(subject.SubjectName);
+        }
+
+        sheet.Column(1).Width = 100;
+    }
 }

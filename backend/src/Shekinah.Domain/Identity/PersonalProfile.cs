@@ -28,7 +28,12 @@ public sealed record PersonalProfile
     /// </summary>
     public PhoneNumber? Phone { get; }
 
-    public DateOnly BirthDate { get; }
+    /// <summary>
+    /// Opcional (2026-10, pedido explícito del cliente al simplificar "Agregar profesor": en vez de
+    /// pedir fecha de nacimiento, ahora se pide región). Null es normal y esperado para un Profesor
+    /// recién agregado — <see cref="AgeAsOf"/> simplemente no tiene nada que calcular en ese caso.
+    /// </summary>
+    public DateOnly? BirthDate { get; }
 
     public string MaritalStatus { get; }
 
@@ -43,7 +48,7 @@ public sealed record PersonalProfile
     public string StudyPurpose { get; }
 
     private PersonalProfile(
-        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly birthDate, string maritalStatus,
+        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly? birthDate, string maritalStatus,
         Address address, ChurchInfo church, EducationLevel education, string theologicalBackground, string studyPurpose)
     {
         FullName = fullName;
@@ -63,10 +68,10 @@ public sealed record PersonalProfile
         applicant.Address, applicant.Church, applicant.Education, applicant.TheologicalBackground, applicant.StudyPurpose);
 
     public static Result<PersonalProfile> Create(
-        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly birthDate, string? maritalStatus,
+        PersonName fullName, Email? email, PhoneNumber? phone, DateOnly? birthDate, string? maritalStatus,
         Address address, ChurchInfo church, EducationLevel education, string? theologicalBackground, string? studyPurpose)
     {
-        if (birthDate >= DateOnly.FromDateTime(DateTime.UtcNow))
+        if (birthDate is not null && birthDate.Value >= DateOnly.FromDateTime(DateTime.UtcNow))
         {
             return Result.Failure<PersonalProfile>(Error.Validation("PersonalProfile.InvalidBirthDate", "La fecha de nacimiento debe ser en el pasado."));
         }
@@ -76,11 +81,15 @@ public sealed record PersonalProfile
             education, (theologicalBackground ?? string.Empty).Trim(), (studyPurpose ?? string.Empty).Trim()));
     }
 
-    /// <summary>Edad derivada; nunca almacenada (corrige hallazgo #7).</summary>
-    public int AgeAsOf(DateOnly today)
+    /// <summary>Edad derivada; nunca almacenada (corrige hallazgo #7). Null si no se capturó fecha
+    /// de nacimiento (ver <see cref="BirthDate"/>).</summary>
+    public int? AgeAsOf(DateOnly today)
     {
-        var age = today.Year - BirthDate.Year;
-        if (BirthDate > today.AddYears(-age)) age--;
+        if (BirthDate is null) return null;
+
+        var birth = BirthDate.Value;
+        var age = today.Year - birth.Year;
+        if (birth > today.AddYears(-age)) age--;
         return age;
     }
 }

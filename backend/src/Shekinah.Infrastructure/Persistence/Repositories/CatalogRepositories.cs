@@ -90,6 +90,38 @@ public sealed class SubjectRepository(MongoContext context) : ISubjectRepository
         return docs.Select(ToDomain).ToList();
     }
 
+    public async Task<IReadOnlyList<Subject>> GetByTermAndPlanAsync(TermNumber termNumber, StudyPlan plan, CancellationToken ct)
+    {
+        // Las materias dadas de alta antes de que existiera "plan" no tienen el campo guardado y se
+        // interpretan como Cuatrimestral (ver ToDomain) — por eso, cuando se pide Quarterly, el filtro
+        // también acepta documentos sin el campo en vez de exigir plan="Quarterly" explícito.
+        var planFilter = plan == StudyPlan.Quarterly
+            ? Builders<BsonDocument>.Filter.Or(
+                Builders<BsonDocument>.Filter.Eq("plan", plan.ToString()),
+                Builders<BsonDocument>.Filter.Exists("plan", false),
+                Builders<BsonDocument>.Filter.Eq("plan", BsonNull.Value))
+            : Builders<BsonDocument>.Filter.Eq("plan", plan.ToString());
+
+        var filter = Builders<BsonDocument>.Filter.Eq("termNumber", termNumber.Value) &
+                     Builders<BsonDocument>.Filter.Eq("isActive", true) & planFilter;
+        var docs = await context.Subjects.Find(filter).SortBy(d => d["displayOrder"]).ToListAsync(ct);
+        return docs.Select(ToDomain).ToList();
+    }
+
+    public async Task<IReadOnlyList<Subject>> GetByPlanAsync(StudyPlan plan, CancellationToken ct)
+    {
+        var planFilter = plan == StudyPlan.Quarterly
+            ? Builders<BsonDocument>.Filter.Or(
+                Builders<BsonDocument>.Filter.Eq("plan", plan.ToString()),
+                Builders<BsonDocument>.Filter.Exists("plan", false),
+                Builders<BsonDocument>.Filter.Eq("plan", BsonNull.Value))
+            : Builders<BsonDocument>.Filter.Eq("plan", plan.ToString());
+
+        var filter = Builders<BsonDocument>.Filter.Eq("isActive", true) & planFilter;
+        var docs = await context.Subjects.Find(filter).SortBy(d => d["termNumber"]).ToListAsync(ct);
+        return docs.Select(ToDomain).OrderBy(s => s.TermNumber?.Value ?? 0).ThenBy(s => s.DisplayOrder).ToList();
+    }
+
     public async Task AddAsync(Subject subject, CancellationToken ct) => await context.Subjects.InsertOneAsync(ToBson(subject), cancellationToken: ct);
 
     public async Task UpdateAsync(Subject subject, CancellationToken ct) =>
@@ -107,6 +139,7 @@ public sealed class SubjectRepository(MongoContext context) : ISubjectRepository
         ["programType"] = subject.ProgramType.ToString(),
         ["termNumber"] = subject.TermNumber?.Value ?? (BsonValue)BsonNull.Value,
         ["displayOrder"] = subject.DisplayOrder,
+        ["plan"] = subject.Plan.ToString(),
         ["syllabus"] = new BsonDocument
         {
             ["pdfUrl"] = subject.Syllabus.PdfUrl is null ? BsonNull.Value : subject.Syllabus.PdfUrl,
@@ -122,11 +155,16 @@ public sealed class SubjectRepository(MongoContext context) : ISubjectRepository
     {
         var programType = Enum.Parse<ProgramType>(doc["programType"].AsString);
         var legacyId = doc.TryGetValue("legacyId", out var lid) && !lid.IsBsonNull ? lid.AsInt32 : (int?)null;
+        // Defensivo: materias creadas antes de que existiera el campo "plan" (fase Kardex) se asumen
+        // del plan Cuatrimestral, que es el único que existía hasta ahora.
+        var plan = doc.TryGetValue("plan", out var planValue) && !planValue.IsBsonNull
+            ? Enum.Parse<StudyPlan>(planValue.AsString)
+            : StudyPlan.Quarterly;
 
         var subject = programType == ProgramType.Diploma
             ? Subject.CreateDiploma(doc["_id"].AsObjectId.ToString(), doc["code"].AsString, doc["name"].AsString, doc["displayOrder"].AsInt32, legacyId).Value
             : Subject.CreateQuarterly(doc["_id"].AsObjectId.ToString(), doc["code"].AsString, doc["name"].AsString,
-                TermNumber.Create(doc["termNumber"].AsInt32).Value, doc["displayOrder"].AsInt32, legacyId).Value;
+                TermNumber.Create(doc["termNumber"].AsInt32).Value, doc["displayOrder"].AsInt32, legacyId, plan).Value;
 
         var syllabusDoc = doc["syllabus"].AsBsonDocument;
         if (syllabusDoc.TryGetValue("pdfUrl", out var pdf) && !pdf.IsBsonNull)

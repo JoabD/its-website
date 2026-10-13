@@ -4,8 +4,11 @@ import { of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { ApiClient } from '../../../core/http/api-client';
 import { PagedResultDto, UserListItemDto } from '../../../api/schema';
+import { ROLE_LABELS } from '../../../domain/models';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { AddTeacherDrawerComponent } from './add-teacher-drawer.component';
 
 /**
  * Plan de control escolar, fase 5: "Docentes" separado de la antigua página genérica "Usuarios".
@@ -15,17 +18,33 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
  * RegionalSecretary la requieren), así que el alcance regional de un coordinador no tiene nada que
  * filtrar aquí; abrir esta vista a coordinadores no les mostraría nada útil.
  *
- * Pendiente natural de una siguiente vuelta (no incluido aquí): columna de "materias asignadas"
- * por docente — requeriría una consulta agregada nueva contra CourseOffering/AssignTeacher, que no
- * existe todavía como read model listo para usarse.
+ * "¿En dónde agregas profesores?" (2026-10, comentario directo de la usuaria probando el sistema):
+ * esta pantalla nunca tuvo un botón para dar de alta a un profesor. Se agrega "+ Agregar profesor",
+ * que abre AddTeacherDrawerComponent — un panel propio (no el genérico de "Usuarios") con dos modos:
+ * dar de alta a alguien nuevo (sin pedir correo/teléfono, que por ahora no hacen falta) o asignar el
+ * rol de Profesor a alguien que ya existe en el sistema con otro rol, buscándolo por nombre o correo.
+ *
+ * 2026-10 ("un usuario puede tener múltiples roles" / "varias regiones"): GetUsersQuery con
+ * role=Teacher ya trae también a quien tiene Teacher como rol ADICIONAL (ver User.ExtraRoles) —
+ * por eso esta lista ahora puede incluir, por ejemplo, a un Administrador que también da clases. La
+ * columna "Rol" deja claro cuál es su rol principal (y, si aplica, que Profesor es adicional), y
+ * "Regiones" muestra dónde da clases (User.TeachingRegions) — antes no había ninguna de las dos
+ * porque un Teacher nunca tenía región propia en este sistema.
  */
 @Component({
   selector: 'shk-teachers',
-  imports: [CardComponent, BadgeComponent],
+  imports: [CardComponent, BadgeComponent, ButtonComponent, AddTeacherDrawerComponent],
   template: `
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-slate-900">Docentes</h1>
+      <shk-button variant="primary" (click)="drawerOpen.set(true)">+ Agregar profesor</shk-button>
     </div>
+
+    <shk-add-teacher-drawer
+      [open]="drawerOpen()"
+      (close)="drawerOpen.set(false)"
+      (added)="refreshTick.set(refreshTick() + 1)"
+    />
 
     <div class="mt-4">
       <input
@@ -43,6 +62,8 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
             <th class="py-2">Matrícula</th>
             <th class="py-2">Nombre</th>
             <th class="py-2">Correo</th>
+            <th class="py-2">Rol</th>
+            <th class="py-2">Regiones</th>
             <th class="py-2">Estatus</th>
           </tr>
         </thead>
@@ -51,11 +72,22 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
             <tr class="border-t border-slate-100">
               <td class="py-2 font-medium">{{ teacher.enrollmentNumber }}</td>
               <td class="py-2">{{ teacher.fullName }}</td>
-              <td class="py-2 text-slate-500">{{ teacher.email }}</td>
+              <td class="py-2 text-slate-500">{{ teacher.email ?? 'Sin correo' }}</td>
+              <td class="py-2">
+                <div class="flex flex-wrap items-center gap-1">
+                  <shk-badge [tone]="teacher.role === 'Teacher' ? 'neutral' : 'success'">{{ roleLabel(teacher.role) }}</shk-badge>
+                  @if (teacher.role !== 'Teacher') {
+                    <shk-badge tone="neutral">+ Profesor</shk-badge>
+                  }
+                </div>
+              </td>
+              <td class="py-2 text-slate-500">{{ teacher.teachingRegionNames.length > 0 ? teacher.teachingRegionNames.join(', ') : 'Sin región asignada' }}</td>
               <td class="py-2"><shk-badge [tone]="teacher.status === 'Active' ? 'success' : 'neutral'">{{ statusLabel(teacher.status) }}</shk-badge></td>
             </tr>
           } @empty {
-            <tr><td colspan="4" class="py-6 text-center text-slate-400">Sin docentes que coincidan con el filtro.</td></tr>
+            <tr><td colspan="6" class="py-6 text-center text-slate-400">
+              {{ searchText() ? 'Sin docentes que coincidan con el filtro.' : 'Todavía no hay profesores registrados. Usa "+ Agregar profesor" para dar de alta al primero.' }}
+            </td></tr>
           }
         </tbody>
       </table>
@@ -76,7 +108,8 @@ import { BadgeComponent } from '../../../shared/ui/badge/badge.component';
 })
 export class TeachersComponent {
   private readonly api = inject(ApiClient);
-  private readonly refreshTick = signal(0);
+  protected readonly refreshTick = signal(0);
+  protected readonly drawerOpen = signal(false);
 
   protected readonly searchText = signal('');
 
@@ -100,5 +133,9 @@ export class TeachersComponent {
 
   protected statusLabel(status: string): string {
     return { Active: 'Activo', Blocked: 'Bloqueado', Inactive: 'Inactivo' }[status] ?? status;
+  }
+
+  protected roleLabel(role: UserListItemDto['role']): string {
+    return ROLE_LABELS[role];
   }
 }

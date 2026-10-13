@@ -11,7 +11,8 @@ namespace Shekinah.Infrastructure.Auth;
 /// <summary>Access token 15 min + refresh 7 días rotativo (PROMPT-MAESTRO.md §3 stack backend).</summary>
 public sealed class JwtTokenService(IOptions<JwtOptions> options) : ITokenService
 {
-    public (string AccessToken, DateTime ExpiresAtUtc) CreateAccessToken(string userId, int enrollmentNumber, UserRole role, string? regionId)
+    public (string AccessToken, DateTime ExpiresAtUtc) CreateAccessToken(
+        string userId, int enrollmentNumber, UserRole role, string? regionId, IReadOnlyList<UserRole>? extraRoles = null)
     {
         var opts = options.Value;
         var expires = DateTime.UtcNow.AddMinutes(opts.AccessTokenMinutes);
@@ -27,6 +28,13 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options) : ITokenServic
         if (!string.IsNullOrWhiteSpace(regionId))
         {
             claims.Add(new Claim("regionId", regionId));
+        }
+
+        // "Un usuario puede tener múltiples roles" (2026-10): un claim "extraRole" repetido por
+        // cada rol adicional (hoy, a lo más, uno: Teacher) — ver ICurrentUser.ExtraRoles.
+        foreach (var extraRole in extraRoles ?? [])
+        {
+            claims.Add(new Claim("extraRole", extraRole.ToString()));
         }
 
         var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(opts.SigningKey));

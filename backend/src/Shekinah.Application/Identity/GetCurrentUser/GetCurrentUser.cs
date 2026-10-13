@@ -6,9 +6,12 @@ namespace Shekinah.Application.Identity.GetCurrentUser;
 
 public sealed record GetCurrentUserQuery : IQuery<CurrentUserResponse>;
 
+/// <summary><paramref name="ExtraRoles"/> (2026-10, "un usuario puede tener múltiples roles"): el
+/// frontend la necesita para decidir si mostrar accesos de Profesor (menú "Materias", filtros de
+/// guardia de ruta) a alguien cuyo rol principal no es Teacher — ver AuthStore/roleGuard.</summary>
 public sealed record CurrentUserResponse(
     string Id, int EnrollmentNumber, UserRole Role, string FullName, string Email,
-    string? RegionName, Modality? Modality, int? CurrentTerm, bool MustChangePassword);
+    string? RegionName, Modality? Modality, int? CurrentTerm, bool MustChangePassword, IReadOnlyList<UserRole> ExtraRoles);
 
 public sealed class GetCurrentUserQueryHandler(Domain.Identity.IUserRepository users, ICurrentUser currentUser)
     : IQueryHandler<GetCurrentUserQuery, CurrentUserResponse>
@@ -28,6 +31,6 @@ public sealed class GetCurrentUserQueryHandler(Domain.Identity.IUserRepository u
 
         return Result.Success(new CurrentUserResponse(
             user.Id, user.EnrollmentNumber.Value, user.Role, user.Profile.FullName.FullName, user.Profile.Email?.Value ?? string.Empty,
-            user.Region?.Name, user.Modality, user.Academic?.CurrentTerm.Value, user.Credentials.MustChangePassword));
+            user.Region?.Name, user.Modality, user.Academic?.CurrentTerm.Value, user.Credentials.MustChangePassword, user.ExtraRoles));
     }
 }

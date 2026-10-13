@@ -33,7 +33,10 @@ public sealed class AssignTeacherCommandHandler(
             return Result.Failure<string>(Error.Validation("AssignTeacher.InvalidReference", "Periodo, materia, región o profesor no válidos."));
         }
 
-        if (teacher.Role != UserRole.Teacher)
+        // CanTeach (2026-10, "un usuario puede tener múltiples roles"): acepta tanto a quien es
+        // Teacher como rol principal como a quien lo tiene como rol adicional (ver
+        // User.AddTeachingRole, "Docentes" → "Ya tiene cuenta").
+        if (!teacher.CanTeach)
         {
             return Result.Failure<string>(Error.Validation("AssignTeacher.NotATeacher", "El usuario indicado no tiene rol de profesor."));
         }
