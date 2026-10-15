@@ -26,9 +26,11 @@ public sealed class GetOfferingsQueryHandler(
         var curriculum = await subjects.GetCurriculumAsync(ct);
         var plansBySubjectId = curriculum.ToDictionary(s => s.Id, s => s.Plan);
 
+        // "Oferta pendiente" (sin profesor, 2026-10): se muestra igual en esta lista — "Materias" en
+        // Académico — con una etiqueta explícita en vez de un nombre vacío.
         IReadOnlyList<OfferingListItem> mapped = all
             .Select(o => new OfferingListItem(
-                o.Id, o.Subject.Name, o.Region.Name, o.Region.Id, o.Teacher.Name, o.EnrollmentCount,
+                o.Id, o.Subject.Name, o.Region.Name, o.Region.Id, o.Teacher?.Name ?? "Sin profesor asignado", o.EnrollmentCount,
                 o.Subject.TermNumber, plansBySubjectId.GetValueOrDefault(o.Subject.Id, StudyPlan.Quarterly)))
             .ToList();
 

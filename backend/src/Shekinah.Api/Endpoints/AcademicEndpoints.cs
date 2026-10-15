@@ -2,6 +2,7 @@ using Shekinah.Api.Extensions;
 using Shekinah.Application.Abstractions;
 using Shekinah.Application.Academics.AssignTeacher;
 using Shekinah.Application.Academics.AutoEnroll;
+using Shekinah.Application.Academics.EnsureStudentOfferings;
 using Shekinah.Application.Academics.GetCurrentPeriod;
 using Shekinah.Application.Academics.GetGradeImportTemplate;
 using Shekinah.Application.Academics.GetGradingRoster;
@@ -13,6 +14,7 @@ using Shekinah.Application.Academics.GetStudentOfferings;
 using Shekinah.Application.Academics.ImportGrades;
 using Shekinah.Application.Academics.ImportStudentGrades;
 using Shekinah.Application.Academics.OpenPeriod;
+using Shekinah.Application.Academics.PromoteStudent;
 using Shekinah.Application.Academics.PromoteStudents;
 using Shekinah.Application.Academics.RecordGrade;
 using Shekinah.Application.Academics.RecordGradesBatch;
@@ -57,6 +59,21 @@ public static class AcademicEndpoints
         // poblar la pantalla antes de capturar — ver GetStudentOfferingsQuery.
         group.MapGet("/students/{studentId}/offerings", async (string studentId, string periodId, IDispatcher dispatcher, CancellationToken ct) =>
             (await dispatcher.QueryAsync(new GetStudentOfferingsQuery(studentId, periodId), ct)).ToApiResult());
+
+        // "Calificar por alumno" (2026-10, pedido explícito del cliente: "no importa por ahora solo
+        // un administrador lo hará... necesitamos que se pueda calificar a los alumnos"): crea las
+        // ofertas "pendientes" (sin profesor) que falten para el currículo de este alumno y lo
+        // inscribe en ellas, para que su calificación quede habilitada de inmediato — ver
+        // EnsureStudentOfferingsCommand. Se llama al abrir la ficha del alumno, antes de pedir
+        // /offerings.
+        group.MapPost("/students/{studentId}/ensure-offerings", async (string studentId, EnsureOfferingsRequest request, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new EnsureStudentOfferingsCommand(studentId, request.PeriodId), ct)).ToApiResult());
+
+        // "Calificar por alumno" → "Avanzar de cuatrimestre/semestre" (2026-10, pedido explícito del
+        // cliente): promueve a UN alumno, pero solo si ya aprobó todas sus materias del
+        // cuatrimestre/semestre actual — ver PromoteStudentCommand.
+        group.MapPost("/students/{studentId}/promote", async (string studentId, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new PromoteStudentCommand(studentId), ct)).ToApiResult());
 
         // "Calificar por alumno" (2026-10, pedido explícito del cliente: captura en lote para TODAS
         // las materias de un alumno a la vez, en vez de ir oferta por oferta) — ver
@@ -110,6 +127,8 @@ public static class AcademicEndpoints
     }
 
     public sealed record AutoEnrollRequest(string PeriodId);
+
+    public sealed record EnsureOfferingsRequest(string PeriodId);
 
     public sealed record GradeRequest(int Grade);
 

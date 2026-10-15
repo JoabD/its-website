@@ -125,7 +125,10 @@ public sealed class CourseOfferingRepository(MongoContext context) : ICourseOffe
         ["period"] = new BsonDocument { ["id"] = ObjectId.Parse(offering.Period.Id), ["code"] = offering.Period.Code },
         ["subject"] = new BsonDocument { ["id"] = ObjectId.Parse(offering.Subject.Id), ["name"] = offering.Subject.Name, ["termNumber"] = offering.Subject.TermNumber ?? (BsonValue)BsonNull.Value },
         ["region"] = new BsonDocument { ["id"] = ObjectId.Parse(offering.Region.Id), ["code"] = offering.Region.Code, ["name"] = offering.Region.Name },
-        ["teacher"] = new BsonDocument { ["id"] = ObjectId.Parse(offering.Teacher.Id), ["enrollmentNumber"] = offering.Teacher.EnrollmentNumber, ["name"] = offering.Teacher.Name },
+        // "Oferta pendiente" (2026-10): Teacher nulo mientras nadie la asigna — ver CourseOffering.CreatePending.
+        ["teacher"] = offering.Teacher is null
+            ? BsonNull.Value
+            : new BsonDocument { ["id"] = ObjectId.Parse(offering.Teacher.Id), ["enrollmentNumber"] = offering.Teacher.EnrollmentNumber, ["name"] = offering.Teacher.Name },
         ["enrollments"] = new BsonArray(offering.Enrollments.Select(e => new BsonDocument
         {
             ["studentId"] = ObjectId.Parse(e.StudentId),
@@ -149,7 +152,10 @@ public sealed class CourseOfferingRepository(MongoContext context) : ICourseOffe
         var periodDoc = doc["period"].AsBsonDocument;
         var subjectDoc = doc["subject"].AsBsonDocument;
         var regionDoc = doc["region"].AsBsonDocument;
-        var teacherDoc = doc["teacher"].AsBsonDocument;
+        var teacherValue = doc["teacher"];
+        var teacher = teacherValue.IsBsonNull
+            ? null
+            : new TeacherRef(teacherValue["id"].AsObjectId.ToString(), teacherValue["enrollmentNumber"].AsInt32, teacherValue["name"].AsString);
 
         var enrollments = doc["enrollments"].AsBsonArray.Select(v =>
         {
@@ -171,7 +177,7 @@ public sealed class CourseOfferingRepository(MongoContext context) : ICourseOffe
             new PeriodRef(periodDoc["id"].AsObjectId.ToString(), periodDoc["code"].AsString),
             new SubjectRef(subjectDoc["id"].AsObjectId.ToString(), subjectDoc["name"].AsString, subjectDoc.TryGetValue("termNumber", out var tn) && !tn.IsBsonNull ? tn.AsInt32 : null),
             new RegionRefAcademics(regionDoc["id"].AsObjectId.ToString(), regionDoc["code"].AsInt32, regionDoc["name"].AsString),
-            new TeacherRef(teacherDoc["id"].AsObjectId.ToString(), teacherDoc["enrollmentNumber"].AsInt32, teacherDoc["name"].AsString),
+            teacher,
             enrollments);
     }
 }

@@ -14,6 +14,7 @@ import {
   ImportStudentGradesResponseDto,
   OfferingListItemDto,
   PagedResultDto,
+  PromoteStudentResponseDto,
   RecordGradesBatchResponseDto,
   RecordStudentGradesBatchResponseDto,
   RegionListItemDto,
@@ -205,7 +206,7 @@ const PASSING_GRADE = 7;
                 }
               </td>
               <td class="py-2 text-right">
-                <shk-button variant="primary" (click)="openStudentDrawer(row.id)">Calificar</shk-button>
+                <shk-button class="shk-btn-navy" variant="primary" (click)="openStudentDrawer(row.id)">Calificar</shk-button>
               </td>
             </tr>
           } @empty {
@@ -226,7 +227,7 @@ const PASSING_GRADE = 7;
                 <shk-badge class="mt-1 inline-block" tone="danger">Sin materias</shk-badge>
               }
             </div>
-            <shk-button variant="primary" (click)="openStudentDrawer(row.id)">Calificar</shk-button>
+            <shk-button class="shk-btn-navy" variant="primary" (click)="openStudentDrawer(row.id)">Calificar</shk-button>
           </div>
         } @empty {
           <p class="py-6 text-center text-sm text-slate-400">Sin alumnos que coincidan con el filtro.</p>
@@ -250,26 +251,39 @@ const PASSING_GRADE = 7;
 
         <div class="flex-1 overflow-y-auto px-5 py-4">
           @if (studentOfferings().length > 0) {
+            @if (hasPendingStudentSubjects()) {
+              <div class="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-700">
+                Las materias marcadas "Sin profesor asignado" ya forman parte del cuatrimestre/semestre de este alumno, pero todavía no se les asigna profesor en Académico — por eso no se pueden calificar aún.
+              </div>
+            }
             <div class="space-y-2">
-              @for (row of studentOfferings(); track row.offeringId) {
+              @for (row of studentOfferings(); track row.offeringId ?? row.subjectName) {
                 <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 px-3 py-2.5">
                   <div class="min-w-0">
                     <div class="truncate text-sm font-medium text-slate-800">{{ row.subjectName }}</div>
                     <div class="text-xs text-slate-400">{{ row.regionName }} · {{ row.termNumber ?? '—' }}</div>
-                    @if (statusFor(studentDraftGrades()[row.offeringId]); as status) {
-                      <shk-badge class="mt-1 inline-block" [tone]="status.tone">{{ status.label }}</shk-badge>
+                    @if (row.offeringId) {
+                      @if (statusFor(studentDraftGrades()[row.offeringId]); as status) {
+                        <shk-badge class="mt-1 inline-block" [tone]="status.tone">{{ status.label }}</shk-badge>
+                      }
+                    } @else {
+                      <shk-badge class="mt-1 inline-block" tone="warning">Sin profesor asignado</shk-badge>
                     }
                   </div>
-                  <input
-                    type="number" min="0" max="10" step="0.1" class="shk-field w-16 shrink-0 text-center"
-                    [ngModel]="studentDraftGrades()[row.offeringId]"
-                    (ngModelChange)="onStudentGradeChange(row.offeringId, $event)"
-                  />
+                  @if (row.offeringId) {
+                    <input
+                      type="number" min="0" max="10" step="0.1" class="shk-field w-16 shrink-0 text-center"
+                      [ngModel]="studentDraftGrades()[row.offeringId]"
+                      (ngModelChange)="onStudentGradeChange(row.offeringId, $event)"
+                    />
+                  } @else {
+                    <span class="shrink-0 text-xs font-medium text-slate-400">Pendiente</span>
+                  }
                 </div>
               }
             </div>
             <shk-button
-              class="mt-4 w-full justify-center"
+              class="shk-btn-navy mt-4 w-full justify-center"
               variant="primary"
               [loading]="savingStudentBatch()"
               [disabled]="studentDirtyIds().size === 0"
@@ -279,7 +293,7 @@ const PASSING_GRADE = 7;
             </shk-button>
           } @else {
             <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
-              Este alumno no tiene materias asignadas en el periodo activo. Puede ser que aún no haya profesor asignado a sus materias de este cuatrimestre/semestre en su región, o que todavía no se haya corrido la inscripción automática para su cohorte — revisa "Inscribir alumnos en sus materias" o "Promover alumnos" en Académico.
+              Este alumno no tiene materias asignadas en el periodo activo. Puede ser que todavía no se haya corrido la inscripción automática para su cohorte — revisa "Inscribir alumnos en sus materias" o "Promover alumnos" en Académico.
             </div>
           }
 
@@ -287,7 +301,7 @@ const PASSING_GRADE = 7;
             <div class="text-xs font-bold uppercase tracking-wide text-slate-500">O súbelas desde Excel</div>
             <p class="mt-1 text-xs text-slate-400">Una plantilla con solo las materias de este alumno, para capturar su calificación de un jalón.</p>
             <div class="mt-2 flex flex-wrap gap-2">
-              <shk-button variant="secondary" [loading]="downloadingStudentTemplate()" [disabled]="studentOfferings().length === 0" (click)="downloadStudentTemplate()">
+              <shk-button variant="secondary" [loading]="downloadingStudentTemplate()" [disabled]="!hasGradableStudentSubjects()" (click)="downloadStudentTemplate()">
                 ⬇ Descargar plantilla
               </shk-button>
               <label class="inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
@@ -313,6 +327,28 @@ const PASSING_GRADE = 7;
             }
             @if (studentImportError()) {
               <div class="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{{ studentImportError() }}</div>
+            }
+          </div>
+
+          <div class="mt-5 border-t border-dashed border-slate-200 pt-4">
+            <div class="text-xs font-bold uppercase tracking-wide text-slate-500">Avanzar de cuatrimestre/semestre</div>
+            <p class="mt-1 text-xs text-slate-400">
+              Solo si ya aprobó TODAS sus materias de este cuatrimestre/semestre (calificación 7 o más). Si tiene alguna reprobada o sin
+              calificar, esto lo explica abajo — no hace falta revisarlas una por una.
+            </p>
+            <shk-button class="shk-btn-navy mt-2" variant="primary" [loading]="promotingStudent()" (click)="promoteStudent()">
+              Avanzar de cuatrimestre/semestre
+            </shk-button>
+            @if (promoteStudentResult(); as promoteResult) {
+              @if (promoteResult.promoted) {
+                <div class="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
+                  {{ promoteResult.graduated ? 'Egresó — ya completó su plan de estudios.' : 'Avanzó al siguiente cuatrimestre/semestre.' }}
+                </div>
+              } @else {
+                <div class="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                  No se pudo avanzar: {{ promoteResult.reason }}
+                </div>
+              }
             }
           </div>
         </div>
@@ -393,6 +429,27 @@ const PASSING_GRADE = 7;
       font-size: 0.875rem;
       line-height: 1.25rem;
     }
+
+    /* Mockup aprobado "Calificar por alumno" (2026-10): tarjetas más planas (radio 12px, borde
+       delgado, sin sombra) en vez del shk-card por defecto (rounded-2xl + sombra suave) — solo
+       dentro de esta pantalla, vía ::ng-deep porque CardComponent encapsula su propio template. */
+    ::ng-deep shk-card > div {
+      border-radius: 12px !important;
+      box-shadow: none !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    /* Botones "Calificar" / "Guardar calificaciones de este alumno" del mockup: pastilla azul
+       marino (--shk-color-primary), no el dorado por defecto de variant="primary" — ese dorado
+       se conserva para las acciones de guardado masivo/importación del resto de la pantalla,
+       consistentes con el resto de la app. */
+    ::ng-deep shk-button.shk-btn-navy button {
+      background-color: var(--shk-color-primary) !important;
+      color: #fff !important;
+    }
+    ::ng-deep shk-button.shk-btn-navy button:hover {
+      background-color: var(--shk-color-primary-dark) !important;
+    }
     `,
   ],
 })
@@ -430,6 +487,11 @@ export class GradesComponent {
   protected readonly studentImporting = signal(false);
   protected readonly studentImportResult = signal<ImportStudentGradesResponseDto | null>(null);
   protected readonly studentImportError = signal<string | null>(null);
+
+  // "Avanzar de cuatrimestre/semestre" por alumno (2026-10, pedido explícito del cliente:
+  // "debemos habilitar eso de la promoción por alumno").
+  protected readonly promotingStudent = signal(false);
+  protected readonly promoteStudentResult = signal<PromoteStudentResponseDto | null>(null);
 
   protected readonly importPlan = signal<StudyPlanDto>('Quarterly');
   protected readonly importTerm = signal(1);
@@ -482,10 +544,16 @@ export class GradesComponent {
     { initialValue: [] as EnrollmentRowDto[] },
   );
 
+  /** Reusa rosterRefreshTick (2026-10): tras "Avanzar de cuatrimestre/semestre", el alumno cambió
+   * de término — la tabla debe reflejarlo sin que el usuario tenga que recargar la página. */
   protected readonly allStudents = toSignal(
-    this.api
-      .get<PagedResultDto<UserListItemDto>>('/users', { role: 'Student', pageSize: 500 })
-      .pipe(catchError(() => of<PagedResultDto<UserListItemDto>>({ items: [], page: 1, pageSize: 500, totalItems: 0, totalPages: 0 }))),
+    toObservable(this.rosterRefreshTick).pipe(
+      switchMap(() =>
+        this.api
+          .get<PagedResultDto<UserListItemDto>>('/users', { role: 'Student', pageSize: 500 })
+          .pipe(catchError(() => of<PagedResultDto<UserListItemDto>>({ items: [], page: 1, pageSize: 500, totalItems: 0, totalPages: 0 }))),
+      ),
+    ),
     { initialValue: null },
   );
 
@@ -574,7 +642,9 @@ export class GradesComponent {
         return this.api.get<StudentOfferingRowDto[]>(`/academic/students/${studentId}/offerings`, { periodId }).pipe(
           tap((rows) => {
             const drafts: Record<string, number | null> = {};
-            for (const row of rows) drafts[row.offeringId] = row.grade;
+            for (const row of rows) {
+              if (row.offeringId) drafts[row.offeringId] = row.grade;
+            }
             this.studentDraftGrades.set(drafts);
             this.studentDirtyIds.set(new Set());
           }),
@@ -584,6 +654,14 @@ export class GradesComponent {
     ),
     { initialValue: [] as StudentOfferingRowDto[] },
   );
+
+  /** Al menos una materia del currículo del alumno todavía sin oferta/profesor (RN pedida por el
+   * cliente, 2026-10: esas materias ahora SÍ aparecen en la lista, pero no se pueden calificar). */
+  protected readonly hasPendingStudentSubjects = computed(() => this.studentOfferings().some((row) => !row.offeringId));
+
+  /** Al menos una materia con oferta real — es la única cosa que la plantilla de Excel por alumno
+   * puede cubrir, así que el botón de descarga se deshabilita si no hay ninguna. */
+  protected readonly hasGradableStudentSubjects = computed(() => this.studentOfferings().some((row) => !!row.offeringId));
 
   protected readonly groupAverage = computed(() => {
     const values = Object.values(this.draftGrades()).filter((v): v is number => v !== null && v !== undefined && !Number.isNaN(v));
@@ -626,11 +704,50 @@ export class GradesComponent {
     this.studentImportFileName.set(null);
     this.studentImportResult.set(null);
     this.studentImportError.set(null);
-    this.studentRefreshTick.update((n) => n + 1);
+    this.promoteStudentResult.set(null);
+
+    // "No importa por ahora solo un administrador lo hará... necesitamos que se pueda calificar a
+    // los alumnos" (2026-10): antes de traer las materias del alumno, crea (idempotente) las
+    // ofertas "pendientes" (sin profesor) que falten para su currículo actual, para que el campo de
+    // calificación quede habilitado de inmediato — ver EnsureStudentOfferingsCommand. Si falla (p.
+    // ej. no es Administrador, o no hay periodo activo), igual se refresca: el fallback de
+    // GetStudentOfferingsQuery sigue mostrando esas materias como "Sin profesor asignado".
+    const periodId = this.currentPeriod()?.id;
+    if (periodId) {
+      this.api.post(`/academic/students/${studentId}/ensure-offerings`, { periodId }).pipe(
+        catchError(() => of(null)),
+      ).subscribe(() => this.studentRefreshTick.update((n) => n + 1));
+    } else {
+      this.studentRefreshTick.update((n) => n + 1);
+    }
   }
 
   protected closeDrawer(): void {
     this.drawerOpen.set(false);
+  }
+
+  protected promoteStudent(): void {
+    const studentId = this.selectedStudentId();
+    if (!studentId || this.promotingStudent()) return;
+
+    this.promotingStudent.set(true);
+    this.promoteStudentResult.set(null);
+    this.api.post<PromoteStudentResponseDto>(`/academic/students/${studentId}/promote`, {}).pipe(
+      tap({
+        next: (result) => {
+          this.promoteStudentResult.set(result);
+          if (result.promoted) {
+            this.toast.success(result.graduated ? 'Alumno egresado.' : 'Alumno avanzado al siguiente cuatrimestre/semestre.');
+            // El alumno cambió de término: refresca su lista (plan/término en la tabla), el avance
+            // de materias de la tabla, y su propia ficha (ahora con el currículo del nuevo término).
+            this.rosterRefreshTick.update((n) => n + 1);
+            this.studentRefreshTick.update((n) => n + 1);
+          }
+        },
+        error: (error) => this.toast.error(error?.error?.detail ?? 'No se pudo promover al alumno.'),
+      }),
+      catchError(() => of(null)),
+    ).subscribe(() => this.promotingStudent.set(false));
   }
 
   protected onStudentGradeChange(offeringId: string, value: number | null): void {

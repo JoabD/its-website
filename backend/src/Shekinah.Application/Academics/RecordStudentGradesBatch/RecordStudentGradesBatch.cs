@@ -48,7 +48,7 @@ public sealed class RecordStudentGradesBatchCommandHandler(
                 continue;
             }
 
-            if (!isAdministrator && offering.Teacher.Id != currentUser.UserId)
+            if (!isAdministrator && (offering.Teacher is null || offering.Teacher.Id != currentUser.UserId))
             {
                 errors.Add(new StudentSubjectGradeError(entry.OfferingId, offering.Subject.Name, "NO_ES_DUEÑO", "Solo el profesor asignado o un administrador puede calificar esta materia."));
                 continue;

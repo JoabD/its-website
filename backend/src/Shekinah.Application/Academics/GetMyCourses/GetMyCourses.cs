@@ -27,10 +27,12 @@ public sealed class GetMyCoursesQueryHandler(
 
         var myOfferings = await offerings.GetByStudentAndPeriodAsync(currentUser.UserId, activePeriod.Id, ct);
 
+        // "Oferta pendiente" (sin profesor, 2026-10): el alumno la ve igual en "Mis materias", con
+        // una etiqueta explícita en vez de un nombre vacío.
         IReadOnlyList<StudentCourseRow> rows = myOfferings.Select(o =>
         {
             var enrollment = o.Enrollments.First(e => e.StudentId == currentUser.UserId);
-            return new StudentCourseRow(o.Id, o.Subject.Name, o.Teacher.Name, o.Region.Name, o.Period.Code, enrollment.Grade?.Value);
+            return new StudentCourseRow(o.Id, o.Subject.Name, o.Teacher?.Name ?? "Sin profesor asignado", o.Region.Name, o.Period.Code, enrollment.Grade?.Value);
         }).ToList();
 
         return Result.Success(rows);

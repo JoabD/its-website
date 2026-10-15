@@ -20,16 +20,20 @@ public sealed class RecordGradeCommandHandler(
             return Result.Failure<Abstractions.Unit>(Error.NotFound("CourseOffering.NotFound", "Oferta no encontrada."));
         }
 
-        // RN-11 / RN-16: un profesor solo califica alumnos de SUS asignaciones. Antes esto se
-        // activaba solo "si currentUser.Role == Teacher" — con roles múltiples (2026-10) eso dejaba
-        // un hueco: alguien cuyo rol PRINCIPAL no es Teacher ni Administrator, pero que SÍ tiene
-        // Teacher como rol adicional (ver User.ExtraRoles), pasaba [RequireRole(Teacher,
-        // Administrator)] por su ExtraRoles pero nunca entraba a este "if" (su Role no es Teacher),
-        // así que la validación de dueño se saltaba por completo. Ahora la regla es la correcta en
-        // cualquier combinación: solo un Administrador (por rol principal o adicional) puede
-        // calificar una oferta que no es suya.
+        // RN-11 / RN-16, más "oferta pendiente" (2026-10, "no importa por ahora solo un
+        // administrador lo hará"): si la oferta todavía no tiene profesor asignado (se creó
+        // automáticamente para que el currículo del alumno sea calificable de inmediato — ver
+        // EnsureStudentOfferingsCommand), no hay dueño contra quien comparar, así que solo un
+        // Administrador puede calificarla. Antes esto se activaba solo "si currentUser.Role ==
+        // Teacher" — con roles múltiples (2026-10) eso dejaba un hueco: alguien cuyo rol PRINCIPAL
+        // no es Teacher ni Administrator, pero que SÍ tiene Teacher como rol adicional (ver
+        // User.ExtraRoles), pasaba [RequireRole(Teacher, Administrator)] por su ExtraRoles pero
+        // nunca entraba a este "if" (su Role no es Teacher), así que la validación de dueño se
+        // saltaba por completo. Ahora la regla es la correcta en cualquier combinación: solo un
+        // Administrador (por rol principal o adicional) puede calificar una oferta que no es suya
+        // o que no tiene profesor.
         var isAdministrator = currentUser.Role == UserRole.Administrator || currentUser.ExtraRoles.Contains(UserRole.Administrator);
-        if (!isAdministrator && offering.Teacher.Id != currentUser.UserId)
+        if (!isAdministrator && (offering.Teacher is null || offering.Teacher.Id != currentUser.UserId))
         {
             return Result.Failure<Abstractions.Unit>(Error.Forbidden("RecordGrade.NotOwner", "Solo el profesor asignado o un administrador puede calificar esta oferta."));
         }

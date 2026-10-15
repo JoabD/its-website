@@ -847,3 +847,203 @@ Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime
 2026-10-12 18:20:58.491 -06:00 [INF] Writing value of type 'List`1' as Json.
 2026-10-12 18:20:58.494 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/students/{studentId}/offerings'
 2026-10-12 18:20:58.497 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/students/cf6c887a6e957959ffceb9e8/offerings?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 22.4694ms
+2026-10-12 18:45:00.137 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-12 18:45:00.142 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 12:35:05 AM', Current time (UTC): '10/13/2026 12:45:00 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-12 18:45:00.145 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 12:35:05 AM', Current time (UTC): '10/13/2026 12:45:00 AM'.
+2026-10-12 18:45:00.147 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-12 18:45:00.149 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-12 18:45:00.150 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 13.6409ms
+2026-10-12 18:45:00.206 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - application/json 105
+2026-10-12 18:45:00.211 -06:00 [INF] CORS policy execution successful.
+2026-10-12 18:45:00.213 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 12:35:05 AM', Current time (UTC): '10/13/2026 12:45:00 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-12 18:45:00.216 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 12:35:05 AM', Current time (UTC): '10/13/2026 12:45:00 AM'.
+2026-10-12 18:45:00.218 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-12 18:45:00.221 -06:00 [INF] Ejecutando RefreshTokenCommand
+2026-10-12 18:45:00.232 -06:00 [INF] RefreshTokenCommand completado
+2026-10-12 18:45:00.234 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.236 -06:00 [INF] Writing value of type 'RefreshTokenResponse' as Json.
+2026-10-12 18:45:00.239 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-12 18:45:00.243 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - 200 null application/json; charset=utf-8 36.8874ms
+2026-10-12 18:45:00.336 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-12 18:45:00.340 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 18:45:00.343 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-12 18:45:00.345 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-12 18:45:00.346 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.348 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-12 18:45:00.350 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 18:45:00.353 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 16.6343ms
+2026-10-12 18:45:00.399 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-12 18:45:00.400 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - null null
+2026-10-12 18:45:00.400 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-10-12 18:45:00.403 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 18:45:00.406 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 18:45:00.410 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 18:45:00.412 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-12 18:45:00.413 -06:00 [INF] Ejecutando GetCurrentPeriodQuery
+2026-10-12 18:45:00.415 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-12 18:45:00.417 -06:00 [INF] GetRegionsQuery completado
+2026-10-12 18:45:00.419 -06:00 [INF] GetCurrentPeriodQuery completado
+2026-10-12 18:45:00.421 -06:00 [INF] GetUsersQuery completado
+2026-10-12 18:45:00.425 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.423 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.429 -06:00 [INF] Writing value of type 'CurrentPeriodResponse' as Json.
+2026-10-12 18:45:00.427 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-12 18:45:00.421 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.435 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 18:45:00.433 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 18:45:00.431 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 18:45:00.437 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 18:45:00.439 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 39.371ms
+2026-10-12 18:45:00.442 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - 200 null application/json; charset=utf-8 42.1767ms
+2026-10-12 18:45:00.444 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 44.7306ms
+2026-10-12 18:45:00.458 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 18:45:00.459 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 18:45:00.467 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 18:45:00.470 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 18:45:00.472 -06:00 [INF] Ejecutando GetOfferingsQuery
+2026-10-12 18:45:00.477 -06:00 [INF] GetOfferingsQuery completado
+2026-10-12 18:45:00.478 -06:00 [INF] Ejecutando GetGradingRosterQuery
+2026-10-12 18:45:00.479 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.481 -06:00 [INF] GetGradingRosterQuery completado
+2026-10-12 18:45:00.484 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 18:45:00.486 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 18:45:00.482 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 18:45:00.488 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 18:45:00.490 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 18:45:00.492 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 33.5619ms
+2026-10-12 18:45:00.495 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 36.266ms
+2026-10-12 19:03:44.326 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-12 19:03:44.332 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 1:00:00 AM', Current time (UTC): '10/13/2026 1:03:44 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-12 19:03:44.337 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 1:00:00 AM', Current time (UTC): '10/13/2026 1:03:44 AM'.
+2026-10-12 19:03:44.339 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-12 19:03:44.340 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-12 19:03:44.342 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 15.5077ms
+2026-10-12 19:03:44.419 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - application/json 105
+2026-10-12 19:03:44.423 -06:00 [INF] CORS policy execution successful.
+2026-10-12 19:03:44.426 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 1:00:00 AM', Current time (UTC): '10/13/2026 1:03:44 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-12 19:03:44.428 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/13/2026 1:00:00 AM', Current time (UTC): '10/13/2026 1:03:44 AM'.
+2026-10-12 19:03:44.430 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-12 19:03:44.438 -06:00 [INF] Ejecutando RefreshTokenCommand
+2026-10-12 19:03:44.446 -06:00 [INF] RefreshTokenCommand completado
+2026-10-12 19:03:44.448 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.450 -06:00 [INF] Writing value of type 'RefreshTokenResponse' as Json.
+2026-10-12 19:03:44.453 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-12 19:03:44.456 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - 200 null application/json; charset=utf-8 37.2407ms
+2026-10-12 19:03:44.562 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-12 19:03:44.566 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 19:03:44.573 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-12 19:03:44.575 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-12 19:03:44.577 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.580 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-12 19:03:44.582 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 19:03:44.584 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 22.7623ms
+2026-10-12 19:03:44.628 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-12 19:03:44.628 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - null null
+2026-10-12 19:03:44.631 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 19:03:44.635 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 19:03:44.637 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-12 19:03:44.639 -06:00 [INF] Ejecutando GetCurrentPeriodQuery
+2026-10-12 19:03:44.641 -06:00 [INF] GetRegionsQuery completado
+2026-10-12 19:03:44.642 -06:00 [INF] GetCurrentPeriodQuery completado
+2026-10-12 19:03:44.644 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.645 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.648 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:44.650 -06:00 [INF] Writing value of type 'CurrentPeriodResponse' as Json.
+2026-10-12 19:03:44.652 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 19:03:44.654 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 19:03:44.656 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 28.5785ms
+2026-10-12 19:03:44.659 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-10-12 19:03:44.660 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - 200 null application/json; charset=utf-8 31.5339ms
+2026-10-12 19:03:44.671 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 19:03:44.681 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 19:03:44.682 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 19:03:44.684 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-12 19:03:44.688 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 19:03:44.692 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 19:03:44.695 -06:00 [INF] Ejecutando GetOfferingsQuery
+2026-10-12 19:03:44.695 -06:00 [INF] GetUsersQuery completado
+2026-10-12 19:03:44.697 -06:00 [INF] Ejecutando GetGradingRosterQuery
+2026-10-12 19:03:44.700 -06:00 [INF] GetOfferingsQuery completado
+2026-10-12 19:03:44.704 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.703 -06:00 [INF] GetGradingRosterQuery completado
+2026-10-12 19:03:44.701 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.710 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-12 19:03:44.708 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:44.706 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:44.712 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 19:03:44.714 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:44.716 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 19:03:44.718 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 58.9883ms
+2026-10-12 19:03:44.721 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 19:03:44.723 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 41.4977ms
+2026-10-12 19:03:44.733 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 50.5518ms
+2026-10-12 19:03:45.305 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-12 19:03:45.309 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 19:03:45.311 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-12 19:03:45.313 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-12 19:03:45.315 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.317 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-12 19:03:45.319 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-12 19:03:45.321 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 15.6586ms
+2026-10-12 19:03:45.369 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-12 19:03:45.369 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - null null
+2026-10-12 19:03:45.373 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 19:03:45.376 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 19:03:45.378 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-12 19:03:45.379 -06:00 [INF] Ejecutando GetCurrentPeriodQuery
+2026-10-12 19:03:45.381 -06:00 [INF] GetRegionsQuery completado
+2026-10-12 19:03:45.382 -06:00 [INF] GetCurrentPeriodQuery completado
+2026-10-12 19:03:45.385 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.384 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.387 -06:00 [INF] Writing value of type 'CurrentPeriodResponse' as Json.
+2026-10-12 19:03:45.389 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:45.392 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/periods/current'
+2026-10-12 19:03:45.394 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - null null
+2026-10-12 19:03:45.394 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-12 19:03:45.397 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/periods/current - 200 null application/json; charset=utf-8 27.0782ms
+2026-10-12 19:03:45.400 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 19:03:45.402 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 33.0476ms
+2026-10-12 19:03:45.410 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-12 19:03:45.417 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 19:03:45.417 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - null null
+2026-10-12 19:03:45.420 -06:00 [INF] GetUsersQuery completado
+2026-10-12 19:03:45.421 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 19:03:45.425 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 19:03:45.427 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.428 -06:00 [INF] Ejecutando GetGradingRosterQuery
+2026-10-12 19:03:45.429 -06:00 [INF] Ejecutando GetOfferingsQuery
+2026-10-12 19:03:45.431 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-12 19:03:45.433 -06:00 [INF] GetGradingRosterQuery completado
+2026-10-12 19:03:45.435 -06:00 [INF] GetOfferingsQuery completado
+2026-10-12 19:03:45.436 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-12 19:03:45.438 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.439 -06:00 [INF] Setting HTTP status code 200.
+2026-10-12 19:03:45.445 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:45.443 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-12 19:03:45.448 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/grading-roster'
+2026-10-12 19:03:45.446 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/academic/offerings'
+2026-10-12 19:03:45.452 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/offerings?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 34.5782ms
+2026-10-12 19:03:45.450 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/academic/grading-roster?periodId=1e11697f1368455f50edeeef - 200 null application/json; charset=utf-8 33.1206ms
+2026-10-12 19:03:45.441 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Student&pageSize=500 - 200 null application/json; charset=utf-8 46.8989ms

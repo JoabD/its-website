@@ -147,8 +147,9 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
       <shk-card class="mt-4">
         <div class="text-sm font-semibold text-slate-700">Promover alumnos</div>
         <p class="mt-1 text-sm text-slate-500">
-          Sube de cuatrimestre o semestre a todos los alumnos activos del plan y término que elijas, y los inscribe automáticamente
-          en las materias que ya tengan profesor asignado en el periodo activo.
+          Sube de cuatrimestre o semestre, de un jalón, a los alumnos activos del plan y término que elijas — pero solo a quien ya
+          aprobó TODAS sus materias. Al que tenga alguna materia reprobada o sin calificar simplemente se le ignora, no se le promueve
+          ni marca error.
         </p>
 
         <div class="mt-3 grid gap-3 sm:grid-cols-3">
@@ -175,14 +176,15 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
         </div>
 
         <p class="mt-2 text-xs text-slate-400">
-          Esto promoverá a TODOS los alumnos activos de ese plan y término, en todas las regiones. No se puede deshacer desde aquí.
+          Revisa esto para TODOS los alumnos activos de ese plan y término, en todas las regiones. No se puede deshacer desde aquí.
         </p>
 
         @if (promoteResult(); as result) {
           <div class="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             {{ result.studentsPromoted }} alumno(s) promovido(s)
             @if (result.studentsGraduated > 0) { · {{ result.studentsGraduated }} egresado(s) }
-            · {{ result.enrollmentsCreated }} inscripción(es) nueva(s) creada(s).
+            · {{ result.enrollmentsCreated }} inscripción(es) nueva(s) creada(s)
+            @if (result.studentsSkipped > 0) { · {{ result.studentsSkipped }} ignorado(s) (materia reprobada o sin calificar) }.
           </div>
         }
       </shk-card>
@@ -450,7 +452,7 @@ export class AcademicComponent {
     const planLabel = plan === 'Semester' ? 'semestre' : 'cuatrimestre';
     if (
       !confirm(
-        `¿Promover a TODOS los alumnos activos del plan ${plan === 'Semester' ? 'Semestral' : 'Cuatrimestral'} que estén en ${planLabel} ${fromTerm}? Esto los subirá de ${planLabel} y los inscribirá automáticamente en sus nuevas materias. No se puede deshacer desde aquí.`,
+        `¿Revisar a TODOS los alumnos activos del plan ${plan === 'Semester' ? 'Semestral' : 'Cuatrimestral'} que estén en ${planLabel} ${fromTerm}? Se promoverá de ${planLabel} y se inscribirá automáticamente en sus nuevas materias solo a quien ya aprobó todo lo del actual — al resto se le ignora. No se puede deshacer desde aquí.`,
       )
     ) {
       return;
@@ -463,7 +465,7 @@ export class AcademicComponent {
       tap({
         next: (result) => {
           this.promoteResult.set(result);
-          this.toast.success('Alumnos promovidos correctamente.');
+          this.toast.success(result.studentsPromoted > 0 ? 'Alumnos promovidos correctamente.' : 'Nadie cumplía todavía — nadie fue promovido.');
           this.refreshTick.update((n) => n + 1);
         },
         error: (error) => this.toast.error(error?.error?.detail ?? 'No se pudo completar la promoción de alumnos.'),

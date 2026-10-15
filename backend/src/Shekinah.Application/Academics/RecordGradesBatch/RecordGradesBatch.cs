@@ -35,8 +35,10 @@ public sealed class RecordGradesBatchCommandHandler(
         // múltiples roles"): "es Administrador" (principal o adicional) en vez de "no es Teacher" —
         // de lo contrario, alguien con Teacher solo como rol ADICIONAL (ver User.ExtraRoles) se
         // saltaba esta validación por completo, porque su Role principal nunca era Teacher.
+        // "Oferta pendiente" (2026-10, sin profesor asignado todavía): solo un Administrador puede
+        // calificarla.
         var isAdministrator = currentUser.Role == UserRole.Administrator || currentUser.ExtraRoles.Contains(UserRole.Administrator);
-        if (!isAdministrator && offering.Teacher.Id != currentUser.UserId)
+        if (!isAdministrator && (offering.Teacher is null || offering.Teacher.Id != currentUser.UserId))
         {
             return Result.Failure<RecordGradesBatchResponse>(Error.Forbidden("RecordGradesBatch.NotOwner", "Solo el profesor asignado o un administrador puede calificar esta oferta."));
         }

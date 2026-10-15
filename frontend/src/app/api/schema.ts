@@ -433,17 +433,29 @@ export interface PromoteStudentsResponseDto {
   studentsPromoted: number;
   studentsGraduated: number;
   enrollmentsCreated: number;
+  /** Ignorados (2026-10, pedido explícito del cliente): alumnos con alguna materia reprobada o sin
+   * calificar — no se promueven, pero tampoco cuentan como error. */
+  studentsSkipped: number;
+}
+
+/** "Calificar por alumno" → "Avanzar de cuatrimestre/semestre" (2026-10, pedido explícito del
+ * cliente): promueve a UN alumno, solo si ya aprobó todas sus materias — ver PromoteStudentCommand
+ * (backend). */
+export interface PromoteStudentResponseDto {
+  promoted: boolean;
+  graduated: boolean;
+  reason: string | null;
 }
 
 /** "Calificar por alumno" (2026-10, pedido explícito del cliente): todas las materias (ofertas) de
  * un alumno en un periodo, para capturar su calificación de cada una en un solo lugar. */
 export interface StudentOfferingRowDto {
-  offeringId: string;
+  offeringId: string | null;
   subjectName: string;
   regionName: string;
   termNumber: number | null;
   grade: number | null;
-  status: 'Active' | 'Dropped';
+  status: 'Active' | 'Dropped' | 'SinProfesor';
 }
 
 export interface StudentSubjectGradeEntryDto {
