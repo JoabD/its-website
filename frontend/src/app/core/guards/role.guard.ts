@@ -26,8 +26,12 @@ export function roleGuard(allowedRoles: readonly UserRole[]): CanActivateFn {
       take(1),
       map(() => {
         const role = authStore.role();
+        // 2026-10 ("un usuario puede tener múltiples roles"): un Administrador (u otro rol
+        // principal) que también da clases puede entrar a rutas de Teacher sin que eso le quite su
+        // rol principal — ver AuthStore.extraRoles.
+        const extraRoles = authStore.extraRoles();
 
-        if (role !== null && allowedRoles.includes(role)) {
+        if ((role !== null && allowedRoles.includes(role)) || extraRoles.some((extraRole) => allowedRoles.includes(extraRole))) {
           return true;
         }
 

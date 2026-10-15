@@ -22,9 +22,20 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(ICurrentUser curr
             }
 
             var requireRole = (RequireRoleAttribute?)Attribute.GetCustomAttribute(type, typeof(RequireRoleAttribute));
-            if (requireRole is not null && (currentUser.Role is null || !requireRole.Roles.Contains(currentUser.Role.Value)))
+            if (requireRole is not null)
             {
-                return Task.FromResult(Result.Failure<TResponse>(Error.Forbidden("Auth.Forbidden", "No tiene permisos para esta operación.")));
+                // "Un usuario puede tener múltiples roles" (2026-10): el rol principal sigue siendo
+                // el camino normal, pero ExtraRoles (ver ICurrentUser.ExtraRoles) también cuenta —
+                // así un Administrador que además es Profesor sigue pasando [RequireRole(Teacher,
+                // Administrator)] por su rol principal (como siempre), Y alguien cuyo rol principal
+                // NO es Teacher pero tiene Teacher como rol adicional también pasa ese mismo check.
+                var hasPrimaryRole = currentUser.Role is not null && requireRole.Roles.Contains(currentUser.Role.Value);
+                var hasExtraRole = requireRole.Roles.Any(currentUser.ExtraRoles.Contains);
+
+                if (!hasPrimaryRole && !hasExtraRole)
+                {
+                    return Task.FromResult(Result.Failure<TResponse>(Error.Forbidden("Auth.Forbidden", "No tiene permisos para esta operación.")));
+                }
             }
         }
 

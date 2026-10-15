@@ -22,6 +22,7 @@ export type UserRole = 'Student' | 'Teacher' | 'Administrator' | 'RegionalCoordi
 export type Modality = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected';
 export type StudyPlan = 'Quarterly' | 'Semester';
+export type ProgramType = 'Quarterly' | 'Diploma';
 
 export const MODALITY_LABELS: Record<Modality, string> = {
   Onsite: 'Presencial',
@@ -38,6 +39,11 @@ export const MODALITY_LABELS: Record<Modality, string> = {
 export const STUDY_PLAN_LABELS: Record<StudyPlan, string> = {
   Quarterly: 'Cuatrimestral',
   Semester: 'Semestral',
+};
+
+export const PROGRAM_TYPE_LABELS: Record<ProgramType, string> = {
+  Quarterly: 'Materia normal',
+  Diploma: 'Diplomado',
 };
 
 export const ROLE_LABELS: Record<UserRole, string> = {
@@ -58,6 +64,9 @@ export interface CurrentUser {
   readonly id: string;
   readonly enrollmentNumber: number;
   readonly role: UserRole;
+  /** Roles adicionales al principal (2026-10, "un usuario puede tener múltiples roles") — hoy solo
+   * se usa para Teacher: alguien cuyo rol principal es otro pero también puede dar clases. */
+  readonly extraRoles: readonly UserRole[];
   readonly fullName: string;
   readonly email: string;
   readonly regionName: string | null;

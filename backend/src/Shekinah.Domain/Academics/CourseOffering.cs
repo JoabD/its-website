@@ -91,7 +91,7 @@ public sealed class CourseOffering : AggregateRoot<string>
 
     private CourseOffering() { }
 
-    private CourseOffering(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region, TeacherRef teacher)
+    private CourseOffering(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region, TeacherRef? teacher)
         : base(id)
     {
         Period = period;
@@ -106,7 +106,14 @@ public sealed class CourseOffering : AggregateRoot<string>
 
     public RegionRefAcademics Region { get; private set; } = null!;
 
-    public TeacherRef Teacher { get; private set; } = null!;
+    /// <summary>
+    /// Nulo mientras nadie la ha asignado — "oferta pendiente" (2026-10, pedido explícito del
+    /// cliente: "no importa por ahora solo un administrador lo hará... debemos habilitar que se
+    /// pueda calificar a los alumnos" sin esperar a que haya profesor). Una oferta pendiente SÍ se
+    /// puede calificar (solo por un Administrador — ver RecordGradeCommandHandler y análogos), y
+    /// más adelante puede completarse con un profesor real vía <see cref="AssignTeacher"/>.
+    /// </summary>
+    public TeacherRef? Teacher { get; private set; }
 
     public IReadOnlyList<Enrollment> Enrollments => _enrollments.AsReadOnly();
 
@@ -115,11 +122,31 @@ public sealed class CourseOffering : AggregateRoot<string>
     public static Result<CourseOffering> Create(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region, TeacherRef teacher) =>
         Result.Success(new CourseOffering(id, period, subject, region, teacher));
 
-    public static CourseOffering Rehydrate(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region, TeacherRef teacher, IEnumerable<Enrollment> enrollments)
+    /// <summary>"Oferta pendiente" (2026-10): se crea sin profesor para que el currículo del
+    /// alumno sea calificable de inmediato (solo por un Administrador) — ver
+    /// <see cref="Shekinah.Application.Academics.EnsureStudentOfferings.EnsureStudentOfferingsCommandHandler"/>.</summary>
+    public static Result<CourseOffering> CreatePending(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region) =>
+        Result.Success(new CourseOffering(id, period, subject, region, null));
+
+    public static CourseOffering Rehydrate(string id, PeriodRef period, SubjectRef subject, RegionRefAcademics region, TeacherRef? teacher, IEnumerable<Enrollment> enrollments)
     {
         var offering = new CourseOffering(id, period, subject, region, teacher);
         offering._enrollments.AddRange(enrollments);
         return offering;
+    }
+
+    /// <summary>Completa una oferta pendiente (sin profesor) una vez que sí se quiere asignar uno
+    /// real — ver AssignTeacherCommandHandler. No se puede reasignar una oferta que ya tiene profesor
+    /// por esta vía (para eso hay que quitarla y crear una nueva).</summary>
+    public Result AssignTeacher(TeacherRef teacher)
+    {
+        if (Teacher is not null)
+        {
+            return Result.Failure(Error.Conflict("CourseOffering.TeacherAlreadyAssigned", "Esta oferta ya tiene un profesor asignado."));
+        }
+
+        Teacher = teacher;
+        return Result.Success();
     }
 
     /// <summary>RN-15: idempotente — no duplica inscripciones existentes.</summary>

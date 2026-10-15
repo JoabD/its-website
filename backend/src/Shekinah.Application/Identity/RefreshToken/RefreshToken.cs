@@ -39,7 +39,7 @@ public sealed class RefreshTokenCommandHandler(
             return Result.Failure<RefreshTokenResponse>(Error.Unauthorized("Auth.InvalidRefreshToken", "El refresh token no es válido o expiró."));
         }
 
-        var (accessToken, expiresAt) = tokenService.CreateAccessToken(user.Id, user.EnrollmentNumber.Value, user.Role, user.Region?.Id);
+        var (accessToken, expiresAt) = tokenService.CreateAccessToken(user.Id, user.EnrollmentNumber.Value, user.Role, user.Region?.Id, user.ExtraRoles);
         var (newRefreshToken, refreshExpiresAt) = tokenService.CreateRefreshToken();
 
         await store.RevokeAsync(command.RefreshToken, newRefreshToken, ct);

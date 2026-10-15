@@ -82,7 +82,7 @@ public sealed class DatabaseSeeder(
             foreach (var name in names)
             {
                 var code = $"T{term}-{order:D2}";
-                var subject = Subject.CreateQuarterly(EntityId.NewId(), code, name, TermNumber.Create(term).Value, order).Value;
+                var subject = Subject.CreateQuarterly(EntityId.NewId(), code, name, TermNumber.Create(term).Value, order, plan: StudyPlan.Quarterly).Value;
                 await subjects.AddAsync(subject, ct);
                 order++;
             }
@@ -97,6 +97,33 @@ public sealed class DatabaseSeeder(
         }
 
         logger.LogInformation("Seed: 28 materias creadas (24 cuatrimestrales + 4 de diplomado).");
+
+        // Plan de estudios Semestral (Presencial) — coexiste con el Cuatrimestral, currículo propio,
+        // tomado literalmente del certificado "FORMACION TEOLOGICA INTEGRAL MODALIDAD PRESENCIAL DE
+        // ENERO 2023 A ENERO 2026" (26 materias en 6 semestres, plan de control escolar / Kardex).
+        var semester = new (int Term, string[] Names)[]
+        {
+            (1, ["Pentateuco", "Introducción a la Teología", "Métodos de Investigación", "Introducción Bíblica"]),
+            (2, ["Libros Históricos 1", "Pneumatología", "Historia Eclesiástica 1", "Homilética", "Teología de la Educación Cristiana"]),
+            (3, ["Libros Históricos 2", "Evangelios Sinópticos", "Hechos de los Apóstoles", "Historia Eclesiástica 2"]),
+            (4, ["Liderazgo Integral", "Libros Sapienciales", "Hermenéutica", "Eclesiología"]),
+            (5, ["Teología Propia", "Profetas Mayores", "Sermón Expositivo", "Griego 1", "Gramática Española"]),
+            (6, ["Griego 2", "Periodo Intertestamentario", "Consejería Pastoral", "Apologética"]),
+        };
+
+        var semesterOrder = 1;
+        foreach (var (term, names) in semester)
+        {
+            foreach (var name in names)
+            {
+                var code = $"S{term}-{semesterOrder:D2}";
+                var subject = Subject.CreateQuarterly(EntityId.NewId(), code, name, TermNumber.Create(term).Value, semesterOrder, plan: StudyPlan.Semester).Value;
+                await subjects.AddAsync(subject, ct);
+                semesterOrder++;
+            }
+        }
+
+        logger.LogInformation("Seed: 26 materias del plan Semestral (Presencial) creadas en 6 semestres.");
     }
 
     private async Task SeedInitialPeriodAsync(CancellationToken ct)

@@ -1,6 +1,5 @@
 using Shekinah.Application.Abstractions;
 using Shekinah.Domain.Academics;
-using Shekinah.Domain.Academics.Policies;
 using Shekinah.Domain.Common;
 using Shekinah.Domain.Identity;
 using Shekinah.Domain.SharedKernel;
@@ -25,23 +24,17 @@ public sealed class AutoEnrollCommandHandler(ICourseOfferingRepository offerings
         {
             // Universo candidato: alumnos activos de la región de la oferta (RN-15).
             var candidates = await users.GetActiveStudentsInRegionAsync(offering.Region.Id, currentTerm: null, ct);
-            var eligible = AutoEnrollmentPolicy.SelectEligibleStudents(candidates, offering);
 
-            foreach (var student in eligible)
+            // 2026-10 ("promover alumnos"): esta matriculación ahora vive en CourseEnrollmentService,
+            // compartida con PromoteStudentsCommandHandler — mismo comportamiento de antes, solo que
+            // ya no está duplicado.
+            var enrollResult = CourseEnrollmentService.EnrollEligible(offering, candidates, clock);
+            if (enrollResult.IsFailure)
             {
-                var before = offering.EnrollmentCount;
-                var result = offering.Enroll(student.Id, student.EnrollmentNumber.Value, student.Profile.FullName.FullName, student.Academic!.CurrentTerm, clock);
-                if (result.IsFailure)
-                {
-                    return Result.Failure<AutoEnrollResponse>(result.Error);
-                }
-
-                if (offering.EnrollmentCount > before)
-                {
-                    enrollmentsCreated++;
-                }
+                return Result.Failure<AutoEnrollResponse>(enrollResult.Error);
             }
 
+            enrollmentsCreated += enrollResult.Value;
             await offerings.UpdateAsync(offering, ct);
         }
 
