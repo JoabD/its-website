@@ -30,7 +30,7 @@ public sealed class GetStudentGradeImportTemplateQueryHandler(
         }
 
         var isAdministrator = currentUser.Role == UserRole.Administrator || currentUser.ExtraRoles.Contains(UserRole.Administrator);
-        if (!isAdministrator && studentOfferings.All(o => o.Teacher.Id != currentUser.UserId))
+        if (!isAdministrator && studentOfferings.All(o => o.Teacher?.Id != currentUser.UserId))
         {
             return Result.Failure<GradeImportTemplateResponse>(Error.Forbidden(
                 "GetStudentGradeImportTemplate.NotOwner", "No tienes ninguna materia asignada a este alumno."));

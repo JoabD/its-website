@@ -61,7 +61,7 @@ public sealed class ImportStudentGradesCommandHandler(
                     continue; // celda vacía: el alumno sigue sin calificación en esa materia, no es error.
                 }
 
-                if (!isAdministrator && offering.Teacher.Id != currentUser.UserId)
+                if (!isAdministrator && offering.Teacher?.Id != currentUser.UserId)
                 {
                     errors.Add(new GradeImportCellError(row.RowNumber, offering.Subject.Name, "NO_ES_DUEÑO",
                         "Solo el profesor asignado o un administrador puede calificar esta materia."));

@@ -257,3 +257,84 @@ copia, para no filtrar sus datos a otra bandeja.
 (el que sí se versiona) trae el resto de los valores en claro porque no son secretos — el correo
 remitente y el nombre para mostrar son información pública de todas formas — pero deja
 `SenderAppPassword` vacío a propósito.
+
+---
+
+## ADR-015 — "Calificar por alumno": rediseño de UI, materias sin profesor y promoción con elegibilidad (2026-10, pedido explícito del cliente)
+
+**Contexto**: el cliente reportó, en este orden, tres problemas sobre la misma pantalla
+("Calificaciones" → "Calificar por alumno"):
+
+1. La UI original era un `<select>` de alumno + nada hasta elegir uno — "se ve sucio y poco
+   intuitivo". Pidió un mockup con 3 filtros reactivos (región/plan/cuatrimestre-semestre) + tabla +
+   panel lateral para calificar, más Bulk Assignment por Excel tanto por grupo como por alumno. Se
+   construyó un mockup interactivo (Artifact tipo Design) con datos ficticios, se aprobó, y se
+   implementó — ver el commit de esa fecha en `grades.component.ts`.
+2. Tras implementar, la UI real no se veía "como el mockup" (botones dorados del `ButtonComponent`
+   compartido en vez de la pastilla azul marino `#1a2744` del mockup; tarjetas `rounded-2xl` con
+   sombra en vez de las planas `border-radius:12px` del mockup) — se corrigió con overrides CSS
+   scoped (`::ng-deep shk-button.shk-btn-navy`, `::ng-deep shk-card > div`) **solo** dentro de
+   `grades.component.ts`, dejando el resto de la app con la convención dorada existente.
+3. **El problema de fondo**: un alumno con cuatrimestre/semestre ya asignado (`User.Academic`)
+   seguía sin mostrar ninguna materia, porque el diseño original exige que exista un
+   `CourseOffering` (creado solo cuando un admin asigna un profesor vía `AssignTeacherCommand`) y
+   que el alumno esté inscrito en él — el número de término por sí solo nunca generaba materias. El
+   cliente, tras la explicación de esa regla preexistente, dio dos instrucciones explícitas:
+   - *"no importa por ahora solo un administrador lo hará [calificar]... necesitamos que se pueda
+     calificar a los alumnos"* — es decir: la asignación de profesor debe dejar de ser requisito
+     para poder calificar.
+   - *"debemos habilitar eso de la promoción por alumno, y... debe haber una opción para que con
+     una sola acción se promuevan al siguiente semestre o cuatrimestre, y los que tengan... una
+     materia reprobada o simplemente no tiene calificación en alguna o todas las materias solo lo
+     ignore"* — promoción (individual Y masiva) condicionada a haber aprobado TODO, sin romper por
+     los que no cumplen.
+
+**Decisión**:
+
+- `CourseOffering.Teacher` pasó de `TeacherRef` (obligatorio) a `TeacherRef?` (opcional) — una
+  "oferta pendiente". Nueva factory `CourseOffering.CreatePending(id, period, subject, region)` (sin
+  profesor) junto a la `Create(...)` existente (con profesor, usada por `AssignTeacherCommand`
+  cuando el admin sí quiere asignar uno desde el principio). Nuevo método `AssignTeacher(TeacherRef)`
+  para completar una oferta pendiente más adelante — falla si ya tenía profesor.
+- Nuevo caso de uso `EnsureStudentOfferingsCommand` (`POST /academic/students/{id}/ensure-offerings`,
+  solo Administrator): dado un alumno y un periodo, crea (idempotente, vía
+  `ICourseOfferingRepository.FindAsync`) una oferta pendiente por cada materia de
+  `ISubjectRepository.GetByTermAndPlanAsync(alumno.Academic.CurrentTerm, alumno.Academic.Plan)` que
+  todavía no tenga oferta, y lo inscribe. El frontend lo llama al abrir la ficha del alumno, antes
+  de pedir `/offerings` — así el campo de calificación ya está habilitado cuando el admin ve la
+  materia, sin que tenga que pasar antes por "Académico".
+- `RecordGradeCommandHandler`, `RecordGradesBatchCommandHandler`, `RecordStudentGradesBatchCommandHandler`,
+  `GetOfferingEnrollmentsQueryHandler` y `GetStudentOfferingsQueryHandler`: la comparación de dueño
+  pasó de `offering.Teacher.Id != currentUser.UserId` a `offering.Teacher is null ||
+  offering.Teacher.Id != currentUser.UserId` — una oferta sin profesor nunca tiene dueño, así que
+  solo pasa un Administrator (por rol principal o `ExtraRoles`). `GetOfferingsQueryHandler` y
+  `GetMyCoursesQueryHandler` muestran `"Sin profesor asignado"` en vez de reventar con NRE.
+- `AssignTeacherCommandHandler`: si ya existe una oferta pendiente para esa materia/región/periodo,
+  la completa con `AssignTeacher(...)` en vez de rechazarla como duplicada (antes RN-22 rechazaba
+  cualquier oferta existente, con o sin profesor).
+- Nuevo `PromotionEligibilityService` (estático, en `Application/Academics/`, sin estado): dado un
+  alumno y un periodo, compara CADA materia del currículo de su plan+término actual contra sus
+  inscripciones reales — si falta alguna, o tiene calificación nula, o `< Grade.PassingValue` (nueva
+  constante, `= 7`, con `Grade.IsPassing`), no es elegible, y devuelve la razón en texto. Compartido
+  por los dos casos de uso de promoción para no duplicar el criterio.
+- Nuevo `PromoteStudentCommand` (`POST /academic/students/{id}/promote`, solo Administrator): promueve
+  a UN alumno — "Avanzar de cuatrimestre/semestre" en su ficha — solo si
+  `PromotionEligibilityService` lo aprueba; si no, `{promoted:false, reason}` sin ser un error.
+- `PromoteStudentsCommandHandler` (masivo, ya existía): en vez de promover a ciegas a todos los
+  candidatos de un plan+término, cada uno pasa por la misma `PromotionEligibilityService`; el que no
+  cumple se cuenta en el nuevo campo `StudentsSkipped` de `PromoteStudentsResponse`, sin tocarlo ni
+  fallar el lote.
+- `GetGradingRosterQueryHandler`: el "Total" de materias por alumno ahora es el currículo completo
+  de su plan+término (no solo lo que ya tiene oferta), para que la tabla deje de mostrar "0/0 — Sin
+  materias" a un alumno que sí tiene término asignado pero cuyas materias aún no tenían oferta.
+
+**Consecuencias**: cualquier código futuro que lea `CourseOffering.Teacher` debe tratarlo como
+nullable — se hizo un grep completo de `.Teacher.` en `backend/src` en esta sesión y se corrigieron
+todos los puntos encontrados (listados arriba), pero **no se corrió `dotnet build` ni `dotnet test`
+en este entorno** (ver limitación ya declarada en el README/ADR-009): la primera tarea de quien
+continúe es compilar y, si algo más referencia `offering.Teacher` sin null-check (por ejemplo en
+`Shekinah.Api.FunctionalTests` o `Shekinah.Infrastructure.IntegrationTests`, no revisados aquí),
+corregirlo con el mismo patrón. La regla de negocio "quién puede calificar una oferta sin profesor"
+quedó deliberadamente simple (solo Administrator) porque el cliente dijo explícitamente que por
+ahora solo administradores calificarán — si más adelante se abre a profesores, hay que decidir
+contra qué comparar la propiedad en vez de "es el dueño".
