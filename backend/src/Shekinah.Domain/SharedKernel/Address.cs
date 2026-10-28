@@ -31,11 +31,17 @@ public sealed record Address
             return Result.Failure<Address>(Error.Validation("Address.Incomplete", "Domicilio y municipio son requeridos."));
         }
 
+        return CreateOptional(street, neighborhood, locality, municipality, state);
+    }
+
+    /// <summary>Ubicación opcional para una solicitud inicial, antes de completar el expediente.</summary>
+    public static Result<Address> CreateOptional(string? street, string? neighborhood, string? locality, string? municipality, string? state = null)
+    {
         return Result.Success(new Address(
-            street.Trim(),
+            (street ?? string.Empty).Trim(),
             (neighborhood ?? string.Empty).Trim(),
             (locality ?? string.Empty).Trim(),
-            municipality.Trim(),
+            (municipality ?? string.Empty).Trim(),
             string.IsNullOrWhiteSpace(state) ? null : state.Trim()));
     }
 }

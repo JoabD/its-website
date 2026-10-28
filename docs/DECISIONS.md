@@ -338,3 +338,11 @@ corregirlo con el mismo patrón. La regla de negocio "quién puede calificar una
 quedó deliberadamente simple (solo Administrator) porque el cliente dijo explícitamente que por
 ahora solo administradores calificarán — si más adelante se abre a profesores, hay que decidir
 contra qué comparar la propiedad en vez de "es el dueño".
+## ADR-016 — Solicitud pública de admisión simplificada
+
+**Contexto**: el cliente pidió reducir la fricción del formulario público, que originalmente requería cinco pasos y datos de expediente antes de que hubiera contacto con el aspirante. Solicitó una sola pantalla con datos de contacto, modalidad y campos de ubicación/iglesia opcionales.
+
+**Decisión**: el formulario Angular ahora pide nombre, correo, teléfono y modalidad (más región para presencial); iglesia, área, comunidad, municipio, estado y propósito son opcionales. `SubmitApplicationCommand` valida los campos requeridos y límites de longitud, y el agregado conserva los campos opcionales usando domicilio/iglesia existentes. Las solicitudes iniciales dejan los datos de expediente no capturados vacíos/default hasta completarse durante admisión. Se actualizó el detalle administrativo y las fichas por correo/PDF.
+
+**Consecuencias**: `ApplicantProfile.BirthDate` ahora es nullable y su mapeo Mongo tolera documentos anteriores y solicitudes nuevas sin fecha. La razón de modalidad virtual también queda opcional para que modalidad no agregue otro campo obligatorio. Compilación y pruebas no ejecutadas en esta sesión; revisar al levantar los servicios.
+

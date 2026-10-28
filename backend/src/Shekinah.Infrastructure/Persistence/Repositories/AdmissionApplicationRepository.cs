@@ -58,7 +58,7 @@ public sealed class AdmissionApplicationRepository(MongoContext context) : IAdmi
         ["applicant"] = new BsonDocument
         {
             ["fullName"] = app.Applicant.FullName.FullName,
-            ["birthDate"] = app.Applicant.BirthDate.ToDateTime(TimeOnly.MinValue),
+            ["birthDate"] = app.Applicant.BirthDate is null ? BsonNull.Value : app.Applicant.BirthDate.Value.ToDateTime(TimeOnly.MinValue),
             ["maritalStatus"] = app.Applicant.MaritalStatus,
             ["email"] = app.Applicant.Email.Value,
             ["phone"] = app.Applicant.Phone.Value,
@@ -104,7 +104,9 @@ public sealed class AdmissionApplicationRepository(MongoContext context) : IAdmi
         var applicantDoc = doc["applicant"].AsBsonDocument;
         var applicant = ApplicantProfile.Create(
             PersonName.Create(applicantDoc["fullName"].AsString).Value,
-            DateOnly.FromDateTime(applicantDoc["birthDate"].ToUniversalTime()),
+            applicantDoc.TryGetValue("birthDate", out var birthDate) && !birthDate.IsBsonNull
+                ? DateOnly.FromDateTime(birthDate.ToUniversalTime())
+                : null,
             applicantDoc.GetValue("maritalStatus", "").AsString,
             Email.Create(applicantDoc["email"].AsString).Value,
             PhoneNumber.Create(applicantDoc["phone"].AsString).Value,
