@@ -1,0 +1,103 @@
+2026-10-03 10:24:13.901 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-10-03 10:24:14.378 -06:00 [INF] Now listening on: https://localhost:5081
+2026-10-03 10:24:14.382 -06:00 [INF] Now listening on: http://localhost:5080
+2026-10-03 10:24:14.386 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-10-03 10:24:14.388 -06:00 [INF] Hosting environment: Development
+2026-10-03 10:24:14.390 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-10-03 10:24:14.879 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-10-03 10:24:15.022 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-03 10:24:15.027 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-03 10:24:15.030 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 155.8324ms
+2026-10-03 10:24:19.171 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-03 10:24:19.274 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/2/2026 6:52:43 PM', Current time (UTC): '10/3/2026 4:24:19 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-03 10:24:19.288 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/2/2026 6:52:43 PM', Current time (UTC): '10/3/2026 4:24:19 PM'.
+2026-10-03 10:24:19.292 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-03 10:24:19.295 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-03 10:24:19.300 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 128.5807ms
+2026-10-03 10:24:19.365 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - application/json 105
+2026-10-03 10:24:19.373 -06:00 [INF] CORS policy execution successful.
+2026-10-03 10:24:19.377 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/2/2026 6:52:43 PM', Current time (UTC): '10/3/2026 4:24:19 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-03 10:24:19.381 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/2/2026 6:52:43 PM', Current time (UTC): '10/3/2026 4:24:19 PM'.
+2026-10-03 10:24:19.386 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-03 10:24:19.411 -06:00 [INF] Ejecutando RefreshTokenCommand
+2026-10-03 10:24:19.599 -06:00 [INF] RefreshTokenCommand completado
+2026-10-03 10:24:19.609 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:24:19.616 -06:00 [INF] Writing value of type 'RefreshTokenResponse' as Json.
+2026-10-03 10:24:19.628 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-03 10:24:19.636 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - 200 null application/json; charset=utf-8 270.5861ms
+2026-10-03 10:24:19.644 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-03 10:24:19.660 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-03 10:24:19.665 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-03 10:24:19.674 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-03 10:24:19.676 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:24:19.680 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-03 10:24:19.691 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-03 10:24:19.694 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 50.2564ms
+2026-10-03 10:24:22.320 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-03 10:24:22.326 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Teacher&pageSize=500 - null null
+2026-10-03 10:24:22.327 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:24:22.333 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:24:22.338 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-03 10:24:22.343 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-03 10:24:22.345 -06:00 [INF] GetRegionsQuery completado
+2026-10-03 10:24:22.349 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:24:22.352 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-03 10:24:22.364 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:24:22.367 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 47.0272ms
+2026-10-03 10:24:22.396 -06:00 [INF] GetUsersQuery completado
+2026-10-03 10:24:22.398 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:24:22.402 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-03 10:24:22.406 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:24:22.409 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?role=Teacher&pageSize=500 - 200 null application/json; charset=utf-8 83.3201ms
+2026-10-03 10:25:46.400 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-03 10:25:46.411 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - null null
+2026-10-03 10:25:46.414 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:25:46.418 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:25:46.421 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-03 10:25:46.423 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-03 10:25:46.425 -06:00 [INF] GetRegionsQuery completado
+2026-10-03 10:25:46.427 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:25:46.429 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-03 10:25:46.431 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:25:46.432 -06:00 [INF] GetUsersQuery completado
+2026-10-03 10:25:46.434 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 34.1402ms
+2026-10-03 10:25:46.435 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:25:46.443 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-03 10:25:46.452 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:25:46.455 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 44.3373ms
+2026-10-03 10:35:30.308 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-03 10:35:30.313 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-03 10:35:30.316 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-03 10:35:30.319 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-03 10:35:30.322 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:35:30.324 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-03 10:35:30.326 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-03 10:35:30.329 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 21.3114ms
+2026-10-03 10:35:30.467 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-03 10:35:30.473 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:35:30.479 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - null null
+2026-10-03 10:35:30.484 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:35:30.484 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-03 10:35:30.489 -06:00 [INF] GetRegionsQuery completado
+2026-10-03 10:35:30.495 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:35:30.497 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-03 10:35:30.498 -06:00 [INF] Ejecutando GetUsersQuery
+2026-10-03 10:35:30.501 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-03 10:35:30.506 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 39.2275ms
+2026-10-03 10:35:30.507 -06:00 [INF] GetUsersQuery completado
+2026-10-03 10:35:30.515 -06:00 [INF] Setting HTTP status code 200.
+2026-10-03 10:35:30.518 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-03 10:35:30.521 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/users/'
+2026-10-03 10:35:30.524 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/users?pageSize=500 - 200 null application/json; charset=utf-8 44.7332ms

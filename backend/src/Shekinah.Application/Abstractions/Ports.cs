@@ -17,7 +17,15 @@ public interface IPasswordHasher
 
 public interface ITokenService
 {
-    (string AccessToken, DateTime ExpiresAtUtc) CreateAccessToken(string userId, int enrollmentNumber, UserRole role, string? regionId);
+    /// <summary>
+    /// <paramref name="extraRoles"/> (2026-10, "un usuario puede tener múltiples roles"): roles
+    /// ADICIONALES al principal (hoy solo Teacher) — ver <see cref="Domain.Identity.User.ExtraRoles"/>.
+    /// Van al token como claims "extraRole" repetidos, para que <see cref="ICurrentUser.ExtraRoles"/>
+    /// y <see cref="Behaviors.AuthorizationBehavior{TRequest,TResponse}"/> los puedan revisar sin
+    /// volver a consultar la base de datos en cada request.
+    /// </summary>
+    (string AccessToken, DateTime ExpiresAtUtc) CreateAccessToken(
+        string userId, int enrollmentNumber, UserRole role, string? regionId, IReadOnlyList<UserRole>? extraRoles = null);
 
     (string RefreshToken, DateTime ExpiresAtUtc) CreateRefreshToken();
 }
@@ -31,6 +39,10 @@ public interface ICurrentUser
     int? EnrollmentNumber { get; }
 
     UserRole? Role { get; }
+
+    /// <summary>Roles adicionales al principal (ver <see cref="Domain.Identity.User.ExtraRoles"/>);
+    /// lista vacía si no tiene ninguno — nunca null, para no obligar a cada consumidor a chequearlo.</summary>
+    IReadOnlyList<UserRole> ExtraRoles { get; }
 
     string? RegionId { get; }
 }
@@ -119,9 +131,21 @@ public sealed record StudentImportTemplateRegion(string Name, string Abbreviatio
 /// — para poder listarlas como referencia y armar los dropdowns de REGION/MODALIDAD en la plantilla
 /// (columna REGION solo acepta nombre o abreviatura de una región activa — ver ImportStudentsCommandHandler;
 /// MODALIDAD queda acotada a las modalidades que esa región realmente ofrece, RN-03).</summary>
+public sealed record GradeImportTemplateStudent(int EnrollmentNumber, string FullName);
+
+/// <summary>Plantilla de importación de calificaciones: cubre TODAS las materias de un
+/// cuatrimestre/semestre puntual, para un plan y una región (ver Kardex/ImportGrades). Cada
+/// materia es una columna; <see cref="Students"/> ya viene prellenado con los alumnos realmente
+/// inscritos en ese grupo (RN: una plantilla vieja no sirve para otro grupo — Kardex fase 2).</summary>
+public sealed record GradeImportTemplateSubject(string SubjectName);
+
 public interface ISpreadsheetWriter
 {
     byte[] BuildStudentImportTemplate(IReadOnlyList<StudentImportTemplateRegion> regions);
+
+    byte[] BuildGradeImportTemplate(
+        string periodLabel, string planLabel, int termNumber, string regionName,
+        IReadOnlyList<GradeImportTemplateSubject> subjects, IReadOnlyList<GradeImportTemplateStudent> students);
 }
 
 public interface IPaymentMatrixReader

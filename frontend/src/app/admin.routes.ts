@@ -63,6 +63,13 @@ export const ADMIN_ROUTES: Routes = [
               import('./features/admin/settings/checklist-settings.component').then((m) => m.ChecklistSettingsComponent),
           },
           {
+            path: 'configuracion/materias',
+            title: 'Configuración · Catálogo de materias | Panel ITS',
+            canActivate: [roleGuard(['Administrator'])],
+            loadComponent: () =>
+              import('./features/admin/settings/subjects-settings.component').then((m) => m.SubjectsSettingsComponent),
+          },
+          {
             path: 'avisos',
             title: 'Avisos | Panel ITS',
             loadComponent: () => import('./features/admin/announcements/announcements.component').then((m) => m.AnnouncementsComponent),
@@ -88,7 +95,11 @@ export const ADMIN_ROUTES: Routes = [
           {
             path: 'academico',
             title: 'Académico | Panel ITS',
-            canActivate: [roleGuard(['Administrator'])],
+            // Antes solo Administrator: el profesor no tenía ninguna forma de ver qué materias
+            // tiene asignadas (plan de control escolar, "flujo de asignación", 2026-10). El
+            // componente ya distingue el rol internamente (isAdmin()) y oculta para Teacher todo
+            // lo que no sea suyo para ver en modo lectura.
+            canActivate: [roleGuard(['Administrator', 'Teacher'])],
             loadComponent: () => import('./features/admin/academic/academic.component').then((m) => m.AcademicComponent),
           },
           {

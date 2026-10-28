@@ -56,10 +56,16 @@ public sealed record ChurchInfo
             return Result.Failure<ChurchInfo>(Error.Validation("ChurchInfo.Incomplete", "Nombre de iglesia, domicilio y pastor son requeridos."));
         }
 
+        return CreateForInitialApplication(name, address, pastorName, timeAttending, ministryRole);
+    }
+
+    /// <summary>Snapshot parcial permitido en la solicitud pública inicial; se completa en admisiones.</summary>
+    public static Result<ChurchInfo> CreateForInitialApplication(string? name, Address address, string? pastorName, string? timeAttending, MinistryRole? ministryRole)
+    {
         return Result.Success(new ChurchInfo(
-            name.Trim(),
+            (name ?? string.Empty).Trim(),
             address,
-            pastorName.Trim(),
+            (pastorName ?? string.Empty).Trim(),
             (timeAttending ?? string.Empty).Trim(),
             ministryRole ?? MinistryRole.None));
     }

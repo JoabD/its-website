@@ -92,11 +92,14 @@ export class DashboardComponent {
       items.push(
         { routerLink: '/admin/inscripciones', title: 'Bandeja de inscripciones', description: 'Revisa, aprueba o rechaza solicitudes nuevas.', icon: ICONS.inbox },
         { routerLink: '/admin/docentes', title: 'Docentes', description: 'Administra el cuerpo docente del instituto.', icon: ICONS.users },
-        { routerLink: '/admin/academico', title: 'Gestión académica', description: 'Periodos, materias y grupos por región.', icon: ICONS.academic },
+        { routerLink: '/admin/academico', title: 'Materias', description: 'Decide qué materia da cada profesor y en qué región.', icon: ICONS.academic },
       );
     }
     if (role === 'Administrator' || role === 'RegionalCoordinator' || role === 'RegionalSecretary') {
       items.push({ routerLink: '/admin/alumnos', title: 'Alumnos', description: 'Consulta la matrícula activa y su estatus.', icon: ICONS.users });
+    }
+    if (role === 'Teacher') {
+      items.push({ routerLink: '/admin/academico', title: 'Mis materias', description: 'Consulta las materias que tienes asignadas.', icon: ICONS.academic });
     }
     if (role === 'Teacher' || role === 'Administrator') {
       items.push({ routerLink: '/admin/calificaciones', title: 'Calificaciones', description: 'Captura y revisa calificaciones por grupo.', icon: ICONS.grades });

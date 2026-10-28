@@ -15,6 +15,7 @@ export type ModalityDto = 'Onsite' | 'Online' | 'Diploma';
 export type ApplicationStatusDto = 'Pending' | 'Approved' | 'Rejected';
 export type SchoolingLevelDto = 'Primary' | 'Secondary' | 'HighSchool' | 'Other';
 export type StudyPlanDto = 'Quarterly' | 'Semester';
+export type ProgramTypeDto = 'Quarterly' | 'Diploma';
 
 export interface PagedResultDto<T> {
   items: T[];
@@ -53,6 +54,9 @@ export interface CurrentUserDto {
   id: string;
   enrollmentNumber: number;
   role: UserRole;
+  /** Roles adicionales al principal (2026-10, "un usuario puede tener múltiples roles") — hoy solo
+   * se usa para Teacher (ver User.ExtraRoles en el backend). */
+  extraRoles: UserRole[];
   fullName: string;
   email: string;
   regionName: string | null;
@@ -77,32 +81,36 @@ export interface CurriculumSubjectDto {
   displayOrder: number;
   hasSyllabus: boolean;
   syllabusPdfUrl: string | null;
+  /** Cuatrimestral (Virtual) o Semestral (Presencial) — a qué currículo pertenece esta materia
+   * (plan de control escolar, fase "flujo de asignación", 2026-10). Determina en qué grupos de
+   * Académico puede ofertarse. */
+  plan: StudyPlanDto;
+}
+
+/** Configuración → Catálogo de materias (2026-10, pedido explícito del cliente: "el admin debe
+ * también poder agregar una materia nueva al plan que sea y del número de cuatrimestre o semestre
+ * que sea"). Distinto de CreateOfferingRequestDto: esto da de alta la materia en el catálogo (qué
+ * existe), no asigna profesor/región (eso sigue siendo la pantalla Materias). `plan` es obligatorio
+ * salvo para Diplomado, que siempre es Cuatrimestral. */
+export interface CreateSubjectRequestDto {
+  code: string;
+  name: string;
+  programType: ProgramTypeDto;
+  termNumber: number | null;
+  displayOrder: number;
+  plan: StudyPlanDto;
 }
 
 export interface SubmitApplicationRequestDto {
   fullName: string;
-  birthDate: string;
-  maritalStatus: string;
   email: string;
   phone: string;
-  street: string;
-  neighborhood: string;
-  locality: string;
-  municipality: string;
-  state: string;
-  churchName: string;
-  churchStreet: string;
-  churchNeighborhood: string;
-  churchLocality: string;
-  churchMunicipality: string;
-  pastorName: string;
-  timeAttending: string;
-  hasMinistryRole: boolean;
-  ministryRoleName: string | null;
-  educationLevel: SchoolingLevelDto;
-  otherEducationDescription: string | null;
-  theologicalBackground: string;
-  studyPurpose: string;
+  churchName?: string | null;
+  area?: string | null;
+  community?: string | null;
+  municipality?: string | null;
+  state?: string | null;
+  studyPurpose?: string | null;
   modality: ModalityDto;
   requestedRegionId: string | null;
   onlineReason: string | null;
@@ -142,27 +150,13 @@ export interface ApplicationDetailDto {
   id: string;
   folio: string;
   fullName: string;
-  birthDate: string;
-  maritalStatus: string;
   email: string;
   phone: string;
-  street: string;
-  neighborhood: string;
-  locality: string;
+  area: string;
+  community: string;
   municipality: string;
   state: string | null;
   churchName: string;
-  churchStreet: string;
-  churchNeighborhood: string;
-  churchLocality: string;
-  churchMunicipality: string;
-  pastorName: string;
-  timeAttending: string;
-  hasMinistryRole: boolean;
-  ministryRoleName: string | null;
-  educationLevel: SchoolingLevelDto;
-  otherEducationDescription: string | null;
-  theologicalBackground: string;
   studyPurpose: string;
   modality: ModalityDto;
   regionName: string;
@@ -236,29 +230,61 @@ export interface UserListItemDto {
   email: string | null;
   phone: string | null;
   role: UserRole;
+  /** Ver CurrentUserDto.extraRoles — permite mostrar en "Docentes" a alguien cuyo rol principal
+   * no es Teacher (p. ej. un Administrador que también da clases). */
+  extraRoles: UserRole[];
   status: string;
   regionName: string | null;
   modality: ModalityDto | null;
   currentTerm: number | null;
   plan: StudyPlanDto | null;
+  /** Regiones donde esta persona da clases (2026-10, "un profesor puede ser asignado a varias
+   * regiones") — solo relevante cuando role es Teacher o extraRoles incluye Teacher. */
+  teachingRegionNames: string[];
 }
 
 /** Panel de Usuarios → "Agregar usuario": alta de cualquier rol de staff (no alumnos — esos van
- * por Alumnos → "Agregar alumno", que usa su propio flujo con matrícula/plan/cuatrimestre). */
+ * por Alumnos → "Agregar alumno", que usa su propio flujo con matrícula/plan/cuatrimestre). Correo
+ * y teléfono opcionales (mismo ajuste que CreateStudentRequestDto): un Profesor recién agregado
+ * puede no tener correo todavía — queda de alta pero sin acceso al sistema hasta que se capture.
+ * birthDate ya NO es obligatoria (2026-10, pedido explícito del cliente) — se reemplazó por
+ * regionIds, obligatorio solo cuando role es Teacher ("un profesor puede ser asignado a varias
+ * regiones"). */
 export interface CreateUserRequestDto {
   role: UserRole;
   fullName: string;
-  email: string;
-  phone: string;
-  birthDate: string;
+  email?: string | null;
+  phone?: string | null;
+  birthDate?: string | null;
   regionId?: string | null;
   modality?: ModalityDto | null;
+  regionIds?: string[] | null;
 }
 
 export interface CreateUserResponseDto {
   userId: string;
   enrollmentNumber: number;
   temporaryPassword: string;
+}
+
+/** Cambia rol/región/estatus de un usuario YA existente (UpdateUserCommand) — a diferencia de
+ * AdminUpdateUserRequestDto (que edita nombre/correo/teléfono/contraseña), este endpoint es el que
+ * usa "Docentes" → "Asignar como profesor" para convertir en Profesor a alguien que ya tiene cuenta
+ * en el sistema, sin crear un usuario duplicado. El modelo de dominio tiene un solo rol por usuario
+ * (no listas de roles): asignar "Teacher" aquí REEMPLAZA el rol anterior, no lo añade. */
+export interface UpdateUserRequestDto {
+  role: UserRole;
+  regionId?: string | null;
+  modality?: ModalityDto | null;
+  status?: string | null;
+}
+
+/** "Docentes" → "Ya tiene cuenta" (2026-10, pedido explícito del cliente: "no necesitamos revocar
+ * ni un rol... un usuario puede tener múltiples roles"). A diferencia de UpdateUserRequestDto (que
+ * SÍ reemplaza el rol principal), este agrega Teacher como rol ADICIONAL sin tocar nada más del
+ * usuario — ver POST /api/v1/users/{id}/teacher-role. */
+export interface AssignTeacherRoleRequestDto {
+  regionIds: string[];
 }
 
 /** Panel de Usuarios → editar (side panel): nombre/correo/teléfono + contraseña nueva opcional
@@ -341,8 +367,23 @@ export interface OfferingListItemDto {
   id: string;
   subjectName: string;
   regionName: string;
+  regionId: string;
   teacherName: string;
   enrollmentCount: number;
+  termNumber: number | null;
+  plan: StudyPlanDto;
+}
+
+/** Académico → "Nueva asignación": crea el grupo (profesor + materia + región + periodo) que
+ * antes no existía ningún formulario para crear — ver AssignTeacherCommand (backend, ya existía
+ * sin UI). Es el paso que faltaba antes de poder "asignar materias automáticamente": sin un grupo
+ * creado para una materia/región, no hay nada en qué auto-inscribir alumnos (plan de control
+ * escolar, fase "flujo de asignación", 2026-10). */
+export interface CreateOfferingRequestDto {
+  periodId: string;
+  subjectId: string;
+  regionId: string;
+  teacherId: string;
 }
 
 export interface EnrollmentRowDto {
@@ -351,6 +392,59 @@ export interface EnrollmentRowDto {
   studentName: string;
   grade: number | null;
   status: 'Active' | 'Dropped';
+}
+
+/** "Promover alumnos" (2026-10, pedido explícito del cliente). Independiente de abrir/cerrar un
+ * periodo académico — ver PromoteStudentsCommand (backend). */
+export interface PromoteStudentsRequestDto {
+  plan: StudyPlanDto;
+  fromTerm: number;
+}
+
+export interface PromoteStudentsResponseDto {
+  studentsPromoted: number;
+  studentsGraduated: number;
+  enrollmentsCreated: number;
+  /** Ignorados (2026-10, pedido explícito del cliente): alumnos con alguna materia reprobada o sin
+   * calificar — no se promueven, pero tampoco cuentan como error. */
+  studentsSkipped: number;
+}
+
+/** "Calificar por alumno" → "Avanzar de cuatrimestre/semestre" (2026-10, pedido explícito del
+ * cliente): promueve a UN alumno, solo si ya aprobó todas sus materias — ver PromoteStudentCommand
+ * (backend). */
+export interface PromoteStudentResponseDto {
+  promoted: boolean;
+  graduated: boolean;
+  reason: string | null;
+}
+
+/** "Calificar por alumno" (2026-10, pedido explícito del cliente): todas las materias (ofertas) de
+ * un alumno en un periodo, para capturar su calificación de cada una en un solo lugar. */
+export interface StudentOfferingRowDto {
+  offeringId: string | null;
+  subjectName: string;
+  regionName: string;
+  termNumber: number | null;
+  grade: number | null;
+  status: 'Active' | 'Dropped' | 'SinProfesor';
+}
+
+export interface StudentSubjectGradeEntryDto {
+  offeringId: string;
+  grade: number;
+}
+
+export interface StudentSubjectGradeErrorDto {
+  offeringId: string;
+  subjectName: string;
+  code: string;
+  message: string;
+}
+
+export interface RecordStudentGradesBatchResponseDto {
+  saved: number;
+  errors: StudentSubjectGradeErrorDto[];
 }
 
 export interface StudentCourseRowDto {
@@ -442,6 +536,21 @@ export interface KardexSubjectRowDto {
   grade: number | null;
   status: string;
   periodCode: string;
+  /** Oferta (grupo) a la que pertenece esta fila — permite capturar/corregir la calificación
+   * directamente desde el detalle del alumno (plan de control escolar, fase "flujo de asignación",
+   * 2026-10), llamando a PUT /academic/offerings/{offeringId}/enrollments/{studentId}/grade. */
+  offeringId: string | null;
+}
+
+/** Plan de control escolar / Kardex, fase 2: resumen de un cuatrimestre/semestre cursado —
+ * promedio y estatus de aprobación (mínimo 7, materias "Baja" excluidas). No bloquea la promoción
+ * al siguiente periodo; es únicamente informativo (RN confirmada con el cliente). */
+export interface KardexTermGroupDto {
+  termNumber: number;
+  averageGrade: number | null;
+  isApproved: boolean;
+  hasPendingSubject: boolean;
+  subjects: KardexSubjectRowDto[];
 }
 
 export interface KardexResponseDto {
@@ -456,4 +565,58 @@ export interface KardexResponseDto {
   isGraduated: boolean;
   averageGrade: number | null;
   subjects: KardexSubjectRowDto[];
+  terms: KardexTermGroupDto[];
+  hasPendingSubjects: boolean;
+}
+
+/** Kardex → Calificaciones → "Guardar todos los cambios" (captura manual en lote). */
+export interface GradeEntryDto {
+  studentId: string;
+  grade: number;
+}
+
+export interface GradeEntryErrorDto {
+  studentId: string;
+  code: string;
+  message: string;
+}
+
+export interface RecordGradesBatchResponseDto {
+  saved: number;
+  errors: GradeEntryErrorDto[];
+}
+
+/** Kardex → Calificaciones → "Importar desde Excel": una plantilla cubre todas las materias de un
+ * (periodo, plan, cuatrimestre/semestre, región). */
+export interface GradeImportTemplateResponseDto {
+  fileName: string;
+  contentBase64: string;
+}
+
+export interface GradeImportCellErrorDto {
+  rowNumber: number;
+  subjectName: string;
+  code: string;
+  message: string;
+}
+
+export interface ImportGradesResponseDto {
+  totalRows: number;
+  totalCells: number;
+  importedCells: number;
+  errors: GradeImportCellErrorDto[];
+}
+
+/** Rediseño de "Calificar por alumno" (2026-10): avance de cada alumno en el periodo activo, para
+ * pintar la tabla sin una llamada por alumno. Un alumno que no aparece aquí no tiene ninguna
+ * materia asignada en este periodo (0/0 — "Sin materias"). */
+export interface StudentGradingSummaryRowDto {
+  studentId: string;
+  totalSubjects: number;
+  gradedSubjects: number;
+}
+
+export interface ImportStudentGradesResponseDto {
+  importedCells: number;
+  errors: GradeImportCellErrorDto[];
 }

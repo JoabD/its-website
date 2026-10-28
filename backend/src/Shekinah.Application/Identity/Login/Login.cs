@@ -61,7 +61,7 @@ public sealed class LoginCommandHandler(
         user.RegisterSuccessfulLogin(clock);
         await users.UpdateAsync(user, ct);
 
-        var (accessToken, expiresAt) = tokenService.CreateAccessToken(user.Id, user.EnrollmentNumber.Value, user.Role, user.Region?.Id);
+        var (accessToken, expiresAt) = tokenService.CreateAccessToken(user.Id, user.EnrollmentNumber.Value, user.Role, user.Region?.Id, user.ExtraRoles);
         var (refreshToken, refreshExpiresAt) = tokenService.CreateRefreshToken();
 
         // BUG REAL encontrado: este handler generaba el refresh token pero nunca lo persistía vía

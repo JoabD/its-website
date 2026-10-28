@@ -1,5 +1,6 @@
 using Shekinah.Application.Abstractions;
 using Shekinah.Domain.Common;
+using Shekinah.Domain.SharedKernel;
 
 namespace Shekinah.Application.Catalog.GetCurriculum;
 
@@ -7,7 +8,9 @@ namespace Shekinah.Application.Catalog.GetCurriculum;
 [AllowAnonymousUseCase]
 public sealed record GetCurriculumQuery : IQuery<IReadOnlyList<CurriculumSubject>>;
 
-public sealed record CurriculumSubject(string Id, string Code, string Name, string ProgramType, int? TermNumber, int DisplayOrder, bool HasSyllabus, string? SyllabusPdfUrl);
+public sealed record CurriculumSubject(
+    string Id, string Code, string Name, string ProgramType, int? TermNumber, int DisplayOrder, bool HasSyllabus,
+    string? SyllabusPdfUrl, StudyPlan Plan);
 
 public sealed class GetCurriculumQueryHandler(Domain.Catalog.ISubjectRepository subjects)
     : IQueryHandler<GetCurriculumQuery, IReadOnlyList<CurriculumSubject>>
@@ -20,7 +23,7 @@ public sealed class GetCurriculumQueryHandler(Domain.Catalog.ISubjectRepository 
             .OrderBy(s => s.ProgramType).ThenBy(s => s.TermNumber?.Value ?? 0).ThenBy(s => s.DisplayOrder)
             .Select(s => new CurriculumSubject(
                 s.Id, s.Code, s.Name, s.ProgramType.ToString(), s.TermNumber?.Value, s.DisplayOrder,
-                s.Syllabus.IsPublished, s.Syllabus.PdfUrl))
+                s.Syllabus.IsPublished, s.Syllabus.PdfUrl, s.Plan))
             .ToList();
 
         return Result.Success(mapped);

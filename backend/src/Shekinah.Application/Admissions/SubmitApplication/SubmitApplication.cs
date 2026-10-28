@@ -19,11 +19,8 @@ public static class RecaptchaActions
 /// reCAPTCHA v3 (<see cref="RecaptchaToken"/>): es el endpoint anónimo más expuesto a spam/bots.</summary>
 [AllowAnonymousUseCase]
 public sealed record SubmitApplicationCommand(
-    string FullName, DateOnly BirthDate, string MaritalStatus, string Email, string Phone,
-    string Street, string Neighborhood, string Locality, string Municipality, string State,
-    string ChurchName, string ChurchStreet, string ChurchNeighborhood, string ChurchLocality, string ChurchMunicipality,
-    string PastorName, string TimeAttending, bool HasMinistryRole, string? MinistryRoleName,
-    SchoolingLevel EducationLevel, string? OtherEducationDescription, string TheologicalBackground, string StudyPurpose,
+    string FullName, string Email, string Phone, string? ChurchName, string? Area, string? Community,
+    string? Municipality, string? State, string? StudyPurpose,
     Modality Modality, string? RequestedRegionId, string? OnlineReason, string RecaptchaToken) : ICommand<SubmitApplicationResponse>;
 
 public sealed record SubmitApplicationResponse(string ApplicationId, string Folio);
@@ -35,9 +32,15 @@ public sealed class SubmitApplicationCommandValidator : AbstractValidator<Submit
         RuleFor(x => x.FullName).NotEmpty();
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.Phone).NotEmpty();
-        RuleFor(x => x.StudyPurpose).NotEmpty();
-        RuleFor(x => x.OnlineReason).NotEmpty().When(x => x.Modality == Modality.Online)
-            .WithMessage("El motivo es requerido para la modalidad Virtual (RN-03).");
+        RuleFor(x => x.FullName).MaximumLength(200);
+        RuleFor(x => x.Email).MaximumLength(254);
+        RuleFor(x => x.Phone).MaximumLength(50);
+        RuleFor(x => x.ChurchName).MaximumLength(200);
+        RuleFor(x => x.Area).MaximumLength(150);
+        RuleFor(x => x.Community).MaximumLength(150);
+        RuleFor(x => x.Municipality).MaximumLength(150);
+        RuleFor(x => x.State).MaximumLength(150);
+        RuleFor(x => x.StudyPurpose).MaximumLength(2000);
         RuleFor(x => x.RequestedRegionId).NotEmpty().When(x => x.Modality == Modality.Onsite)
             .WithMessage("Debe elegir una región presencial (RN-03).");
         RuleFor(x => x.RecaptchaToken).NotEmpty()
@@ -64,19 +67,21 @@ public sealed class SubmitApplicationCommandHandler(
                 Error.Validation("Recaptcha.Failed", "No pudimos verificar tu solicitud. Recarga la página e intenta de nuevo."));
         }
 
-        var address = Address.Create(command.Street, command.Neighborhood, command.Locality, command.Municipality, command.State);
+        // En la solicitud inicial solo capturamos datos opcionales para diferenciar al solicitante.
+        // La ficha completa se integra posteriormente durante el proceso de admisión.
+        var address = Address.CreateOptional("", command.Area, command.Community, command.Municipality, command.State);
         if (address.IsFailure) return Result.Failure<SubmitApplicationResponse>(address.Error);
 
-        var churchAddress = Address.Create(command.ChurchStreet, command.ChurchNeighborhood, command.ChurchLocality, command.ChurchMunicipality);
+        var churchAddress = Address.CreateOptional("", "", "", "");
         if (churchAddress.IsFailure) return Result.Failure<SubmitApplicationResponse>(churchAddress.Error);
 
-        var ministryRole = MinistryRole.Create(command.HasMinistryRole, command.MinistryRoleName);
+        var ministryRole = MinistryRole.Create(false, null);
         if (ministryRole.IsFailure) return Result.Failure<SubmitApplicationResponse>(ministryRole.Error);
 
-        var church = ChurchInfo.Create(command.ChurchName, churchAddress.Value, command.PastorName, command.TimeAttending, ministryRole.Value);
+        var church = ChurchInfo.CreateForInitialApplication(command.ChurchName, churchAddress.Value, "", "", ministryRole.Value);
         if (church.IsFailure) return Result.Failure<SubmitApplicationResponse>(church.Error);
 
-        var education = EducationLevel.Create(command.EducationLevel, command.OtherEducationDescription);
+        var education = EducationLevel.Create(SchoolingLevel.Other, "Pendiente de completar");
         if (education.IsFailure) return Result.Failure<SubmitApplicationResponse>(education.Error);
 
         var name = PersonName.Create(command.FullName);
@@ -87,8 +92,8 @@ public sealed class SubmitApplicationCommandHandler(
         if (phone.IsFailure) return Result.Failure<SubmitApplicationResponse>(phone.Error);
 
         var applicant = ApplicantProfile.Create(
-            name.Value, command.BirthDate, command.MaritalStatus, email.Value, phone.Value, address.Value, church.Value,
-            education.Value, command.TheologicalBackground, command.StudyPurpose);
+            name.Value, null, "", email.Value, phone.Value, address.Value, church.Value,
+            education.Value, "", command.StudyPurpose);
         if (applicant.IsFailure) return Result.Failure<SubmitApplicationResponse>(applicant.Error);
 
         // RN-03: la región se DERIVA de la modalidad, resuelta por el domain service, no por el cliente.
@@ -165,25 +170,18 @@ public sealed class SubmitApplicationCommandHandler(
             _ => modality.Modality.ToString(),
         };
 
-        var ministryRole = applicant.Church.MinistryRole.HasRole
-            ? applicant.Church.MinistryRole.RoleName ?? "Sí"
-            : "No";
-
         var rows = new List<AdmissionFichaPdfRow>
         {
             new("Nombre completo", applicant.FullName.FullName),
-            new("Fecha de nacimiento", applicant.BirthDate.ToString("dd/MM/yyyy")),
-            new("Estado civil", applicant.MaritalStatus),
             new("Correo", applicant.Email.Value),
             new("Teléfono", applicant.Phone.Value),
-            new("Dirección", $"{applicant.Address.Street}, {applicant.Address.Neighborhood}, {applicant.Address.Locality}, {applicant.Address.Municipality}"),
+            new("Área", applicant.Address.Neighborhood),
+            new("Comunidad", applicant.Address.Locality),
+            new("Municipio", applicant.Address.Municipality),
+            new("Estado", applicant.Address.State ?? string.Empty),
             new("Modalidad", modalityLabel),
             new("Región / Sede", modality.RegionName),
             new("Iglesia", applicant.Church.Name),
-            new("Pastor", applicant.Church.PastorName),
-            new("Tiempo asistiendo", applicant.Church.TimeAttending),
-            new("Rol ministerial", ministryRole),
-            new("Nivel de estudios", applicant.Education.Level.ToString()),
             new("Propósito de estudio", applicant.StudyPurpose),
         };
 

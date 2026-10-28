@@ -39,7 +39,12 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         var builder = Builders<BsonDocument>.Filter;
         var filter = builder.Empty;
 
-        if (role is not null) filter &= builder.Eq("role", role.Value.ToString());
+        // 2026-10 ("un usuario puede tener múltiples roles"): un profesor puede tener Teacher como
+        // rol ADICIONAL (ver User.ExtraRoles) en vez de como rol principal — filtrar solo por "role"
+        // dejaría fuera, por ejemplo, a un Administrador que también da clases al filtrar la lista de
+        // "Docentes". Mongo ya resuelve la igualdad contra un campo arreglo como "contiene": filtrar
+        // por "extraRoles" con el mismo valor hace match si el arreglo lo incluye.
+        if (role is not null) filter &= builder.Or(builder.Eq("role", role.Value.ToString()), builder.Eq("extraRoles", role.Value.ToString()));
         if (!string.IsNullOrWhiteSpace(regionId)) filter &= builder.Eq("region.id", ObjectId.Parse(regionId));
         if (!string.IsNullOrWhiteSpace(searchText)) filter &= builder.Regex("profile.fullName", new BsonRegularExpression(searchText, "i"));
 
@@ -63,6 +68,21 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
         {
             filter &= builder.Eq("academic.currentTerm", currentTerm.Value);
         }
+
+        var docs = await context.Users.Find(filter).ToListAsync(ct);
+        return docs.Select(ToDomain).ToList();
+    }
+
+    public async Task<IReadOnlyList<User>> GetActiveStudentsByPlanAndTermAsync(StudyPlan plan, TermNumber currentTerm, CancellationToken ct)
+    {
+        // "Promover alumnos" (2026-10): a diferencia de GetActiveStudentsInRegionAsync, esta es
+        // global — todas las regiones a la vez — filtrando por plan (Cuatrimestral/Semestral) y
+        // cuatrimestre/semestre actual en vez de por región.
+        var builder = Builders<BsonDocument>.Filter;
+        var filter = builder.Eq("role", nameof(UserRole.Student)) &
+                     builder.Eq("status", nameof(UserStatus.Active)) &
+                     builder.Eq("academic.plan", plan.ToString()) &
+                     builder.Eq("academic.currentTerm", currentTerm.Value);
 
         var docs = await context.Users.Find(filter).ToListAsync(ct);
         return docs.Select(ToDomain).ToList();
@@ -129,7 +149,9 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
                 ["fullName"] = user.Profile.FullName.FullName,
                 ["email"] = user.Profile.Email is null ? BsonNull.Value : user.Profile.Email.Value,
                 ["phone"] = user.Profile.Phone is null ? BsonNull.Value : user.Profile.Phone.Value,
-                ["birthDate"] = user.Profile.BirthDate.ToDateTime(TimeOnly.MinValue),
+                // 2026-10 (pedido explícito del cliente): la fecha de nacimiento dejó de ser
+                // obligatoria al agregar un profesor (se reemplazó por región) — ahora puede ser null.
+                ["birthDate"] = user.Profile.BirthDate.HasValue ? user.Profile.BirthDate.Value.ToDateTime(TimeOnly.MinValue) : (BsonValue)BsonNull.Value,
                 ["maritalStatus"] = user.Profile.MaritalStatus,
                 ["address"] = user.Profile.Address.ToBson(),
                 ["church"] = user.Profile.Church.ToBson(),
@@ -141,6 +163,15 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             ["lastLoginAt"] = user.LastLoginAtUtc.HasValue ? user.LastLoginAtUtc.Value : BsonNull.Value,
             ["createdAt"] = user.CreatedAtUtc,
             ["version"] = user.Version + 1,
+            // 2026-10 ("un usuario puede tener múltiples roles" / "un profesor puede ser asignado a
+            // varias regiones"): ver User.ExtraRoles y User.TeachingRegions.
+            ["extraRoles"] = new BsonArray(user.ExtraRoles.Select(r => r.ToString())),
+            ["teachingRegions"] = new BsonArray(user.TeachingRegions.Select(r => new BsonDocument
+            {
+                ["id"] = ObjectId.Parse(r.Id),
+                ["code"] = r.Code,
+                ["name"] = r.Name,
+            })),
         };
 
         return doc;
@@ -185,17 +216,34 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             ? Email.Create(emailValue.AsString).Value : null;
         PhoneNumber? phone = profileDoc.TryGetValue("phone", out var phoneValue) && !phoneValue.IsBsonNull
             ? PhoneNumber.Create(phoneValue.AsString).Value : null;
+        // 2026-10: birthDate puede ser null (ver nota en ToBson) — null-safe.
+        DateOnly? birthDate = profileDoc.TryGetValue("birthDate", out var birthDateValue) && !birthDateValue.IsBsonNull
+            ? DateOnly.FromDateTime(birthDateValue.ToUniversalTime()) : null;
         var profile = PersonalProfile.Create(
             PersonName.Create(profileDoc["fullName"].AsString).Value,
             email,
             phone,
-            DateOnly.FromDateTime(profileDoc["birthDate"].ToUniversalTime()),
+            birthDate,
             profileDoc.GetValue("maritalStatus", "").AsString,
             BsonMappingExtensions.AddressFromBson(profileDoc["address"].AsBsonDocument),
             BsonMappingExtensions.ChurchFromBson(profileDoc["church"].AsBsonDocument),
             BsonMappingExtensions.EducationFromBson(profileDoc["education"].AsBsonDocument),
             profileDoc.GetValue("theologicalBackground", "").AsString,
             profileDoc.GetValue("studyPurpose", "").AsString).Value;
+
+        // 2026-10 ("un usuario puede tener múltiples roles" / "varias regiones"): ambos son nuevos y
+        // pueden no existir en documentos legado — de ahí el TryGetValue y el default a lista vacía.
+        var extraRoles = doc.TryGetValue("extraRoles", out var extraRolesValue) && !extraRolesValue.IsBsonNull
+            ? extraRolesValue.AsBsonArray.Select(v => Enum.Parse<UserRole>(v.AsString)).ToList()
+            : [];
+
+        var teachingRegions = doc.TryGetValue("teachingRegions", out var teachingRegionsValue) && !teachingRegionsValue.IsBsonNull
+            ? teachingRegionsValue.AsBsonArray.Select(v =>
+            {
+                var r = v.AsBsonDocument;
+                return new RegionRef(r["id"].AsObjectId.ToString(), r["code"].AsInt32, r["name"].AsString);
+            }).ToList()
+            : [];
 
         return User.Rehydrate(
             doc["_id"].AsObjectId.ToString(),
@@ -207,7 +255,9 @@ public sealed class UserRepository(MongoContext context) : IUserRepository
             doc.TryGetValue("lastLoginAt", out var lla) && !lla.IsBsonNull ? lla.ToUniversalTime() : null,
             doc["createdAt"].ToUniversalTime(),
             doc.GetValue("version", 1).AsInt32,
-            doc.TryGetValue("matricula", out var mat) && !mat.IsBsonNull ? mat.AsString : null);
+            doc.TryGetValue("matricula", out var mat) && !mat.IsBsonNull ? mat.AsString : null,
+            extraRoles,
+            teachingRegions);
     }
 
     private static Credentials RehydrateCredentials(BsonDocument credentialsDoc) => Credentials.Rehydrate(

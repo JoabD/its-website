@@ -1,6 +1,7 @@
 using Shekinah.Api.Extensions;
 using Shekinah.Application.Abstractions;
 using Shekinah.Application.Identity.AdminUpdateUser;
+using Shekinah.Application.Identity.AssignTeacherRole;
 using Shekinah.Application.Identity.CreateUser;
 using Shekinah.Application.Identity.DeleteUser;
 using Shekinah.Application.Identity.GetUsers;
@@ -46,6 +47,12 @@ public static class UsersEndpoints
 
         group.MapPost("/{id}/status", async (string id, SetUserStatusRequest request, IDispatcher dispatcher, CancellationToken ct) =>
             (await dispatcher.SendAsync(new SetUserStatusCommand(id, request.Active), ct)).ToApiResult());
+
+        // "Docentes" → "Ya tiene cuenta" (2026-10): a diferencia de MapPut("/{id}") de arriba (que
+        // REEMPLAZA el rol principal), este agrega Teacher como rol ADICIONAL sin tocar el rol
+        // principal — "un usuario puede tener múltiples roles" (pedido explícito del cliente).
+        group.MapPost("/{id}/teacher-role", async (string id, AssignTeacherRoleRequest request, IDispatcher dispatcher, CancellationToken ct) =>
+            (await dispatcher.SendAsync(new AssignTeacherRoleCommand(id, request.RegionIds), ct)).ToApiResult());
     }
 
     public sealed record UpdateUserRequest(UserRole Role, string? RegionId, Modality? Modality, string? Status);
@@ -53,4 +60,6 @@ public static class UsersEndpoints
     public sealed record AdminUpdateUserRequest(string FullName, string Email, string Phone, string? NewPassword);
 
     public sealed record SetUserStatusRequest(bool Active);
+
+    public sealed record AssignTeacherRoleRequest(IReadOnlyList<string> RegionIds);
 }

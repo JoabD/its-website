@@ -12,6 +12,13 @@ public sealed record RegionRef(string Id, int Code, string Name);
 /// debe tener modalidad y cuatrimestre; bloqueo automático al 4.º aviso (RN-07/RN-19);
 /// <c>mustChangePassword</c> obligatorio (RN-24). Nótese: NO hay herencia <c>Student : User</c>
 /// (prohibido explícitamente, spec técnico §4-L) — el rol es un valor, no un subtipo.
+///
+/// <see cref="ExtraRoles"/> (2026-10, pedido explícito del cliente: "un usuario puede tener
+/// múltiples roles") es la ÚNICA excepción a "un solo rol": permite marcar que alguien TAMBIÉN
+/// puede dar clases sin dejar de ser su rol principal (p. ej. un Administrador que también es
+/// profesor). <see cref="Role"/> sigue siendo el único rol que determina menús/autorización general
+/// — <see cref="ExtraRoles"/> solo habilita las capacidades específicas de Profesor (aparecer en el
+/// selector de "Agregar materia", pasar RequireRole(Teacher, ...), calificar sus propias ofertas).
 /// </summary>
 public sealed class User : AggregateRoot<string>
 {
@@ -20,7 +27,7 @@ public sealed class User : AggregateRoot<string>
     private User(
         string id, EnrollmentNumber enrollmentNumber, string? matricula, UserRole role, Credentials credentials,
         RegionRef? region, Modality? modality, AcademicState? academic, PersonalProfile profile,
-        string? admissionApplicationId, IClock clock)
+        string? admissionApplicationId, IClock clock, IReadOnlyList<RegionRef>? teachingRegions = null)
         : base(id)
     {
         EnrollmentNumber = enrollmentNumber;
@@ -35,6 +42,7 @@ public sealed class User : AggregateRoot<string>
         Status = UserStatus.Active;
         AdmissionApplicationId = admissionApplicationId;
         CreatedAtUtc = clock.UtcNow;
+        TeachingRegions = teachingRegions ?? [];
     }
 
     public EnrollmentNumber EnrollmentNumber { get; private set; } = null!;
@@ -50,6 +58,11 @@ public sealed class User : AggregateRoot<string>
     public string? Matricula { get; private set; }
 
     public UserRole Role { get; private set; }
+
+    /// <summary>Roles ADICIONALES al principal (ver comentario de clase). Hoy solo se usa para
+    /// Teacher; se modela como lista (no un solo bool "EsTambiénProfesor") para no tener que volver
+    /// a tocar el dominio si en el futuro se agrega otra combinación.</summary>
+    public IReadOnlyList<UserRole> ExtraRoles { get; private set; } = [];
 
     public UserStatus Status { get; private set; }
 
@@ -73,6 +86,22 @@ public sealed class User : AggregateRoot<string>
     public DateTime? LastLoginAtUtc { get; private set; }
 
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// Regiones donde esta persona da clases (2026-10, pedido explícito del cliente: "un profesor
+    /// puede ser asignado a varias regiones y tener múltiples materias"). A diferencia de
+    /// <see cref="Region"/> (singular, exclusivo de Student/RegionalCoordinator/RegionalSecretary),
+    /// esto es una LISTA — relevante cuando <see cref="CanTeach"/> es true, ya sea porque
+    /// <see cref="Role"/> es Teacher o porque Teacher está en <see cref="ExtraRoles"/>. No reemplaza
+    /// ni restringe la asignación real de materias (CourseOffering ya permite un profesor en
+    /// cualquier región vía AssignTeacherCommand) — es la lista que se le muestra al administrador
+    /// al elegir quién puede dar clases en dónde.
+    /// </summary>
+    public IReadOnlyList<RegionRef> TeachingRegions { get; private set; } = [];
+
+    /// <summary>True si esta persona puede dar clases, ya sea como rol principal o como rol
+    /// adicional (ver <see cref="ExtraRoles"/>).</summary>
+    public bool CanTeach => Role == UserRole.Teacher || ExtraRoles.Contains(UserRole.Teacher);
 
     /// <summary>RN-05: creación de alumno a partir de una solicitud aprobada, en la misma transacción.</summary>
     public static Result<User> CreateStudentFromApplication(
@@ -125,10 +154,12 @@ public sealed class User : AggregateRoot<string>
         return Result.Success(user);
     }
 
-    /// <summary>Alta administrativa de cualquier rol (RN-12: solo Administrator puede invocar este caso de uso).</summary>
+    /// <summary>Alta administrativa de cualquier rol (RN-12: solo Administrator puede invocar este caso de uso).
+    /// <paramref name="teachingRegions"/> solo aplica cuando <paramref name="role"/> es Teacher (ver
+    /// <see cref="TeachingRegions"/>) — para el resto de roles se ignora.</summary>
     public static Result<User> CreateStaff(
         string id, EnrollmentNumber enrollmentNumber, UserRole role, PersonalProfile profile,
-        RegionRef? region, string temporaryPasswordHash, IClock clock)
+        RegionRef? region, string temporaryPasswordHash, IClock clock, IReadOnlyList<RegionRef>? teachingRegions = null)
     {
         if (role == UserRole.Student)
         {
@@ -146,7 +177,9 @@ public sealed class User : AggregateRoot<string>
             return Result.Failure<User>(credentialsResult.Error);
         }
 
-        var user = new User(id, enrollmentNumber, null, role, credentialsResult.Value, region, null, null, profile, null, clock);
+        var user = new User(
+            id, enrollmentNumber, null, role, credentialsResult.Value, region, null, null, profile, null, clock,
+            teachingRegions: role == UserRole.Teacher ? teachingRegions : null);
         user.Raise(new UserCreated(Guid.NewGuid(), clock.UtcNow, id, enrollmentNumber.Value, role.ToString()));
         return Result.Success(user);
     }
@@ -155,7 +188,8 @@ public sealed class User : AggregateRoot<string>
     public static User Rehydrate(
         string id, EnrollmentNumber enrollmentNumber, UserRole role, UserStatus status, Credentials credentials,
         RegionRef? region, Modality? modality, AcademicState? academic, BillingState billing, PersonalProfile profile,
-        string? admissionApplicationId, DateTime? lastLoginAtUtc, DateTime createdAtUtc, int version, string? matricula = null)
+        string? admissionApplicationId, DateTime? lastLoginAtUtc, DateTime createdAtUtc, int version, string? matricula = null,
+        IReadOnlyList<UserRole>? extraRoles = null, IReadOnlyList<RegionRef>? teachingRegions = null)
     {
         var user = new User
         {
@@ -174,6 +208,8 @@ public sealed class User : AggregateRoot<string>
             LastLoginAtUtc = lastLoginAtUtc,
             CreatedAtUtc = createdAtUtc,
             Version = version,
+            ExtraRoles = extraRoles ?? [],
+            TeachingRegions = teachingRegions ?? [],
         };
         return user;
     }
@@ -271,6 +307,33 @@ public sealed class User : AggregateRoot<string>
         Region = role is UserRole.Student or UserRole.RegionalCoordinator or UserRole.RegionalSecretary ? region : null;
         Modality = role == UserRole.Student ? modality : null;
         return Result.Success();
+    }
+
+    /// <summary>
+    /// "Docentes" → "Ya tiene cuenta" (2026-10, pedido explícito del cliente: "no necesitamos
+    /// revocar ni un rol... un usuario puede tener múltiples roles"). Agrega Teacher como rol
+    /// ADICIONAL (ver <see cref="ExtraRoles"/>) sin tocar <see cref="Role"/> — a propósito distinto
+    /// de <see cref="UpdateRoleAndScope"/>, que SÍ reemplaza el rol principal. Fusiona
+    /// <paramref name="regions"/> con las que ya tuviera (sin duplicar) en vez de reemplazarlas, para
+    /// que asignarlo de nuevo con una región distinta vaya SUMANDO regiones, no sustituyéndolas.
+    /// </summary>
+    public void AddTeachingRole(IReadOnlyList<RegionRef> regions)
+    {
+        if (Role != UserRole.Teacher && !ExtraRoles.Contains(UserRole.Teacher))
+        {
+            ExtraRoles = [.. ExtraRoles, UserRole.Teacher];
+        }
+
+        var merged = TeachingRegions.ToList();
+        foreach (var region in regions)
+        {
+            if (!merged.Any(r => r.Id == region.Id))
+            {
+                merged.Add(region);
+            }
+        }
+
+        TeachingRegions = merged;
     }
 
     public void Deactivate() => Status = UserStatus.Inactive;

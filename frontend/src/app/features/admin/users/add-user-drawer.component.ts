@@ -14,8 +14,14 @@ import { ROLE_LABELS, UserRole } from '../../../domain/models';
 /** Roles que se pueden dar de alta desde este panel — Student queda fuera a propósito: tiene su
  * propio flujo en Alumnos → "Agregar alumno" (matrícula, plan, cuatrimestre), que este panel no
  * replica. El backend igual lo rechaza (CreateUserCommandValidator), esto es solo para no ofrecer
- * una opción que de todos modos va a fallar. */
-const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'Teacher', 'RegionalCoordinator', 'RegionalSecretary'];
+ * una opción que de todos modos va a fallar.
+ *
+ * Teacher queda fuera también (2026-10): "Docentes" tiene su propio botón "+ Agregar profesor" con
+ * su propio panel (AddTeacherDrawerComponent) — más simple (sin correo/teléfono obligatorios) y con
+ * la opción de asignar como profesor a alguien que ya existe en el sistema. Este panel genérico
+ * sigue siendo el alta para Administrator/Coordinador/Secretario regional, que sí necesitan correo
+ * desde el inicio porque sí entran a iniciar sesión de inmediato. */
+const ASSIGNABLE_ROLES: readonly UserRole[] = ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'];
 
 /**
  * Panel de Usuarios → "Agregar usuario" (RN-12: solo Administrator). Mismo patrón visual que
@@ -169,7 +175,7 @@ export class AddUserDrawerComponent {
   protected readonly createdResult = signal<CreateUserResponseDto | null>(null);
   protected readonly copied = signal(false);
 
-  protected readonly role = signal<UserRole>('Teacher');
+  protected readonly role = signal<UserRole>('Administrator');
   protected readonly fullName = signal('');
   protected readonly email = signal('');
   protected readonly phone = signal('');
@@ -208,7 +214,7 @@ export class AddUserDrawerComponent {
   }
 
   private resetForm(): void {
-    this.role.set('Teacher');
+    this.role.set('Administrator');
     this.fullName.set('');
     this.email.set('');
     this.phone.set('');

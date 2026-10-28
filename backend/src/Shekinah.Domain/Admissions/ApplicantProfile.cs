@@ -12,7 +12,7 @@ public sealed record ApplicantProfile
 {
     public PersonName FullName { get; }
 
-    public DateOnly BirthDate { get; }
+    public DateOnly? BirthDate { get; }
 
     public string MaritalStatus { get; }
 
@@ -31,7 +31,7 @@ public sealed record ApplicantProfile
     public string StudyPurpose { get; }
 
     private ApplicantProfile(
-        PersonName fullName, DateOnly birthDate, string maritalStatus, Email email, PhoneNumber phone,
+        PersonName fullName, DateOnly? birthDate, string maritalStatus, Email email, PhoneNumber phone,
         Address address, ChurchInfo church, EducationLevel education, string theologicalBackground, string studyPurpose)
     {
         FullName = fullName;
@@ -47,32 +47,28 @@ public sealed record ApplicantProfile
     }
 
     public static Result<ApplicantProfile> Create(
-        PersonName fullName, DateOnly birthDate, string? maritalStatus, Email email, PhoneNumber phone,
+        PersonName fullName, DateOnly? birthDate, string? maritalStatus, Email email, PhoneNumber phone,
         Address address, ChurchInfo church, EducationLevel education, string? theologicalBackground, string? studyPurpose)
     {
-        if (birthDate >= DateOnly.FromDateTime(DateTime.UtcNow))
+        if (birthDate is not null && birthDate.Value >= DateOnly.FromDateTime(DateTime.UtcNow))
         {
             return Result.Failure<ApplicantProfile>(Error.Validation("ApplicantProfile.InvalidBirthDate", "La fecha de nacimiento debe ser en el pasado."));
         }
 
-        if (string.IsNullOrWhiteSpace(studyPurpose))
-        {
-            return Result.Failure<ApplicantProfile>(Error.Validation("ApplicantProfile.MissingPurpose", "El propósito de estudio es requerido."));
-        }
-
         return Result.Success(new ApplicantProfile(
             fullName, birthDate, (maritalStatus ?? string.Empty).Trim(), email, phone, address, church,
-            education, (theologicalBackground ?? string.Empty).Trim(), studyPurpose.Trim()));
+            education, (theologicalBackground ?? string.Empty).Trim(), (studyPurpose ?? string.Empty).Trim()));
     }
 
     /// <summary>
     /// Edad DERIVADA de la fecha de nacimiento (corrige el hallazgo #7: el legado la capturaba a
     /// mano por separado y se desincronizaba).
     /// </summary>
-    public int AgeAsOf(DateOnly today)
+    public int? AgeAsOf(DateOnly today)
     {
-        var age = today.Year - BirthDate.Year;
-        if (BirthDate > today.AddYears(-age)) age--;
+        if (BirthDate is null) return null;
+        var age = today.Year - BirthDate.Value.Year;
+        if (BirthDate.Value > today.AddYears(-age)) age--;
         return age;
     }
 }

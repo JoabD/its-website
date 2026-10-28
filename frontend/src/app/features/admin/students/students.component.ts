@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ApiClient } from '../../../core/http/api-client';
@@ -30,7 +31,7 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
  */
 @Component({
   selector: 'shk-students',
-  imports: [CardComponent, BadgeComponent, ButtonComponent, AddStudentDrawerComponent],
+  imports: [CardComponent, BadgeComponent, ButtonComponent, AddStudentDrawerComponent, RouterLink],
   template: `
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-slate-900">Alumnos</h1>
@@ -94,6 +95,14 @@ import { AddStudentDrawerComponent } from './add-student-drawer.component';
               <td class="py-2"><shk-badge [tone]="student.status === 'Active' ? 'success' : 'neutral'">{{ statusLabel(student.status) }}</shk-badge></td>
               <td class="py-2">
                 <div class="flex flex-wrap items-center justify-end gap-1.5">
+                  <a
+                    class="rounded-lg border border-[var(--shk-color-accent)]/40 px-3 py-1.5 text-xs font-semibold text-[var(--shk-color-accent)] transition hover:bg-[var(--shk-color-accent)]/10"
+                    [routerLink]="['/admin/kardex']"
+                    [queryParams]="{ studentId: student.id }"
+                    title="Ver Kardex y capturar/corregir calificaciones por cuatrimestre/semestre"
+                  >
+                    Calificaciones
+                  </a>
                   <button
                     type="button"
                     class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"

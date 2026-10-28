@@ -9,6 +9,12 @@ interface NavItem {
   readonly path: string;
   readonly icon: string;
   readonly roles?: readonly string[];
+  /** Prioriza este acceso en la barra de pestañas inferior (móvil) — ver mobileTabs(). Sin esta
+   * marca, la barra tomaba ciegamente los primeros 4 accesos visibles del rol, dejando Kardex y
+   * Calificaciones enterrados detrás de "Más" (pedido del cliente, 2026-10: "debe tener amplia
+   * usabilidad en móviles" — Kardex/Calificaciones es justo lo que un profesor o admin necesita a
+   * la mano en el celular, no una vez al mes como "Regiones"). */
+  readonly mobileTab?: boolean;
 }
 
 interface NavGroup {
@@ -30,7 +36,7 @@ interface NavGroup {
 const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: null,
-    items: [{ label: 'Inicio', path: '/admin', icon: 'bi-house-door' }],
+    items: [{ label: 'Inicio', path: '/admin', icon: 'bi-house-door', mobileTab: true }],
   },
   {
     label: 'Administración',
@@ -39,8 +45,11 @@ const NAV_GROUPS: readonly NavGroup[] = [
       { label: 'Inscripciones', path: '/admin/inscripciones', icon: 'bi-journal-check', roles: ['Administrator'] },
       { label: 'Docentes', path: '/admin/docentes', icon: 'bi-person-workspace', roles: ['Administrator'] },
       { label: 'Usuarios', path: '/admin/usuarios', icon: 'bi-people', roles: ['Administrator'] },
-      { label: 'Académico', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator'] },
-      { label: 'Calificaciones', path: '/admin/calificaciones', icon: 'bi-clipboard-check', roles: ['Teacher', 'Administrator'] },
+      // Renombrado de "Académico" a "Materias" (2026-10, segundo rediseño: "esto es demasiado
+      // confuso para un usuario") — el nombre de la pantalla ahora coincide con lo que hace: decidir
+      // qué materia da cada profesor, nada de vocabulario de "periodos" u "ofertas" en el menú.
+      { label: 'Materias', path: '/admin/academico', icon: 'bi-diagram-3', roles: ['Administrator', 'Teacher'] },
+      { label: 'Calificaciones', path: '/admin/calificaciones', icon: 'bi-clipboard-check', roles: ['Teacher', 'Administrator'], mobileTab: true },
       { label: 'Pagos', path: '/admin/pagos', icon: 'bi-cash-coin', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
       { label: 'Calendario', path: '/admin/calendario', icon: 'bi-calendar-event', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
     ],
@@ -48,10 +57,10 @@ const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: 'Alumnos',
     items: [
-      { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
-      { label: 'Kardex', path: '/admin/kardex', icon: 'bi-file-earmark-text', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'] },
-      { label: 'Mis materias', path: '/admin/mis-materias', icon: 'bi-book', roles: ['Student'] },
-      { label: 'Mi Kardex', path: '/admin/mi-kardex', icon: 'bi-file-earmark-text', roles: ['Student'] },
+      { label: 'Alumnos', path: '/admin/alumnos', icon: 'bi-mortarboard', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'], mobileTab: true },
+      { label: 'Kardex', path: '/admin/kardex', icon: 'bi-file-earmark-text', roles: ['Administrator', 'RegionalCoordinator', 'RegionalSecretary'], mobileTab: true },
+      { label: 'Mis materias', path: '/admin/mis-materias', icon: 'bi-book', roles: ['Student'], mobileTab: true },
+      { label: 'Mi Kardex', path: '/admin/mi-kardex', icon: 'bi-file-earmark-text', roles: ['Student'], mobileTab: true },
       { label: 'Mi información', path: '/admin/mi-perfil', icon: 'bi-person-circle', roles: ['Student'] },
     ],
   },
@@ -60,6 +69,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Regiones', path: '/admin/configuracion/regiones', icon: 'bi-geo-alt', roles: ['Administrator'] },
       { label: 'Documentos de inscripción', path: '/admin/configuracion/checklist', icon: 'bi-ui-checks', roles: ['Administrator'] },
+      { label: 'Catálogo de materias', path: '/admin/configuracion/materias', icon: 'bi-journal-bookmark', roles: ['Administrator'] },
     ],
   },
 ];
@@ -245,19 +255,29 @@ export class AdminShellComponent {
 
   protected visibleGroups(): readonly NavGroup[] {
     const role = this.auth.role();
+    // 2026-10 ("un usuario puede tener múltiples roles"): un Administrador (u otro rol principal)
+    // que también da clases debe ver además las entradas de Teacher (p. ej. "Materias"), sin perder
+    // las de su rol principal — ver AuthStore.extraRoles.
+    const extraRoles = this.auth.extraRoles();
     return NAV_GROUPS.map((group) => ({
       label: group.label,
-      items: group.items.filter((item) => !item.roles || (role !== null && item.roles.includes(role))),
+      items: group.items.filter(
+        (item) => !item.roles || (role !== null && item.roles.includes(role)) || extraRoles.some((extraRole) => item.roles!.includes(extraRole)),
+      ),
     })).filter((group) => group.items.length > 0);
   }
 
-  /** Los primeros 4 accesos visibles del rol actual (siempre incluye "Inicio", por ser el primero
-   * en NAV_GROUPS) — el resto vive detrás de "Más". Misma fuente que el sidebar (visibleGroups()),
-   * así que un rol nuevo o un cambio de menú no requiere tocar esto aparte. */
+  /** Accesos marcados `mobileTab: true` del rol actual (máx. 4, por espacio en la barra) — el resto
+   * vive detrás de "Más". Antes tomaba ciegamente los primeros 4 de NAV_GROUPS en orden de
+   * declaración, lo que dejaba Kardex/Calificaciones fuera del alcance del pulgar en móvil (NAV_GROUPS
+   * las lista después de Avisos/Inscripciones/Docentes). Si por algún motivo el rol no tiene ningún
+   * ítem marcado, cae de vuelta a los primeros 4 visibles para no dejar la barra vacía. Misma fuente
+   * que el sidebar (visibleGroups()), así que un rol nuevo o un cambio de menú no requiere tocar esto
+   * aparte — solo agregar `mobileTab: true` al ítem que deba aparecer abajo. */
   protected mobileTabs(): readonly NavItem[] {
-    return this.visibleGroups()
-      .flatMap((group) => group.items)
-      .slice(0, 4);
+    const visible = this.visibleGroups().flatMap((group) => group.items);
+    const prioritized = visible.filter((item) => item.mobileTab);
+    return (prioritized.length > 0 ? prioritized : visible).slice(0, 4);
   }
 
   protected pageTitle(): string {

@@ -23,7 +23,7 @@ nivel, no reemplaza esa fuente generada desde el código.
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| POST | `/admissions/applications` | Público. Envía una solicitud de admisión. RN-02/RN-03 validan modalidad/región en servidor. Devuelve `{ applicationId, folio }`. |
+| POST | `/admissions/applications` | Público. Envía una solicitud de un paso: `{ fullName, email, phone, modality, requestedRegionId, churchName?, area?, community?, municipality?, state?, studyPurpose?, recaptchaToken }`. Nombre, correo, teléfono, modalidad y reCAPTCHA son obligatorios; `requestedRegionId` es obligatorio para modalidad presencial. Devuelve `{ applicationId, folio }`. |
 | GET 🔒👑 Admin | `/admissions/applications?status&search&page&pageSize` | Bandeja paginada. |
 | GET 🔒👑 Admin | `/admissions/applications/{id}` | Detalle completo. |
 | POST 🔒👑 Admin | `/admissions/applications/{id}/approve` | RN-01: una solicitud decidida es inmutable. |
@@ -47,12 +47,23 @@ nivel, no reemplaza esa fuente generada desde el código.
 | GET | `/academic/periods?page&pageSize` | |
 | GET | `/academic/periods/current` | El periodo con estatus `Active` (RN-13: solo puede haber uno). |
 | POST 🔒👑 Admin | `/academic/periods` | Abre un nuevo periodo. |
-| GET | `/academic/offerings?periodId` | Grupos ofertados. |
-| POST 🔒👑 Admin | `/academic/offerings` | Asigna profesor a una materia/región (dispara RN-15 auto-inscripción). |
+| GET | `/academic/offerings?periodId` | Grupos ofertados. Una oferta sin profesor todavía ("pendiente", ver ADR-015) aparece con `teacherName: "Sin profesor asignado"`. |
+| POST 🔒👑 Admin | `/academic/offerings` | Asigna profesor a una materia/región. Si ya existe una oferta pendiente para esa materia/región/periodo, la completa con el profesor en vez de rechazarla como duplicada (RN-22). Dispara RN-15 auto-inscripción. |
 | DELETE 🔒👑 Admin | `/academic/offerings/{id}` | |
 | POST 🔒👑 Admin | `/academic/offerings/auto-enroll` | Re-ejecuta la auto-inscripción manualmente. |
 | GET | `/academic/offerings/{id}/enrollments` | Alumnos inscritos + calificación actual. |
-| PUT 🔒👑 Teacher/Admin | `/academic/offerings/{id}/enrollments/{studentId}/grade` | `{ grade }` 0-10. RN-16. |
+| PUT 🔒👑 Teacher/Admin | `/academic/offerings/{id}/enrollments/{studentId}/grade` | `{ grade }` 0-10. RN-16. Si la oferta no tiene profesor ("pendiente"), solo Admin puede. |
+| PUT 🔒👑 Teacher/Admin | `/academic/offerings/{id}/enrollments/grades` | `{ grades: [{studentId, grade}] }` — captura en lote de un grupo completo ("Guardar todos los cambios"). |
+| GET | `/academic/grades/import/template?periodId&plan&termNumber&regionId` | Plantilla Excel con TODAS las materias de un cuatrimestre/semestre+región. |
+| POST 🔒👑 Admin | `/academic/grades/import?periodId&plan&termNumber&regionId` | `multipart/form-data`. Importación por lote, tolerante a errores por fila. |
+| GET 🔒👑 Teacher/Admin | `/academic/grading-roster?periodId` | "Calificar por alumno": `{studentId, totalSubjects, gradedSubjects}` por alumno en TODO el periodo — `totalSubjects` es el currículo completo de su plan+término (ADR-015), no solo lo que ya tiene oferta. Evita N+1 en la tabla. |
+| GET | `/academic/students/{studentId}/offerings?periodId` | "Calificar por alumno": materias del alumno en un periodo. Las que todavía no tienen oferta aparecen con `offeringId: null` y `status: "SinProfesor"` (fallback defensivo — normalmente ya no pasa, ver `ensure-offerings`). |
+| POST 🔒👑 Admin | `/academic/students/{studentId}/ensure-offerings` | `{ periodId }`. ADR-015: crea (idempotente) una oferta "pendiente" (sin profesor) por cada materia del currículo del alumno que todavía no tenga oferta, y lo inscribe. Se llama al abrir la ficha del alumno, antes de pedir `/offerings`. |
+| PUT 🔒 Teacher/Admin | `/academic/offerings/students/{studentId}/grades` | `{ periodId, grades: [{offeringId, grade}] }` — captura en lote de TODAS las materias de un alumno ("Guardar calificaciones de este alumno"). |
+| GET 🔒 Teacher/Admin | `/academic/students/{studentId}/grades/import/template?periodId` | Plantilla Excel solo de las materias de ESE alumno. |
+| POST 🔒 Teacher/Admin | `/academic/students/{studentId}/grades/import?periodId` | `multipart/form-data`. Importación por alumno. |
+| POST 🔒👑 Admin | `/academic/students/{studentId}/promote` | ADR-015: promueve a UN alumno, solo si ya aprobó TODAS sus materias del término actual (`Grade.IsPassing`, ≥7) — si no, devuelve `{promoted:false, reason}` sin error. "Avanzar de cuatrimestre/semestre" en la ficha del alumno. |
+| POST 🔒👑 Admin | `/academic/students/promote` | `{ plan, fromTerm }`. Promueve de un jalón a TODOS los alumnos activos de ese plan+término que cumplan la misma regla de elegibilidad que el endpoint anterior; al resto los cuenta en `studentsSkipped` sin tocarlos (ADR-015, antes promovía a ciegas). |
 
 ## Alumno (`/students/me`) 🔒👑 Student
 

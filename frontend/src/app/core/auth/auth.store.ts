@@ -71,6 +71,9 @@ export const AuthStore = signalStore(
   withComputed(({ user, accessToken }) => ({
     isAuthenticated: computed(() => accessToken() !== null),
     role: computed(() => user()?.role ?? null),
+    // 2026-10 ("un usuario puede tener múltiples roles"): roles ADICIONALES al principal — hoy solo
+    // se usa para Teacher. roleGuard y admin-shell (visibleGroups) lo consultan junto con role().
+    extraRoles: computed(() => user()?.extraRoles ?? []),
     mustChangePassword: computed(() => user()?.mustChangePassword ?? false),
   })),
   // Separado en dos withMethods: `login` necesita llamar a `loadCurrentUser` (ver más abajo), y

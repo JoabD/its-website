@@ -17,6 +17,17 @@ public sealed class HttpCurrentUser(IHttpContextAccessor httpContextAccessor) : 
 
     public UserRole? Role => Enum.TryParse<UserRole>(Principal?.FindFirstValue(ClaimTypes.Role), out var r) ? r : null;
 
+    /// <summary>Lee TODOS los claims "extraRole" del token (uno por rol adicional — ver
+    /// JwtTokenService). Ignora silenciosamente un valor que no sea un UserRole válido en vez de
+    /// tronar, por si en el futuro un token viejo trae un valor que ya no existe.</summary>
+    public IReadOnlyList<UserRole> ExtraRoles =>
+        Principal?.FindAll("extraRole")
+            .Select(c => Enum.TryParse<UserRole>(c.Value, out var r) ? (UserRole?)r : null)
+            .Where(r => r is not null)
+            .Select(r => r!.Value)
+            .ToList()
+        ?? [];
+
     public string? RegionId => Principal?.FindFirstValue("regionId");
 }
 
