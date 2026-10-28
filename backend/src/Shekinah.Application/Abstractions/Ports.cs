@@ -191,6 +191,14 @@ public interface IAdmissionFichaPdfGenerator
     byte[] Generate(AdmissionFichaPdfModel model);
 }
 
+/// <summary>Genera los formatos imprimibles que acompañan la confirmación de una solicitud de admisión.</summary>
+public interface IAdmissionRequestDocumentsPdfGenerator
+{
+    byte[] GenerateEnrollmentRequest(string applicantName, Modality modality);
+
+    byte[] GeneratePastoralRecommendation(string applicantName);
+}
+
 /// <summary>Panel de verificación de pagos (docs/Plan-Panel-Pagos.md, fase 1): una fila etiqueta/valor
 /// del recibo de pago en PDF — mismo criterio que <see cref="AdmissionFichaPdfRow"/>.</summary>
 public sealed record PaymentReceiptPdfRow(string Label, string Value);

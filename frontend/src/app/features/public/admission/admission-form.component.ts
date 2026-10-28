@@ -72,6 +72,15 @@ const RECAPTCHA_ACTION = 'submit_application';
           <h2 class="mt-8 font-[var(--shk-font-heading)] text-lg font-semibold text-[var(--shk-color-primary)]">
             Para conocerte mejor <span class="text-sm font-normal text-slate-500">(opcional)</span>
           </h2>
+          <p class="mt-2 text-sm text-slate-600">
+            Consulta los formatos y documentos de inscripción en
+            <a
+              href="https://drive.google.com/drive/folders/1dn26yWvpntK7KClQ2C1GSYvKVd5ofpHv?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-semibold text-[var(--shk-color-primary)] underline decoration-[var(--shk-color-accent)] underline-offset-2 hover:text-[var(--shk-color-accent-dark)]"
+            >esta carpeta de documentos</a>.
+          </p>
           <div class="mt-4 grid gap-4 md:grid-cols-2">
             <label class="shk-label"><span>Iglesia</span><input formControlName="churchName" class="shk-field" /></label>
             <label class="shk-label"><span>Área</span><input formControlName="area" class="shk-field" placeholder="Colonia o zona" /></label>

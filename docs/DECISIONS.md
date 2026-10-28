@@ -346,3 +346,11 @@ contra qué comparar la propiedad en vez de "es el dueño".
 
 **Consecuencias**: `ApplicantProfile.BirthDate` ahora es nullable y su mapeo Mongo tolera documentos anteriores y solicitudes nuevas sin fecha. La razón de modalidad virtual también queda opcional para que modalidad no agregue otro campo obligatorio. Compilación y pruebas no ejecutadas en esta sesión; revisar al levantar los servicios.
 
+## ADR-017 — Formatos de admisión adjuntos a la confirmación
+
+**Contexto**: el cliente pidió enviar al aspirante la solicitud de ingreso con su nombre y un formato de recomendación pastoral con su nombre, además de indicar los documentos que debe entregar. También solicitó enlazar la carpeta compartida de formatos desde el formulario público.
+
+**Decisión**: `AdmissionRequestDocumentsPdfGenerator` genera dos PDFs imprimibles con membrete institucional: solicitud de inscripción (nombre y modalidad seleccionada precargados) y recomendación pastoral (nombre del aspirante precargado). `SubmitApplicationCommandHandler` los adjunta solo al correo de confirmación del aspirante, junto con la ficha de recepción existente; el correo enumera la documentación requerida y dirige solicitudes virtuales a `admin@institutoteologicoshekinah.com`. `admission-form.component.ts` enlaza la carpeta pública de Drive proporcionada por el cliente.
+
+**Consecuencias**: pastor, iglesia, área, fecha/lugar y firmas permanecen en blanco para que se completen a mano. Los PDFs son generados en el momento del envío; compilar, verificar el render visual de ambos formatos y probar la entrega de correo queda pendiente en un entorno con SDK .NET 10 y SMTP configurado.
+
