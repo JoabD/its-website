@@ -52,7 +52,8 @@ public sealed class SubmitApplicationCommandValidator : AbstractValidator<Submit
 public sealed class SubmitApplicationCommandHandler(
     IAdmissionApplicationRepository applications, Domain.Catalog.IRegionRepository regions,
     IUserRepository administratorsSource, IEmailSender emailSender, INotificationRecipients notificationRecipients,
-    IAdmissionFichaPdfGenerator fichaPdfGenerator, IRecaptchaVerifier recaptchaVerifier, IClock clock)
+    IAdmissionFichaPdfGenerator fichaPdfGenerator, IAdmissionRequestDocumentsPdfGenerator requestDocumentsPdfGenerator,
+    IRecaptchaVerifier recaptchaVerifier, IClock clock)
     : ICommandHandler<SubmitApplicationCommand, SubmitApplicationResponse>
 {
     public async Task<Result<SubmitApplicationResponse>> HandleAsync(SubmitApplicationCommand command, CancellationToken ct)
@@ -122,6 +123,12 @@ public sealed class SubmitApplicationCommandHandler(
         var fichaPdfBytes = fichaPdfGenerator.Generate(BuildFichaPdfModel(folio, applicant.Value, modalityChoice.Value, clock.UtcNow));
         var fichaAttachment = new EmailAttachment($"Ficha-{folio}.pdf", "application/pdf", fichaPdfBytes);
         var fichaAttachments = new[] { fichaAttachment };
+        var enrollmentRequestAttachment = new EmailAttachment(
+            "Solicitud-de-inscripcion.pdf", "application/pdf",
+            requestDocumentsPdfGenerator.GenerateEnrollmentRequest(applicant.Value.FullName.FullName, modalityChoice.Value.Modality));
+        var pastoralRecommendationAttachment = new EmailAttachment(
+            "Recomendacion-pastoral.pdf", "application/pdf",
+            requestDocumentsPdfGenerator.GeneratePastoralRecommendation(applicant.Value.FullName.FullName));
 
         var administrators = await administratorsSource.GetActiveAdministratorsAsync(ct);
         foreach (var admin in administrators)
@@ -145,15 +152,21 @@ public sealed class SubmitApplicationCommandHandler(
             applicant.Value.Email.Value,
             $"Hemos recibido tu solicitud — folio {folio}",
             $"""
-             <p>Hola {applicant.Value.FullName},</p>
+             <p>Hola {System.Net.WebUtility.HtmlEncode(applicant.Value.FullName.FullName)},</p>
              <p>Confirmamos la recepción de tu solicitud de admisión al Instituto Teológico Shekinah, con folio <strong>{folio}</strong>.</p>
-             <p><strong>Debes esperar instrucciones por este medio, o acudir a tu sede con esta ficha en mano para continuar tu proceso.</strong></p>
+             <p>Adjuntamos tu ficha de recepción, la solicitud de inscripción con tu nombre y el formato de recomendación pastoral con tu nombre.</p>
+             <p><strong>Para continuar tu proceso:</strong></p>
+             <ol>
+               <li>Imprime y firma la solicitud de inscripción.</li>
+               <li>Pide a tu pastor que complete y firme la recomendación pastoral.</li>
+               <li>Prepara copia de tu INE o identificación oficial, certificado de bautismo y, si aplica, certificado de matrimonio.</li>
+             </ol>
+             <p>Si elegiste modalidad presencial, entrega los formatos y documentos en tu sede. Si elegiste modalidad virtual, envía la documentación requerida a <a href="mailto:admin@institutoteologicoshekinah.com">admin@institutoteologicoshekinah.com</a>.</p>
+             <p>Conserva tu folio <strong>{folio}</strong> para cualquier seguimiento. Si tienes dudas, puedes responder a este correo.</p>
              {ficha}
-             <p>Adjuntamos tu ficha de inscripción en PDF.</p>
-             <p>Si tienes dudas, puedes responder a este correo o acudir directamente a tu sede.</p>
              """,
             ct,
-            attachments: fichaAttachments);
+            attachments: [fichaAttachment, enrollmentRequestAttachment, pastoralRecommendationAttachment]);
 
         return Result.Success(new SubmitApplicationResponse(applicationResult.Value.Id, folio));
     }
