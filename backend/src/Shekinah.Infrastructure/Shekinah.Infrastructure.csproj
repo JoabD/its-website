@@ -20,6 +20,7 @@
          Community para empresas con ingresos anuales menores a 1M USD (ver QuestPdfSettings.cs,
          donde se fija License = LicenseType.Community). -->
     <PackageReference Include="QuestPDF" Version="2025.7.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
