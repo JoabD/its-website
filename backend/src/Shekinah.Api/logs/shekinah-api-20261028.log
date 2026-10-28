@@ -104,7 +104,6 @@ Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime
 2026-10-28 10:39:43.910 -06:00 [INF] Writing value of type 'ApplicationDetail' as Json.
 2026-10-28 10:39:43.921 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications/{id}'
 2026-10-28 10:39:43.923 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications/fe9db4db611221562620992a - 200 null application/json; charset=utf-8 51.9658ms
-<<<<<<< HEAD
 2026-10-28 10:42:37.976 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
 2026-10-28 10:42:37.984 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
 2026-10-28 10:42:37.988 -06:00 [INF] Ejecutando GetCurrentUserQuery
@@ -122,5 +121,3 @@ Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime
 2026-10-28 10:42:38.807 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
 2026-10-28 10:42:38.809 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 18.8773ms
 2026-10-28 10:42:42.111 -06:00 [INF] Application is shutting down...
-=======
->>>>>>> feature/Fix_califications
