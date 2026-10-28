@@ -23,7 +23,7 @@ nivel, no reemplaza esa fuente generada desde el código.
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| POST | `/admissions/applications` | Público. Envía una solicitud de admisión. RN-02/RN-03 validan modalidad/región en servidor. Devuelve `{ applicationId, folio }`. |
+| POST | `/admissions/applications` | Público. Envía una solicitud de un paso: `{ fullName, email, phone, modality, requestedRegionId, churchName?, area?, community?, municipality?, state?, studyPurpose?, recaptchaToken }`. Nombre, correo, teléfono, modalidad y reCAPTCHA son obligatorios; `requestedRegionId` es obligatorio para modalidad presencial. Devuelve `{ applicationId, folio }`. |
 | GET 🔒👑 Admin | `/admissions/applications?status&search&page&pageSize` | Bandeja paginada. |
 | GET 🔒👑 Admin | `/admissions/applications/{id}` | Detalle completo. |
 | POST 🔒👑 Admin | `/admissions/applications/{id}/approve` | RN-01: una solicitud decidida es inmutable. |

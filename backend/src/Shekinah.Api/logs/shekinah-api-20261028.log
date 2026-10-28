@@ -1,0 +1,106 @@
+2026-10-28 10:37:03.616 -06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-10-28 10:37:03.861 -06:00 [INF] Purga automática de admisiones: 2 solicitudes eliminadas (30 días tras decisión).
+2026-10-28 10:37:04.243 -06:00 [INF] Now listening on: https://localhost:5081
+2026-10-28 10:37:04.247 -06:00 [INF] Now listening on: http://localhost:5080
+2026-10-28 10:37:04.250 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-10-28 10:37:04.252 -06:00 [INF] Hosting environment: Development
+2026-10-28 10:37:04.254 -06:00 [INF] Content root path: C:\NG\Angular\shekina-site\backend\src\Shekinah.Api
+2026-10-28 10:37:04.574 -06:00 [INF] Request starting HTTP/2 GET https://localhost:5081/scalar/v1 - null null
+2026-10-28 10:37:04.779 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-28 10:37:04.786 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-28 10:37:04.791 -06:00 [INF] Request finished HTTP/2 GET https://localhost:5081/scalar/v1 - 401 0 null 223.0815ms
+2026-10-28 10:37:49.628 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-28 10:37:49.721 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/15/2026 3:48:24 PM', Current time (UTC): '10/28/2026 4:37:49 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-28 10:37:49.735 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/15/2026 3:48:24 PM', Current time (UTC): '10/28/2026 4:37:49 PM'.
+2026-10-28 10:37:49.739 -06:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-10-28 10:37:49.743 -06:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-10-28 10:37:49.750 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 401 0 null 122.0331ms
+2026-10-28 10:37:49.851 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - application/json 105
+2026-10-28 10:37:49.860 -06:00 [INF] CORS policy execution successful.
+2026-10-28 10:37:49.863 -06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/15/2026 3:48:24 PM', Current time (UTC): '10/28/2026 4:37:49 PM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-28 10:37:49.867 -06:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/15/2026 3:48:24 PM', Current time (UTC): '10/28/2026 4:37:49 PM'.
+2026-10-28 10:37:49.873 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-28 10:37:49.899 -06:00 [INF] Ejecutando RefreshTokenCommand
+2026-10-28 10:37:49.910 -06:00 [WRN] RefreshTokenCommand falló: Auth.InvalidRefreshToken - El refresh token no es válido o expiró.
+2026-10-28 10:37:49.929 -06:00 [INF] Setting HTTP status code 401.
+2026-10-28 10:37:49.969 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/refresh'
+2026-10-28 10:37:49.979 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/refresh - 401 null application/problem+json 128.4373ms
+2026-10-28 10:37:59.031 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-10-28 10:37:59.039 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-10-28 10:37:59.045 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-10-28 10:37:59.062 -06:00 [INF] GetCurriculumQuery completado
+2026-10-28 10:37:59.064 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:37:59.068 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-28 10:37:59.082 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-10-28 10:37:59.084 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 52.9154ms
+2026-10-28 10:38:11.370 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - null null
+2026-10-28 10:38:11.381 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-10-28 10:38:11.388 -06:00 [INF] Ejecutando GetCurriculumQuery
+2026-10-28 10:38:11.398 -06:00 [INF] GetCurriculumQuery completado
+2026-10-28 10:38:11.401 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:38:11.404 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-28 10:38:11.408 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/curriculum'
+2026-10-28 10:38:11.411 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/curriculum - 200 null application/json; charset=utf-8 41.0372ms
+2026-10-28 10:38:15.937 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - null null
+2026-10-28 10:38:15.943 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-28 10:38:15.947 -06:00 [INF] Ejecutando GetRegionsQuery
+2026-10-28 10:38:15.956 -06:00 [INF] GetRegionsQuery completado
+2026-10-28 10:38:15.959 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:38:15.963 -06:00 [INF] Writing value of type 'List`1' as Json.
+2026-10-28 10:38:15.971 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/catalog/regions'
+2026-10-28 10:38:15.974 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/catalog/regions - 200 null application/json; charset=utf-8 36.6015ms
+2026-10-28 10:39:11.350 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - application/json 2634
+2026-10-28 10:39:11.354 -06:00 [INF] CORS policy execution successful.
+2026-10-28 10:39:11.355 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-10-28 10:39:11.447 -06:00 [INF] Ejecutando SubmitApplicationCommand
+2026-10-28 10:39:11.474 -06:00 [WRN] Recaptcha:SecretKey no está configurada; se omite la verificación de reCAPTCHA.
+2026-10-28 10:39:12.344 -06:00 [INF] SubmitApplicationCommand completado
+2026-10-28 10:39:12.346 -06:00 [INF] Setting HTTP status code 201.
+2026-10-28 10:39:12.349 -06:00 [INF] Writing value of type 'SubmitApplicationResponse' as Json.
+2026-10-28 10:39:12.353 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/admissions/applications'
+2026-10-28 10:39:12.355 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/admissions/applications - 201 null application/json; charset=utf-8 1005.3579ms
+2026-10-28 10:39:37.400 -06:00 [INF] Request starting HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - application/json 77
+2026-10-28 10:39:37.405 -06:00 [INF] CORS policy execution successful.
+2026-10-28 10:39:37.406 -06:00 [INF] Executing endpoint 'HTTP: POST /api/v1/auth/login'
+2026-10-28 10:39:37.412 -06:00 [INF] Ejecutando LoginCommand
+2026-10-28 10:39:37.890 -06:00 [INF] LoginCommand completado
+2026-10-28 10:39:37.892 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:39:37.895 -06:00 [INF] Writing value of type 'LoginResponse' as Json.
+2026-10-28 10:39:37.903 -06:00 [INF] Executed endpoint 'HTTP: POST /api/v1/auth/login'
+2026-10-28 10:39:37.906 -06:00 [INF] Request finished HTTP/1.1 POST https://localhost:5081/api/v1/auth/login - 200 null application/json; charset=utf-8 505.0932ms
+2026-10-28 10:39:37.920 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - null null
+2026-10-28 10:39:37.944 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-28 10:39:37.949 -06:00 [INF] Ejecutando GetCurrentUserQuery
+2026-10-28 10:39:37.974 -06:00 [INF] GetCurrentUserQuery completado
+2026-10-28 10:39:37.977 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:39:37.984 -06:00 [INF] Writing value of type 'CurrentUserResponse' as Json.
+2026-10-28 10:39:37.994 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/auth/me'
+2026-10-28 10:39:37.996 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/auth/me - 200 null application/json; charset=utf-8 76.0985ms
+2026-10-28 10:39:40.318 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - null null
+2026-10-28 10:39:40.322 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-10-28 10:39:40.330 -06:00 [INF] Ejecutando GetApplicationsQuery
+2026-10-28 10:39:40.442 -06:00 [INF] GetApplicationsQuery completado
+2026-10-28 10:39:40.443 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:39:40.454 -06:00 [INF] Writing value of type 'PagedResult`1' as Json.
+2026-10-28 10:39:40.461 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications'
+2026-10-28 10:39:40.463 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications?status=Pending&page=1&pageSize=20 - 200 null application/json; charset=utf-8 145.6101ms
+2026-10-28 10:39:43.871 -06:00 [INF] Request starting HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications/fe9db4db611221562620992a - null null
+2026-10-28 10:39:43.876 -06:00 [INF] Executing endpoint 'HTTP: GET /api/v1/admissions/applications/{id}'
+2026-10-28 10:39:43.879 -06:00 [INF] Ejecutando GetApplicationByIdQuery
+2026-10-28 10:39:43.901 -06:00 [INF] GetApplicationByIdQuery completado
+2026-10-28 10:39:43.904 -06:00 [INF] Setting HTTP status code 200.
+2026-10-28 10:39:43.910 -06:00 [INF] Writing value of type 'ApplicationDetail' as Json.
+2026-10-28 10:39:43.921 -06:00 [INF] Executed endpoint 'HTTP: GET /api/v1/admissions/applications/{id}'
+2026-10-28 10:39:43.923 -06:00 [INF] Request finished HTTP/1.1 GET https://localhost:5081/api/v1/admissions/applications/fe9db4db611221562620992a - 200 null application/json; charset=utf-8 51.9658ms

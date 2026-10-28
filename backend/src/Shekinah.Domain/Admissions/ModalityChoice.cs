@@ -18,7 +18,7 @@ public sealed record ModalityChoice
 
     public string RegionName { get; }
 
-    /// <summary>Requerido y obligatorio solo cuando <see cref="Modality"/> es <see cref="Modality.Online"/>.</summary>
+    /// <summary>Motivo opcional cuando la modalidad es virtual.</summary>
     public string? OnlineReason { get; }
 
     private ModalityChoice(Modality modality, string regionId, int regionCode, string regionName, string? onlineReason)
@@ -43,15 +43,8 @@ public sealed record ModalityChoice
                 $"La región '{region.Name}' no atiende la modalidad '{modality}'."));
         }
 
-        if (modality == Modality.Online && string.IsNullOrWhiteSpace(onlineReason))
-        {
-            return Result.Failure<ModalityChoice>(Error.Validation(
-                "ModalityChoice.OnlineReasonRequired",
-                "La modalidad Virtual requiere especificar el motivo."));
-        }
-
         return Result.Success(new ModalityChoice(
             modality, region.Id, region.LegacyCode, region.Name,
-            modality == Modality.Online ? onlineReason!.Trim() : null));
+            modality == Modality.Online && !string.IsNullOrWhiteSpace(onlineReason) ? onlineReason.Trim() : null));
     }
 }

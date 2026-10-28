@@ -95,43 +95,32 @@ import { APPLICATION_STATUS_LABELS, ApplicationStatus, MODALITY_LABELS, Modality
               <section>
                 <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Datos personales</h3>
                 <dl class="mt-3 grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
-                  <div><dt class="text-slate-400">Fecha de nacimiento</dt><dd class="text-slate-700">{{ d.birthDate | date: 'dd/MM/yyyy' }}</dd></div>
-                  <div><dt class="text-slate-400">Estado civil</dt><dd class="text-slate-700">{{ d.maritalStatus }}</dd></div>
                   <div><dt class="text-slate-400">Correo</dt><dd class="text-slate-700 break-all">{{ d.email }}</dd></div>
                   <div><dt class="text-slate-400">Teléfono</dt><dd class="text-slate-700">{{ d.phone }}</dd></div>
                 </dl>
               </section>
 
               <section class="mt-6">
-                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Domicilio</h3>
+                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Ubicación e iglesia (datos opcionales)</h3>
                 <p class="mt-3 text-sm leading-relaxed text-slate-700">
-                  {{ d.street }}, {{ d.neighborhood }}, {{ d.locality }}, {{ d.municipality }}@if (d.state) {, {{ d.state }}}
+                  Área: {{ d.area || '—' }} · Comunidad: {{ d.community || '—' }} · Municipio: {{ d.municipality || '—' }}@if (d.state) { · Estado: {{ d.state }}}
                 </p>
               </section>
 
               <section class="mt-6">
-                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Iglesia y referencia pastoral</h3>
+                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Iglesia</h3>
                 <dl class="mt-3 grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
                   <div class="sm:col-span-2"><dt class="text-slate-400">Iglesia</dt><dd class="text-slate-700">{{ d.churchName }}</dd></div>
-                  <div class="sm:col-span-2"><dt class="text-slate-400">Domicilio de la iglesia</dt><dd class="text-slate-700">{{ d.churchStreet }}, {{ d.churchNeighborhood }}, {{ d.churchLocality }}, {{ d.churchMunicipality }}</dd></div>
-                  <div><dt class="text-slate-400">Pastor</dt><dd class="text-slate-700">{{ d.pastorName }}</dd></div>
-                  <div><dt class="text-slate-400">Tiempo asistiendo</dt><dd class="text-slate-700">{{ d.timeAttending }}</dd></div>
-                  <div class="sm:col-span-2">
-                    <dt class="text-slate-400">Rol ministerial</dt>
-                    <dd class="text-slate-700">{{ d.hasMinistryRole ? (d.ministryRoleName || 'Sí') : 'Ninguno' }}</dd>
-                  </div>
                 </dl>
               </section>
 
               <section class="mt-6">
-                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Formación y motivación</h3>
+                <h3 class="text-sm font-semibold text-[var(--shk-color-primary)]">Motivación</h3>
                 <dl class="mt-3 grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
                   <div class="sm:col-span-2">
-                    <dt class="text-slate-400">Escolaridad</dt>
-                    <dd class="text-slate-700">{{ d.educationLevel }}{{ d.otherEducationDescription ? ' — ' + d.otherEducationDescription : '' }}</dd>
+                    <dt class="text-slate-400">Propósito de estudio</dt>
+                    <dd class="text-slate-700">{{ d.studyPurpose || '—' }}</dd>
                   </div>
-                  <div class="sm:col-span-2"><dt class="text-slate-400">Formación teológica previa</dt><dd class="text-slate-700">{{ d.theologicalBackground }}</dd></div>
-                  <div class="sm:col-span-2"><dt class="text-slate-400">Propósito de estudio</dt><dd class="text-slate-700">{{ d.studyPurpose }}</dd></div>
                 </dl>
               </section>
 

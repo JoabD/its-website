@@ -28,28 +28,21 @@ internal static class AdmissionFichaHtml
             _ => modality.Modality.ToString(),
         };
 
-        var ministryRole = applicant.Church.MinistryRole.HasRole
-            ? applicant.Church.MinistryRole.RoleName ?? "Sí"
-            : "No";
-
         return $"""
             <div style="border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin:16px 0;font-family:Arial,sans-serif;">
               <h2 style="margin:0 0 4px 0;color:#101c36;font-size:16px;">Ficha de inscripción — {Encode(folio)}</h2>
               <p style="margin:0 0 16px 0;color:#8994a8;font-size:12.5px;">Generada automáticamente el {submittedAtUtc:dd/MM/yyyy HH:mm} (UTC)</p>
               <table style="border-collapse:collapse;font-size:13.5px;width:100%;">
                 {Row("Nombre completo", applicant.FullName.FullName)}
-                {Row("Fecha de nacimiento", applicant.BirthDate.ToString("dd/MM/yyyy"))}
-                {Row("Estado civil", applicant.MaritalStatus)}
                 {Row("Correo", applicant.Email.Value)}
                 {Row("Teléfono", applicant.Phone.Value)}
-                {Row("Dirección", $"{applicant.Address.Street}, {applicant.Address.Neighborhood}, {applicant.Address.Locality}, {applicant.Address.Municipality}")}
+                {Row("Área", applicant.Address.Neighborhood)}
+                {Row("Comunidad", applicant.Address.Locality)}
+                {Row("Municipio", applicant.Address.Municipality)}
+                {Row("Estado", applicant.Address.State ?? string.Empty)}
                 {Row("Modalidad", modalityLabel)}
                 {Row("Región / Sede", modality.RegionName)}
                 {Row("Iglesia", applicant.Church.Name)}
-                {Row("Pastor", applicant.Church.PastorName)}
-                {Row("Tiempo asistiendo", applicant.Church.TimeAttending)}
-                {Row("Rol ministerial", ministryRole)}
-                {Row("Nivel de estudios", applicant.Education.Level.ToString())}
                 {Row("Propósito de estudio", applicant.StudyPurpose)}
               </table>
             </div>

@@ -21,12 +21,17 @@ public static class BsonMappingExtensions
         ["state"] = address.State is null ? BsonNull.Value : address.State,
     };
 
-    public static Address AddressFromBson(BsonDocument doc) => Address.Create(
-        doc.GetValue("street", "").AsString,
-        doc.GetValue("neighborhood", "").AsString,
-        doc.GetValue("locality", "").AsString,
-        doc.GetValue("municipality", "").AsString,
-        doc.TryGetValue("state", out var state) && !state.IsBsonNull ? state.AsString : null).Value;
+    public static Address AddressFromBson(BsonDocument doc)
+    {
+        var street = doc.GetValue("street", "").AsString;
+        var neighborhood = doc.GetValue("neighborhood", "").AsString;
+        var locality = doc.GetValue("locality", "").AsString;
+        var municipality = doc.GetValue("municipality", "").AsString;
+        var state = doc.TryGetValue("state", out var stateValue) && !stateValue.IsBsonNull ? stateValue.AsString : null;
+        return string.IsNullOrWhiteSpace(street) || string.IsNullOrWhiteSpace(municipality)
+            ? Address.CreateOptional(street, neighborhood, locality, municipality, state).Value
+            : Address.Create(street, neighborhood, locality, municipality, state).Value;
+    }
 
     public static BsonDocument ToBson(this ChurchInfo church) => new()
     {
@@ -48,12 +53,13 @@ public static class BsonMappingExtensions
         var roleName = ministryDoc.TryGetValue("roleName", out var rn) && !rn.IsBsonNull ? rn.AsString : null;
         var ministryRole = MinistryRole.Create(hasRole, roleName).Value;
 
-        return ChurchInfo.Create(
-            doc.GetValue("name", "").AsString,
-            AddressFromBson(doc["address"].AsBsonDocument),
-            doc.GetValue("pastorName", "").AsString,
-            doc.GetValue("timeAttending", "").AsString,
-            ministryRole).Value;
+        var name = doc.GetValue("name", "").AsString;
+        var address = AddressFromBson(doc["address"].AsBsonDocument);
+        var pastorName = doc.GetValue("pastorName", "").AsString;
+        var timeAttending = doc.GetValue("timeAttending", "").AsString;
+        return string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(pastorName)
+            ? ChurchInfo.CreateForInitialApplication(name, address, pastorName, timeAttending, ministryRole).Value
+            : ChurchInfo.Create(name, address, pastorName, timeAttending, ministryRole).Value;
     }
 
     public static BsonDocument ToBson(this EducationLevel education) => new()
