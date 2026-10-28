@@ -32,17 +32,18 @@ public class AdmissionApplicationTests
         secondDecision.Error.Code.ShouldBe("AdmissionApplication.NotPending");
     }
 
-    [Fact(DisplayName = "RN_02_RN_03_Modalidad_Online_requiere_motivo_y_region_virtual")]
-    public void RN_02_RN_03_Modalidad_Online_requiere_motivo()
+    [Fact(DisplayName = "RN_02_RN_03_Modalidad_Online_acepta_motivo_opcional_y_region_virtual")]
+    public void RN_02_RN_03_Modalidad_Online_acepta_motivo_opcional()
     {
         var onlineRegion = Region.Create(Guid.NewGuid().ToString(), 3, "Región Virtual", [Modality.Online]).Value;
 
         var withoutReason = ModalityChoice.Create(Modality.Online, onlineRegion, null);
-        withoutReason.IsFailure.ShouldBeTrue();
-        withoutReason.Error.Code.ShouldBe("ModalityChoice.OnlineReasonRequired");
+        withoutReason.IsSuccess.ShouldBeTrue();
+        withoutReason.Value.OnlineReason.ShouldBeNull();
 
         var withReason = ModalityChoice.Create(Modality.Online, onlineRegion, "Vivo lejos de la sede");
         withReason.IsSuccess.ShouldBeTrue();
+        withReason.Value.OnlineReason.ShouldBe("Vivo lejos de la sede");
     }
 
     [Fact(DisplayName = "RN_03_Region_incoherente_con_modalidad_es_rechazada")]
